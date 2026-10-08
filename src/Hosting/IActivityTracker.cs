@@ -1,0 +1,9 @@
+namespace Snail.MCP.AfterEffects.Hosting;
+
+/// <summary>When the last MCP tool was called; the idle watchdog reads it, the transport writes it.</summary>
+internal interface IActivityTracker
+{
+    DateTime LastActivityUtc { get; }
+
+    void Touch();
+}
