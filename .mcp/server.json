@@ -1,0 +1,277 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
+  "name": "io.github.orldev/snail-mcp-aftereffects",
+  "description": "MCP server for Adobe After Effects: drives a running After Effects through an ExtendScript bridge",
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "nuget",
+      "identifier": "Snail.MCP.AfterEffects",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [],
+      "environmentVariables": [
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_DATA_DIRECTORY",
+          "description": "This server's own files: the token the bridge presents, the announcements the bridge reads to find running servers, captured frames. Default: ~/.s3l-mcp-aftereffects.",
+          "isRequired": false
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_PROJECT_DIRECTORY",
+          "description": "The project folder: captures and renders asked for without a path land in it. Default: the folder the client starts the server in.",
+          "isRequired": false
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_BRIDGE__PORT",
+          "description": "Port the server listens on for the bridge inside After Effects; 0 takes a free one, which the announcement under the data directory names.",
+          "isRequired": false,
+          "default": "0"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_BRIDGE__LISTEN",
+          "description": "The address the bridge listener binds; empty binds the loopback for a loopback host and every interface otherwise.",
+          "isRequired": false,
+          "default": ""
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_BRIDGE__HOST",
+          "description": "The address the bridge inside After Effects dials to reach this server, written into the announcement; in a container the server's service name.",
+          "isRequired": false,
+          "default": "127.0.0.1"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_BRIDGE__REQUEST_TIMEOUT_SECONDS",
+          "description": "Seconds to wait for one bridge reply; renders and imports use their own longer timeout.",
+          "isRequired": false,
+          "default": "30"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_BRIDGE__TOKEN",
+          "description": "Shared secret the bridge presents when it connects; empty reads the token file.",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_BRIDGE__TOKEN_FILE",
+          "description": "Where that token lives. Default: <data>/state/token.",
+          "isRequired": false
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_IDLE_TIMEOUT_MINUTES",
+          "description": "Minutes without a tool call after which the process exits on its own; 0, the default, disables the watchdog, since a client that ends closes the pipe and the server exits with it.",
+          "isRequired": false,
+          "default": "0"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_SKILL_IDLE_MINUTES",
+          "description": "Minutes a loaded skill may go unused before its tools leave the catalog; 0 keeps skills loaded.",
+          "isRequired": false,
+          "default": "0"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_FARM_PARALLEL",
+          "description": "How many aerender renders the farm runs at once; 1 renders jobs one after another.",
+          "isRequired": false,
+          "default": "1"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_AGENT",
+          "description": "Name this server signs its requests with, so the bridge's journal tells agents apart.",
+          "isRequired": false
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_CONFIG",
+          "description": "Path of the settings file, with the same keys under a Snail section; when set, it is the only file read, and none is read if it does not exist.",
+          "isRequired": false
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_SCRIPTING",
+          "description": "allow (the default) offers ae_script, which runs any ExtendScript; off hides it, and refuses run_tools lists that carry a script step.",
+          "isRequired": false,
+          "default": "allow"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_TRANSPORT",
+          "description": "Stdio when the client starts this server over stdio (the default); Http to run it on its own beside After Effects and let clients connect with keys.",
+          "isRequired": false,
+          "default": "Stdio"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_HTTP__URL",
+          "description": "Where the HTTP server listens; a container listens on http://0.0.0.0:8080.",
+          "isRequired": false,
+          "default": "http://127.0.0.1:8080"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_HTTP__TOKEN",
+          "description": "The token clients present as a bearer; the configured token holds every scope. Prefer keys minted with the clients command.",
+          "isRequired": false,
+          "default": ""
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_HTTP__TOKEN_FILE",
+          "description": "A file holding the token, the way a container receives a secret.",
+          "isRequired": false,
+          "default": ""
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_HTTP__PUBLIC_URL",
+          "description": "The address clients reach the server at behind a reverse proxy, which links to files are built on.",
+          "isRequired": false,
+          "default": ""
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_HTTP__LINK_MINUTES",
+          "description": "Minutes a signed link to a file stays valid.",
+          "isRequired": false,
+          "default": "15"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_HTTP__UPLOAD_PART_MB",
+          "description": "Megabytes an upload sends in one request, which a reverse proxy must read within its own body timeout.",
+          "isRequired": false,
+          "default": "16"
+        }
+      ]
+    },
+    {
+      "registryType": "nuget",
+      "identifier": "Snail.MCP.AfterEffects",
+      "version": "0.1.0",
+      "transport": {
+        "type": "streamable-http",
+        "url": "http://127.0.0.1:8080/mcp"
+      },
+      "packageArguments": [],
+      "environmentVariables": [
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_DATA_DIRECTORY",
+          "description": "This server's own files: the token the bridge presents, the announcements the bridge reads to find running servers, captured frames. Default: ~/.s3l-mcp-aftereffects.",
+          "isRequired": false
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_PROJECT_DIRECTORY",
+          "description": "The project folder: captures and renders asked for without a path land in it. Default: the folder the client starts the server in.",
+          "isRequired": false
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_BRIDGE__PORT",
+          "description": "Port the server listens on for the bridge inside After Effects; 0 takes a free one, which the announcement under the data directory names.",
+          "isRequired": false,
+          "default": "0"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_BRIDGE__LISTEN",
+          "description": "The address the bridge listener binds; empty binds the loopback for a loopback host and every interface otherwise.",
+          "isRequired": false,
+          "default": ""
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_BRIDGE__HOST",
+          "description": "The address the bridge inside After Effects dials to reach this server, written into the announcement; in a container the server's service name.",
+          "isRequired": false,
+          "default": "127.0.0.1"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_BRIDGE__REQUEST_TIMEOUT_SECONDS",
+          "description": "Seconds to wait for one bridge reply; renders and imports use their own longer timeout.",
+          "isRequired": false,
+          "default": "30"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_BRIDGE__TOKEN",
+          "description": "Shared secret the bridge presents when it connects; empty reads the token file.",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_BRIDGE__TOKEN_FILE",
+          "description": "Where that token lives. Default: <data>/state/token.",
+          "isRequired": false
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_IDLE_TIMEOUT_MINUTES",
+          "description": "Minutes without a tool call after which the process exits on its own; 0, the default, disables the watchdog, since a client that ends closes the pipe and the server exits with it.",
+          "isRequired": false,
+          "default": "0"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_SKILL_IDLE_MINUTES",
+          "description": "Minutes a loaded skill may go unused before its tools leave the catalog; 0 keeps skills loaded.",
+          "isRequired": false,
+          "default": "0"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_FARM_PARALLEL",
+          "description": "How many aerender renders the farm runs at once; 1 renders jobs one after another.",
+          "isRequired": false,
+          "default": "1"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_AGENT",
+          "description": "Name this server signs its requests with, so the bridge's journal tells agents apart.",
+          "isRequired": false
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_CONFIG",
+          "description": "Path of the settings file, with the same keys under a Snail section; when set, it is the only file read, and none is read if it does not exist.",
+          "isRequired": false
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_SCRIPTING",
+          "description": "allow (the default) offers ae_script, which runs any ExtendScript; off hides it, and refuses run_tools lists that carry a script step.",
+          "isRequired": false,
+          "default": "allow"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_TRANSPORT",
+          "description": "Stdio when the client starts this server over stdio (the default); Http to run it on its own beside After Effects and let clients connect with keys.",
+          "isRequired": false,
+          "value": "Http"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_HTTP__URL",
+          "description": "Where the HTTP server listens; a container listens on http://0.0.0.0:8080.",
+          "isRequired": false,
+          "default": "http://127.0.0.1:8080"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_HTTP__TOKEN",
+          "description": "The token clients present as a bearer; the configured token holds every scope. Prefer keys minted with the clients command.",
+          "isRequired": false,
+          "default": ""
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_HTTP__TOKEN_FILE",
+          "description": "A file holding the token, the way a container receives a secret.",
+          "isRequired": false,
+          "default": ""
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_HTTP__PUBLIC_URL",
+          "description": "The address clients reach the server at behind a reverse proxy, which links to files are built on.",
+          "isRequired": false,
+          "default": ""
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_HTTP__LINK_MINUTES",
+          "description": "Minutes a signed link to a file stays valid.",
+          "isRequired": false,
+          "default": "15"
+        },
+        {
+          "name": "SNAIL_MCP_AFTEREFFECTS_HTTP__UPLOAD_PART_MB",
+          "description": "Megabytes an upload sends in one request, which a reverse proxy must read within its own body timeout.",
+          "isRequired": false,
+          "default": "16"
+        }
+      ]
+    }
+  ],
+  "repository": {
+    "url": "https://github.com/orldev/Snail.MCP.AfterEffects",
+    "source": "github"
+  }
+}

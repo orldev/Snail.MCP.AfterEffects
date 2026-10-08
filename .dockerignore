@@ -1,0 +1,14 @@
+# Paths are relative to the repository root, the build context: the server image needs the sources, and the bridge; the stylesheet the pages embed comes with Snail.Sdk.Mcp.
+*
+!.editorconfig
+!Directory.Build.props
+!Directory.Packages.props
+!README.md
+!LICENSE
+!global.json
+!.mcp/server.json
+!extension
+!src
+**/bin/
+**/obj/
+**/.DS_Store

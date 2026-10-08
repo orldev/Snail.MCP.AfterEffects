@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="src/Snail.MCP.AfterEffects.csproj" />
+  <Project Path="tests/Snail.MCP.AfterEffects.Tests.csproj" />
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/Snail.MCP.AfterEffects.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/src/" />
+</Solution>

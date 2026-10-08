@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <Sdk Name="Snail.Sdk.Mcp" />
+
+    <!--
+        Framework-dependent, as the Razor pages and the reflection they run on keep it out of Native AOT; stdio beside
+        After Effects, and HTTP for the image docker/server/Dockerfile builds. Snail.Sdk.Mcp sets the rest: a dotnet tool
+        of the McpServer kind, Install into ~/.s3l-mcp.
+    -->
+    <PropertyGroup>
+        <SnailMcpNative>false</SnailMcpNative>
+        <SnailMcpTransport>Both</SnailMcpTransport>
+        <SnailMcpContainer>true</SnailMcpContainer>
+        <!-- The tool reference goes where MkDocs reads the site: docs/content/tools and docs/content/schemas. -->
+        <SnailReferenceFolder>$(MSBuildProjectDirectory)/../docs/content</SnailReferenceFolder>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Version>0.1.0</Version>
+        <Description>MCP server that lets AI agents drive a running Adobe After Effects through its ExtendScript bridge: projects, compositions, layers, properties, keyframes, expressions, effects, text, shapes and rendering. Runs over stdio beside After Effects on this machine.</Description>
+        <PackageTags>mcp;mcp-server;modelcontextprotocol;ai;claude;after-effects;adobe;motion-graphics;dotnet-tool</PackageTags>
+        <PackageProjectUrl>https://github.com/orldev/Snail.MCP.AfterEffects</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/orldev/Snail.MCP.AfterEffects</RepositoryUrl>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Jint" />
+        <PackageReference Include="ModelContextProtocol" />
+        <PackageReference Include="ModelContextProtocol.AspNetCore" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\extension\**\*" Link="extension\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="$(SnailSiteTheme)css/site.css" LogicalName="assets/site.css" Visible="false" />
+        <EmbeddedResource Include="Web\Pages\Assets\pages.css" LogicalName="assets/pages.css" />
+        <EmbeddedResource Include="Web\Pages\Assets\pages.js" LogicalName="assets/pages.js" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Snail.MCP.AfterEffects.Tests" />
+        <InternalsVisibleTo Include="Snail.MCP.AfterEffects.Benchmarks" />
+    </ItemGroup>
+
+</Project>
