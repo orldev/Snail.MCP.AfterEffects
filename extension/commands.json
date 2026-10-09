@@ -1,0 +1,1366 @@
+{
+  "note": "What each bridge command means, in one place: which parameters it reads, whether it only reads After Effects, whether it destroys. The bridge refuses a parameter that is not listed, and the server's catalog and tool annotations are held to this file by contract tests.",
+  "commands": {
+    "app_info": {
+      "params": [],
+      "read_only": true
+    },
+    "app_performance": {
+      "params": [
+        "image_cache_percent",
+        "max_memory_percent",
+        "multi_frame_rendering",
+        "max_cpu_percent"
+      ]
+    },
+    "app_quit": {
+      "params": [
+        "save"
+      ],
+      "destructive": true
+    },
+    "app_set": {
+      "params": [
+        "disable_rendering",
+        "report_error_on_missing_frame",
+        "save_project_on_crash",
+        "save_preferences_on_quit"
+      ]
+    },
+    "camera_set": {
+      "params": [
+        "comp",
+        "layer",
+        "time",
+        "position",
+        "point_of_interest",
+        "look_at",
+        "two_node",
+        "zoom",
+        "focal_length_mm",
+        "depth_of_field",
+        "focus_distance",
+        "aperture",
+        "blur_level",
+        "iris_shape",
+        "iris_rotation",
+        "iris_roundness",
+        "iris_aspect_ratio",
+        "iris_diffraction_fringe",
+        "highlight_gain",
+        "highlight_threshold",
+        "highlight_saturation"
+      ]
+    },
+    "capture_frame": {
+      "params": [
+        "comp",
+        "time",
+        "path",
+        "width",
+        "transparent"
+      ],
+      "open_world": true
+    },
+    "collect_files": {
+      "params": [
+        "folder",
+        "name"
+      ],
+      "open_world": true
+    },
+    "comp_create": {
+      "params": [
+        "name",
+        "width",
+        "height",
+        "duration",
+        "frame_rate",
+        "pixel_aspect",
+        "background",
+        "folder"
+      ]
+    },
+    "comp_duplicate": {
+      "params": [
+        "comp",
+        "name"
+      ]
+    },
+    "comp_open": {
+      "params": [
+        "comp",
+        "time"
+      ]
+    },
+    "comp_tree": {
+      "params": [
+        "comp",
+        "depth"
+      ],
+      "read_only": true
+    },
+    "comp_update": {
+      "params": [
+        "comp",
+        "name",
+        "width",
+        "height",
+        "duration",
+        "frame_rate",
+        "pixel_aspect",
+        "background",
+        "time",
+        "work_area_start",
+        "work_area_duration",
+        "motion_blur",
+        "shutter_angle",
+        "hide_shy",
+        "folder",
+        "shutter_phase",
+        "motion_blur_samples",
+        "motion_blur_adaptive_limit",
+        "preserve_nested_frame_rate",
+        "preserve_nested_resolution",
+        "draft3d",
+        "frame_blending",
+        "resolution_factor",
+        "display_start_frame",
+        "display_start_time"
+      ]
+    },
+    "dropdown_items": {
+      "params": [
+        "comp",
+        "layer",
+        "path",
+        "items"
+      ]
+    },
+    "effect_add": {
+      "params": [
+        "comp",
+        "layer",
+        "effect",
+        "name",
+        "settings",
+        "at"
+      ]
+    },
+    "effect_info": {
+      "params": [
+        "comp",
+        "layer",
+        "effect",
+        "time"
+      ],
+      "read_only": true
+    },
+    "effect_remove": {
+      "params": [
+        "comp",
+        "layer",
+        "effect"
+      ],
+      "destructive": true
+    },
+    "effect_update": {
+      "params": [
+        "comp",
+        "layer",
+        "effect",
+        "name",
+        "enabled",
+        "settings",
+        "time",
+        "at"
+      ]
+    },
+    "effects_catalog": {
+      "params": [
+        "query",
+        "category",
+        "limit"
+      ],
+      "read_only": true
+    },
+    "expression_set": {
+      "params": [
+        "comp",
+        "layer",
+        "path",
+        "expression",
+        "enabled",
+        "check_only"
+      ]
+    },
+    "expressions_replace": {
+      "params": [
+        "find",
+        "replace"
+      ]
+    },
+    "folder_create": {
+      "params": [
+        "name",
+        "folder"
+      ]
+    },
+    "font_replace": {
+      "params": [
+        "from",
+        "to",
+        "reload_missing"
+      ]
+    },
+    "footage_interpret": {
+      "params": [
+        "item",
+        "alpha",
+        "invert_alpha",
+        "premul_color",
+        "guess_alpha",
+        "frame_rate",
+        "fields",
+        "high_quality_fields",
+        "remove_pulldown",
+        "guess_pulldown",
+        "loop",
+        "pixel_aspect"
+      ]
+    },
+    "footage_replace": {
+      "params": [
+        "item",
+        "file",
+        "sequence",
+        "force_alphabetical",
+        "solid_color",
+        "name",
+        "width",
+        "height",
+        "duration",
+        "frame_rate",
+        "placeholder"
+      ],
+      "open_world": true
+    },
+    "geometry_set": {
+      "params": [
+        "comp",
+        "layer",
+        "time",
+        "bevel_style",
+        "bevel_direction",
+        "bevel_depth",
+        "hole_bevel_depth",
+        "extrusion_depth",
+        "curvature",
+        "segments"
+      ]
+    },
+    "guides_list": {
+      "params": [
+        "comp",
+        "item"
+      ],
+      "read_only": true
+    },
+    "guides_set": {
+      "params": [
+        "comp",
+        "item",
+        "add",
+        "move",
+        "remove",
+        "clear"
+      ],
+      "destructive": true
+    },
+    "import_file": {
+      "params": [
+        "path",
+        "as",
+        "sequence",
+        "folder",
+        "name",
+        "force_alphabetical",
+        "range_start",
+        "range_end"
+      ],
+      "open_world": true
+    },
+    "import_placeholder": {
+      "params": [
+        "name",
+        "width",
+        "height",
+        "frame_rate",
+        "duration",
+        "folder"
+      ]
+    },
+    "item_info": {
+      "params": [
+        "item"
+      ],
+      "read_only": true
+    },
+    "item_remove": {
+      "params": [
+        "item"
+      ],
+      "destructive": true
+    },
+    "item_update": {
+      "params": [
+        "item",
+        "name",
+        "comment",
+        "label",
+        "folder"
+      ]
+    },
+    "items_list": {
+      "params": [
+        "kind",
+        "folder",
+        "name_contains",
+        "limit"
+      ],
+      "read_only": true
+    },
+    "keyframes_ease": {
+      "params": [
+        "comp",
+        "layer",
+        "path",
+        "indices",
+        "times",
+        "preset",
+        "in_interpolation",
+        "out_interpolation",
+        "influence_in",
+        "influence_out",
+        "speed_in",
+        "speed_out",
+        "continuous",
+        "auto_bezier",
+        "roving",
+        "in_tangent",
+        "out_tangent",
+        "spatial_continuous",
+        "spatial_auto_bezier",
+        "label"
+      ]
+    },
+    "keyframes_list": {
+      "params": [
+        "comp",
+        "layer",
+        "path"
+      ],
+      "read_only": true
+    },
+    "keyframes_remove": {
+      "params": [
+        "comp",
+        "layer",
+        "path",
+        "indices",
+        "times"
+      ],
+      "destructive": true
+    },
+    "keyframes_set": {
+      "params": [
+        "comp",
+        "layer",
+        "path",
+        "keys",
+        "replace",
+        "preset",
+        "in_interpolation",
+        "out_interpolation",
+        "influence_in",
+        "influence_out",
+        "speed_in",
+        "speed_out",
+        "continuous",
+        "auto_bezier",
+        "roving",
+        "in_tangent",
+        "out_tangent",
+        "spatial_continuous",
+        "spatial_auto_bezier",
+        "label"
+      ]
+    },
+    "layer_add": {
+      "params": [
+        "comp",
+        "kind",
+        "name",
+        "item",
+        "text",
+        "vertical",
+        "color",
+        "width",
+        "height",
+        "duration",
+        "position",
+        "light_type",
+        "start_time",
+        "in_point",
+        "out_point",
+        "at"
+      ]
+    },
+    "layer_bounds": {
+      "params": [
+        "comp",
+        "layer",
+        "time",
+        "extents"
+      ],
+      "read_only": true
+    },
+    "layer_by_id": {
+      "params": [
+        "id"
+      ],
+      "read_only": true
+    },
+    "layer_copy_to_comp": {
+      "params": [
+        "comp",
+        "layer",
+        "target"
+      ]
+    },
+    "layer_duplicate": {
+      "params": [
+        "comp",
+        "layer",
+        "name"
+      ]
+    },
+    "layer_info": {
+      "params": [
+        "comp",
+        "layer"
+      ],
+      "read_only": true
+    },
+    "layer_move": {
+      "params": [
+        "comp",
+        "layer",
+        "to",
+        "before",
+        "after"
+      ]
+    },
+    "layer_place_corners": {
+      "params": [
+        "comp",
+        "layer",
+        "top_left",
+        "top_right",
+        "bottom_left",
+        "apply",
+        "time"
+      ]
+    },
+    "layer_remove": {
+      "params": [
+        "comp",
+        "layers"
+      ],
+      "destructive": true
+    },
+    "layer_source_replace": {
+      "params": [
+        "comp",
+        "layer",
+        "item",
+        "fix_expressions"
+      ]
+    },
+    "layer_split": {
+      "params": [
+        "comp",
+        "layer",
+        "time"
+      ]
+    },
+    "layer_style_remove": {
+      "params": [
+        "comp",
+        "layer",
+        "style"
+      ],
+      "destructive": true
+    },
+    "layer_style_set": {
+      "params": [
+        "comp",
+        "layer",
+        "style",
+        "enabled",
+        "settings",
+        "time"
+      ]
+    },
+    "layer_styles": {
+      "params": [
+        "comp",
+        "layer",
+        "time"
+      ],
+      "read_only": true
+    },
+    "layer_transform": {
+      "params": [
+        "comp",
+        "layer",
+        "anchor",
+        "position",
+        "scale",
+        "rotation",
+        "opacity",
+        "orientation",
+        "x_rotation",
+        "y_rotation",
+        "time"
+      ]
+    },
+    "layer_update": {
+      "params": [
+        "comp",
+        "layer",
+        "name",
+        "enabled",
+        "solo",
+        "shy",
+        "locked",
+        "in_point",
+        "out_point",
+        "start_time",
+        "stretch",
+        "parent",
+        "blending_mode",
+        "three_d",
+        "motion_blur",
+        "adjustment",
+        "guide",
+        "label",
+        "comment",
+        "quality",
+        "audio_enabled",
+        "collapse",
+        "time_remap",
+        "track_matte",
+        "track_matte_type",
+        "auto_orient",
+        "preserve_transparency",
+        "effects_active",
+        "frame_blending",
+        "parent_jump"
+      ]
+    },
+    "layers_list": {
+      "params": [
+        "comp",
+        "kind",
+        "name_contains",
+        "limit"
+      ],
+      "read_only": true
+    },
+    "layers_select": {
+      "params": [
+        "comp",
+        "layers",
+        "mode"
+      ]
+    },
+    "light_set": {
+      "params": [
+        "comp",
+        "layer",
+        "time",
+        "type",
+        "position",
+        "point_of_interest",
+        "look_at",
+        "two_node",
+        "intensity",
+        "color",
+        "cone_angle",
+        "cone_feather",
+        "falloff",
+        "falloff_start",
+        "falloff_distance",
+        "casts_shadows",
+        "shadow_darkness",
+        "shadow_diffusion"
+      ]
+    },
+    "marker_remove": {
+      "params": [
+        "comp",
+        "layer",
+        "indices",
+        "times"
+      ],
+      "destructive": true
+    },
+    "marker_set": {
+      "params": [
+        "comp",
+        "layer",
+        "time",
+        "comment",
+        "duration",
+        "label",
+        "chapter",
+        "url",
+        "frame_target",
+        "cue_point_name",
+        "protected_region",
+        "event_cue_point",
+        "parameters"
+      ]
+    },
+    "markers_list": {
+      "params": [
+        "comp",
+        "layer"
+      ],
+      "read_only": true
+    },
+    "mask_add": {
+      "params": [
+        "comp",
+        "layer",
+        "name",
+        "vertices",
+        "in_tangents",
+        "out_tangents",
+        "closed",
+        "rectangle",
+        "ellipse",
+        "mode",
+        "inverted",
+        "locked",
+        "roto_bezier",
+        "color",
+        "feather",
+        "opacity",
+        "expansion",
+        "time",
+        "feather_points",
+        "feather_falloff",
+        "motion_blur"
+      ]
+    },
+    "mask_remove": {
+      "params": [
+        "comp",
+        "layer",
+        "mask"
+      ],
+      "destructive": true
+    },
+    "mask_update": {
+      "params": [
+        "comp",
+        "layer",
+        "name",
+        "vertices",
+        "in_tangents",
+        "out_tangents",
+        "closed",
+        "rectangle",
+        "ellipse",
+        "mode",
+        "inverted",
+        "locked",
+        "roto_bezier",
+        "color",
+        "feather",
+        "opacity",
+        "expansion",
+        "time",
+        "mask",
+        "feather_points",
+        "feather_falloff",
+        "motion_blur"
+      ]
+    },
+    "masks_list": {
+      "params": [
+        "comp",
+        "layer",
+        "time"
+      ],
+      "read_only": true
+    },
+    "material_set": {
+      "params": [
+        "comp",
+        "layer",
+        "time",
+        "casts_shadows",
+        "light_transmission",
+        "accepts_shadows",
+        "accepts_lights",
+        "appears_in_reflections",
+        "ambient",
+        "diffuse",
+        "specular_intensity",
+        "specular_shininess",
+        "metal",
+        "reflection_intensity",
+        "reflection_sharpness",
+        "reflection_rolloff",
+        "transparency",
+        "transparency_rolloff",
+        "index_of_refraction"
+      ]
+    },
+    "menu_command": {
+      "params": [
+        "name",
+        "id"
+      ],
+      "destructive": true
+    },
+    "ping": {
+      "params": [],
+      "read_only": true
+    },
+    "point_convert": {
+      "params": [
+        "comp",
+        "layer",
+        "point",
+        "to",
+        "time"
+      ],
+      "read_only": true
+    },
+    "precompose": {
+      "params": [
+        "comp",
+        "layers",
+        "name",
+        "move_attributes",
+        "open"
+      ]
+    },
+    "preference_get": {
+      "params": [
+        "section",
+        "key",
+        "kind",
+        "file"
+      ],
+      "read_only": true
+    },
+    "preference_set": {
+      "params": [
+        "section",
+        "key",
+        "value",
+        "kind",
+        "file",
+        "remove",
+        "save_to_disk",
+        "reload"
+      ],
+      "destructive": true
+    },
+    "preset_apply": {
+      "params": [
+        "comp",
+        "layers",
+        "preset"
+      ],
+      "open_world": true
+    },
+    "presets_find": {
+      "params": [
+        "query",
+        "limit"
+      ],
+      "read_only": true
+    },
+    "project_cleanup": {
+      "params": [
+        "remove_unused",
+        "consolidate",
+        "reduce_to"
+      ],
+      "destructive": true
+    },
+    "project_close": {
+      "params": [
+        "discard"
+      ],
+      "destructive": true
+    },
+    "project_fonts": {
+      "params": [],
+      "read_only": true
+    },
+    "project_footage": {
+      "params": [
+        "only_missing",
+        "only_files"
+      ],
+      "read_only": true
+    },
+    "project_info": {
+      "params": [],
+      "read_only": true
+    },
+    "project_new": {
+      "params": [
+        "discard"
+      ],
+      "destructive": true
+    },
+    "project_open": {
+      "params": [
+        "path",
+        "discard"
+      ],
+      "destructive": true,
+      "open_world": true
+    },
+    "project_save": {
+      "params": [
+        "path"
+      ],
+      "open_world": true
+    },
+    "project_settings": {
+      "params": [
+        "time_display",
+        "display_start_frame",
+        "frames_count",
+        "frames_use_feet_frames",
+        "feet_frames_film",
+        "footage_timecode_start",
+        "bits_per_channel",
+        "linear_blending",
+        "working_space",
+        "working_gamma",
+        "linearize_working_space",
+        "compensate_for_scene_referred_profiles",
+        "color_management_system",
+        "ocio_configuration_file",
+        "lut_interpolation_method",
+        "expression_engine",
+        "gpu_accel",
+        "transparency_grid_thumbnails",
+        "tool",
+        "color_profiles",
+        "default_import_folder"
+      ]
+    },
+    "property_get": {
+      "params": [
+        "comp",
+        "layer",
+        "path",
+        "time"
+      ],
+      "read_only": true
+    },
+    "property_separate": {
+      "params": [
+        "comp",
+        "layer",
+        "path",
+        "separate"
+      ]
+    },
+    "property_set": {
+      "params": [
+        "comp",
+        "layer",
+        "path",
+        "value",
+        "time",
+        "expression",
+        "enabled"
+      ]
+    },
+    "property_tree": {
+      "params": [
+        "comp",
+        "layer",
+        "path",
+        "depth",
+        "values"
+      ],
+      "read_only": true
+    },
+    "proxy_set": {
+      "params": [
+        "item",
+        "file",
+        "sequence",
+        "none",
+        "use",
+        "solid_color",
+        "width",
+        "height",
+        "placeholder",
+        "frame_rate",
+        "duration"
+      ],
+      "open_world": true
+    },
+    "purge": {
+      "params": [
+        "target"
+      ],
+      "destructive": true
+    },
+    "render_add": {
+      "params": [
+        "comp",
+        "render_template",
+        "output_template",
+        "output_path",
+        "output_module",
+        "post_render_action",
+        "start",
+        "end",
+        "work_area",
+        "skip_frames",
+        "render",
+        "render_settings",
+        "output_settings"
+      ],
+      "open_world": true
+    },
+    "render_control": {
+      "params": [
+        "action",
+        "notify",
+        "show"
+      ],
+      "destructive": true
+    },
+    "render_in_ame": {
+      "params": [
+        "render_immediately"
+      ],
+      "open_world": true
+    },
+    "render_queue": {
+      "params": [
+        "settings"
+      ],
+      "read_only": true
+    },
+    "render_remove": {
+      "params": [
+        "item",
+        "all",
+        "status"
+      ],
+      "destructive": true
+    },
+    "render_start": {
+      "params": [
+        "items",
+        "wait"
+      ],
+      "open_world": true
+    },
+    "render_template_save": {
+      "params": [
+        "item",
+        "output_module",
+        "name",
+        "kind"
+      ],
+      "open_world": true
+    },
+    "render_templates": {
+      "params": [
+        "comp"
+      ],
+      "read_only": true
+    },
+    "render_update": {
+      "params": [
+        "item",
+        "render_template",
+        "output_template",
+        "output_path",
+        "output_module",
+        "post_render_action",
+        "start",
+        "end",
+        "work_area",
+        "skip_frames",
+        "render",
+        "render_settings",
+        "output_settings"
+      ],
+      "open_world": true
+    },
+    "renderer_set": {
+      "params": [
+        "comp",
+        "renderer"
+      ]
+    },
+    "script": {
+      "params": [
+        "code"
+      ],
+      "destructive": true,
+      "open_world": true
+    },
+    "script_setting_get": {
+      "params": [
+        "section",
+        "key"
+      ],
+      "read_only": true
+    },
+    "script_setting_save": {
+      "params": [
+        "section",
+        "key",
+        "value"
+      ]
+    },
+    "selection": {
+      "params": [
+        "comp"
+      ],
+      "read_only": true
+    },
+    "sequence": {
+      "params": [
+        "steps",
+        "stop_on_error"
+      ],
+      "destructive": true,
+      "open_world": true
+    },
+    "shape_add": {
+      "params": [
+        "comp",
+        "layer",
+        "kind",
+        "into",
+        "name",
+        "settings",
+        "fill",
+        "stroke",
+        "stroke_width",
+        "at"
+      ]
+    },
+    "shape_contents": {
+      "params": [
+        "comp",
+        "layer",
+        "path",
+        "depth"
+      ],
+      "read_only": true
+    },
+    "shape_remove": {
+      "params": [
+        "comp",
+        "layer",
+        "path"
+      ],
+      "destructive": true
+    },
+    "shape_update": {
+      "params": [
+        "comp",
+        "layer",
+        "path",
+        "name",
+        "enabled",
+        "settings",
+        "time",
+        "at"
+      ]
+    },
+    "swatch_read": {
+      "params": [
+        "path"
+      ],
+      "read_only": true
+    },
+    "system_call": {
+      "params": [
+        "command"
+      ],
+      "destructive": true,
+      "open_world": true
+    },
+    "system_info": {
+      "params": [
+        "environment"
+      ],
+      "read_only": true
+    },
+    "template_add_property": {
+      "params": [
+        "comp",
+        "layer",
+        "path",
+        "name"
+      ]
+    },
+    "template_export": {
+      "params": [
+        "comp",
+        "path",
+        "overwrite"
+      ],
+      "open_world": true
+    },
+    "template_fill": {
+      "params": [
+        "comp",
+        "layer",
+        "values",
+        "time"
+      ]
+    },
+    "template_import": {
+      "params": [
+        "path",
+        "folder",
+        "open"
+      ],
+      "open_world": true
+    },
+    "template_info": {
+      "params": [
+        "comp"
+      ],
+      "read_only": true
+    },
+    "template_substitute": {
+      "params": [
+        "comp",
+        "text",
+        "colors",
+        "footage"
+      ]
+    },
+    "template_update": {
+      "params": [
+        "comp",
+        "name",
+        "open_panel"
+      ]
+    },
+    "text_animator_add": {
+      "params": [
+        "comp",
+        "layer",
+        "name",
+        "properties",
+        "selector"
+      ]
+    },
+    "text_animator_remove": {
+      "params": [
+        "comp",
+        "layer",
+        "animator",
+        "property",
+        "selector"
+      ],
+      "destructive": true
+    },
+    "text_animator_update": {
+      "params": [
+        "comp",
+        "layer",
+        "animator",
+        "name",
+        "enabled",
+        "properties",
+        "selector",
+        "add_selector"
+      ]
+    },
+    "text_fonts": {
+      "params": [
+        "query",
+        "limit",
+        "postscript_name",
+        "id",
+        "family",
+        "face",
+        "missing",
+        "variable",
+        "script",
+        "glyphs_for",
+        "detail"
+      ],
+      "read_only": true
+    },
+    "text_info": {
+      "params": [
+        "comp",
+        "layer"
+      ],
+      "read_only": true
+    },
+    "text_layout": {
+      "params": [
+        "comp",
+        "layer",
+        "time",
+        "paragraph",
+        "paragraph_end",
+        "direction",
+        "leading_type",
+        "composer",
+        "every_line_composer",
+        "digit_set",
+        "auto_hyphenate",
+        "hanging_roman",
+        "start_indent",
+        "end_indent",
+        "line_orientation",
+        "box_auto_fit",
+        "box_vertical_alignment",
+        "box_first_baseline",
+        "box_first_baseline_minimum",
+        "box_inset",
+        "reset"
+      ]
+    },
+    "text_path": {
+      "params": [
+        "comp",
+        "layer",
+        "mask",
+        "reverse",
+        "perpendicular",
+        "force_alignment",
+        "first_margin",
+        "last_margin"
+      ]
+    },
+    "text_style": {
+      "params": [
+        "comp",
+        "layer",
+        "time",
+        "start",
+        "end",
+        "paragraph",
+        "paragraph_end",
+        "line",
+        "line_end",
+        "text",
+        "font",
+        "font_family",
+        "font_style",
+        "font_axes",
+        "font_size",
+        "fill_color",
+        "stroke_color",
+        "stroke_width",
+        "stroke_over_fill",
+        "apply_fill",
+        "apply_stroke",
+        "justification",
+        "tracking",
+        "leading",
+        "auto_leading",
+        "baseline_shift",
+        "faux_bold",
+        "faux_italic",
+        "all_caps",
+        "small_caps",
+        "superscript",
+        "subscript",
+        "horizontal_scale",
+        "vertical_scale",
+        "tsume",
+        "ligature",
+        "first_line_indent",
+        "left_margin",
+        "right_margin",
+        "space_before",
+        "space_after",
+        "box_size",
+        "kerning",
+        "no_break",
+        "auto_kern",
+        "caps",
+        "baseline_option",
+        "line_join",
+        "baseline_direction"
+      ]
+    },
+    "threed_info": {
+      "params": [
+        "comp",
+        "layer",
+        "time"
+      ],
+      "read_only": true
+    },
+    "time_remap": {
+      "params": [
+        "comp",
+        "layer",
+        "enabled",
+        "keys",
+        "replace"
+      ]
+    },
+    "viewer_info": {
+      "params": [],
+      "read_only": true
+    },
+    "viewer_set": {
+      "params": [
+        "view",
+        "channels",
+        "checkerboards",
+        "exposure",
+        "fast_preview",
+        "guides_locked",
+        "guides_snap",
+        "guides_visibility",
+        "rulers",
+        "zoom",
+        "maximized",
+        "activate"
+      ]
+    },
+    "watch_folder": {
+      "params": [
+        "path",
+        "stop",
+        "pause"
+      ],
+      "open_world": true
+    }
+  }
+}
