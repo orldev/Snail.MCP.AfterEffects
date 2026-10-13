@@ -1,0 +1,230 @@
+name: Release
+
+# A tag vX.Y.Z releases the server, and the tag is the only place its version is written: the project keeps a placeholder, and this
+# workflow puts the version of the tag into the assembly, the NuGet package, the registry manifest the package carries and the server
+# image. CI runs in full first; then the image to GHCR and a smoke test of it, the package through the shared server release of
+# Snail.Sdk and its push to NuGet, latest, and the GitHub Release. The documentation site is docs.yml, on the same tag.
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_NOLOGO: "true"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+
+jobs:
+  versions:
+    name: Read the version
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.read.outputs.version }}
+      prerelease: ${{ steps.read.outputs.prerelease }}
+
+    steps:
+      - name: Read the tag
+        id: read
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          pattern='^v([0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?)$'
+          if [[ ! "$TAG" =~ $pattern ]]; then
+            echo "::error::the tag $TAG is not a version: use vMAJOR.MINOR.PATCH, or vMAJOR.MINOR.PATCH-suffix for a prerelease"
+            exit 1
+          fi
+          version="${BASH_REMATCH[1]}"
+          case "$version" in *-*) prerelease=true ;; *) prerelease=false ;; esac
+          { echo "version=$version"; echo "prerelease=$prerelease"; } >> "$GITHUB_OUTPUT"
+
+  ci:
+    name: CI
+    needs: versions
+    uses: ./.github/workflows/ci.yml
+
+  image:
+    name: Publish the server image
+    needs: [versions, ci]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image: ${{ steps.tags.outputs.image }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # Only the version is pushed here; latest moves once the release has gone through.
+      - name: Name the tags
+        id: tags
+        env:
+          REPOSITORY: ghcr.io/${{ github.repository_owner }}/s3l-aftereffects-mcp
+          VERSION: ${{ needs.versions.outputs.version }}
+        run: |
+          image="$(printf '%s' "$REPOSITORY" | tr '[:upper:]' '[:lower:]')"
+          { echo "image=$image"; echo "tags=$image:$VERSION"; } >> "$GITHUB_OUTPUT"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4
+
+      - name: Log in to the registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Both platforms: the server runs beside After Effects on Windows and Linux hosts (amd64) and on Macs with Docker Desktop (arm64).
+      - name: Build and push
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
+        with:
+          context: .
+          file: docker/server/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          build-args: VERSION=${{ needs.versions.outputs.version }}
+          tags: ${{ steps.tags.outputs.tags }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.version=${{ needs.versions.outputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
+          cache-from: type=gha,scope=server
+          cache-to: type=gha,mode=max,scope=server
+
+  smoke:
+    name: Smoke-test the image
+    needs: [versions, image]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - name: Log in to the registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # An image that builds may still not start: the server can refuse its configuration or miss a file the pages embed. It is started
+      # the way compose starts it, without an After Effects, and asked whether it is up; the bridge is expected down.
+      - name: Start the server and ask whether it is up
+        env:
+          IMAGE: ${{ needs.image.outputs.image }}
+          VERSION: ${{ needs.versions.outputs.version }}
+        run: |
+          mkdir -p secrets state
+          openssl rand -hex 32 > secrets/client.token
+          docker run -d --name server -p 8080:8080 -v "$PWD/secrets:/run/secrets:ro" -v "$PWD/state:/state" \
+            -e SNAIL_MCP_AFTEREFFECTS_HTTP__TOKEN_FILE=/run/secrets/client.token \
+            -e SNAIL_MCP_AFTEREFFECTS_DATA_DIRECTORY=/state \
+            "$IMAGE:$VERSION"
+          for _ in $(seq 1 45); do
+            health="$(curl -fsS http://127.0.0.1:8080/healthz || true)"
+            case "$health" in *'"status":"ok"'*) echo "$health"; ls state/state/servers; exit 0 ;; esac
+            sleep 2
+          done
+          echo "::error::the image started but the server never answered /healthz"
+          docker logs server
+          exit 1
+
+  # The shared server release of Snail.Sdk (its docs/workflows.md): the tests, the framework-dependent tool package with the version of
+  # the tag in it and in its registry manifest, kept as the artifact packages-portable. It pushes nothing and holds no id-token.
+  nuget:
+    name: Pack for NuGet
+    needs: [versions, smoke]
+    uses: orldev/Snail.Sdk/.github/workflows/mcp-publish.yml@v1
+    with:
+      test-filter: FullyQualifiedName!~.Tests.Live.
+      project: src
+      contract-variable: SNAIL_AFTEREFFECTS_SERVER
+      contract-filter: FullyQualifiedName~StdioContract
+      version: ${{ needs.versions.outputs.version }}
+      push: true
+
+  # The push by trusted publishing is a job of this file: nuget.org gives a key only to a job of the workflow file its policy names in
+  # this repository (job_workflow_ref), this publish.yml, with the secret NUGET_USER.
+  nuget-push:
+    name: Push to NuGet
+    needs: nuget
+    if: needs.nuget.outputs.push == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: orldev/Snail.Sdk/.github/actions/nuget-push@v1
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+  latest:
+    name: Move latest
+    needs: [versions, image, nuget, nuget-push]
+    if: needs.versions.outputs.prerelease == 'false'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Log in to the registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Last, and only for a release that went all the way through: a host with no version pinned pulls latest.
+      - name: Point latest at this release
+        env:
+          IMAGE: ${{ needs.image.outputs.image }}
+          VERSION: ${{ needs.versions.outputs.version }}
+        run: docker buildx imagetools create -t "$IMAGE:latest" "$IMAGE:$VERSION"
+
+  release:
+    name: GitHub Release
+    needs: [versions, image, nuget, nuget-push]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Download the package
+        uses: actions/download-artifact@v8
+        with:
+          name: packages-portable
+          path: artifacts
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.versions.outputs.version }}
+          IMAGE: ${{ needs.image.outputs.image }}
+          PRERELEASE: ${{ needs.versions.outputs.prerelease }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          # shellcheck disable=SC2016 # the backticks are Markdown for the release page, not a command
+          notes="$(
+            printf 'Published:\n\n'
+            printf -- '- `Snail.MCP.AfterEffects %s` — [the NuGet package](https://www.nuget.org/packages/Snail.MCP.AfterEffects/%s)\n' "$VERSION" "$VERSION"
+            printf -- '- `%s:%s` — the server image, for a container beside After Effects on the host\n' "$IMAGE" "$VERSION"
+          )"
+          flags=(--generate-notes --title "v$VERSION" --notes "$notes")
+          [ "$PRERELEASE" = true ] && flags+=(--prerelease)
+          gh release create "$TAG" artifacts/*.nupkg "${flags[@]}"

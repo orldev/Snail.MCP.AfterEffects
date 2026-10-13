@@ -1,0 +1,90 @@
+name: CI
+
+# The shared server CI of Snail.Sdk — the tests, the conformance check, the tool reference the build writes, and the
+# framework-dependent publication asked over stdio — and beside it what is this server's own: the bridge After Effects
+# loads and the documentation site; the server image is image.yml. The live tests need a running After Effects and skip
+# themselves without one. The release workflow calls this one first.
+
+on:
+  push:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'push' }}
+
+env:
+  DOTNET_NOLOGO: "true"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+
+jobs:
+  ci:
+    uses: orldev/Snail.Sdk/.github/workflows/mcp-ci.yml@v1
+    with:
+      test-filter: FullyQualifiedName!~.Tests.Live.
+      project: src
+      contract-variable: SNAIL_AFTEREFFECTS_SERVER
+      contract-filter: FullyQualifiedName~StdioContract
+
+  bridge:
+    name: Parse the bridge
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Every module parses and is plain ASCII
+        run: |
+          node -e '
+            const fs = require("fs"), vm = require("vm");
+            const files = ["extension/snail_bridge.jsx", ...fs.readdirSync("extension/(snail_bridge)").map(f => "extension/(snail_bridge)/" + f)];
+            let bad = 0;
+            for (const file of files) {
+              const text = fs.readFileSync(file, "utf8");
+              if (/[^\x00-\x7F]/.test(text)) { console.error(file + ": not plain ASCII"); bad++; }
+              try { new vm.Script(text, { filename: file }); } catch (e) { console.error(file + ": " + e.message); bad++; }
+            }
+            console.log(files.length + " files, " + bad + " problems");
+            process.exit(bad ? 1 : 0);'
+
+      - name: Scripting API coverage
+        run: python3 tools/api_coverage.py --summary --min 75
+
+  # The site as the release publishes it, built strictly on every push: a broken link fails here, not on the release tag.
+  # The tool reference it shows is committed, and the shared CI checks it is the one the build writes.
+  docs:
+    name: Documentation site
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Measure the scripting API coverage
+        run: python3 tools/api_coverage.py --markdown docs/content/coverage.md
+
+      # The SnailSite target of Snail.Sdk: the theme and the MkDocs it carries, over docs/mkdocs.yml.
+      - name: Build the site
+        run: dotnet msbuild src/Snail.MCP.AfterEffects.csproj -t:SnailSite -nologo

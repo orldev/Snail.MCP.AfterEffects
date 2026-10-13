@@ -1,0 +1,50 @@
+# The MCP server in a container, After Effects on the host beside it: the host's own After Effects is the desk, and workers the host
+# starts with tools/workers/start-worker.* connect under their names and the server adopts them. docs/content/docker.md walks through it.
+#
+# STATE_DIRECTORY is the host folder After Effects' bridge reads announcements and the token from; it is mounted at the same path inside,
+# so a file path the server hands After Effects names the same file on both sides. On Windows mount C:\Users\<you>\.s3l-mcp-aftereffects
+# at /c/Users/<you>/.s3l-mcp-aftereffects and set the same for the data directory: After Effects reads /c/... as C:\...
+name: snail-mcp-aftereffects
+
+services:
+  server:
+    # The published image, or the one `docker compose build` makes from this checkout.
+    image: ghcr.io/orldev/s3l-aftereffects-mcp:${SERVER_TAG:-latest}
+    build:
+      context: .
+      dockerfile: docker/server/Dockerfile
+    container_name: snail-mcp-aftereffects
+    # One name across recreations, so the announcement a stopped container left behind is swept by the next one.
+    hostname: snail-mcp-aftereffects
+    restart: unless-stopped
+    ports:
+      # The MCP endpoint and the pages: only on the address the reverse proxy reaches, never on the public one.
+      - "${PUBLISH_ADDRESS:-127.0.0.1}:${PUBLISH_PORT:-8080}:8080"
+      # The port the bridge inside After Effects dials, on the loopback of the host only.
+      - "127.0.0.1:9876:9876"
+    environment:
+      SNAIL_MCP_AFTEREFFECTS_DATA_DIRECTORY: ${STATE_DIRECTORY:?set STATE_DIRECTORY to the host folder After Effects reads, e.g. /Users/you/.s3l-mcp-aftereffects}
+      SNAIL_MCP_AFTEREFFECTS_HTTP__TOKEN_FILE: /run/secrets/client_token
+      SNAIL_MCP_AFTEREFFECTS_HTTP__PUBLIC_URL: ${PUBLIC_URL:-http://localhost:8080}
+      # What After Effects on the host dials to reach this container's bridge port.
+      SNAIL_MCP_AFTEREFFECTS_BRIDGE__HOST: 127.0.0.1
+    volumes:
+      - ${STATE_DIRECTORY:?}:${STATE_DIRECTORY:?}
+      - keys:/home/app/.aspnet/DataProtection-Keys
+    secrets:
+      - client_token
+    deploy:
+      resources:
+        limits:
+          memory: ${MCP_MEMORY:-1g}
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.snail-aftereffects.rule: Host(`${SNAIL_HOST:-aftereffects.localhost}`)
+      traefik.http.services.snail-aftereffects.loadbalancer.server.port: "8080"
+
+secrets:
+  client_token:
+    file: ./secrets/client.token
+
+volumes:
+  keys:

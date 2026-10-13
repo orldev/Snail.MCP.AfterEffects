@@ -1,0 +1,23 @@
+name: Image
+
+# The server image through the shared mcp-image.yml of Snail.Sdk, built on every branch push and pull request so a Dockerfile or
+# .dockerignore that no longer matches the sources fails before a merge. Tags are left out: publish.yml releases the image itself, with the
+# version of the tag built in, both platforms and a smoke test before latest moves, and two workflows pushing one tag would race.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  image:
+    permissions:
+      contents: read
+      packages: write
+    uses: orldev/Snail.Sdk/.github/workflows/mcp-image.yml@v1
+    with:
+      dockerfile: docker/server/Dockerfile

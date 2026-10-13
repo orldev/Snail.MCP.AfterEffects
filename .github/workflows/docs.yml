@@ -1,0 +1,23 @@
+name: documentation
+
+# The site on GitHub Pages, on the release tag as before and by hand: the shared docs workflow of Snail.Sdk writes the tool
+# reference again with the build, then this server measures its scripting API coverage into a page, then MkDocs builds the site.
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: orldev/Snail.Sdk/.github/workflows/docs.yml@v1
+    with:
+      prepare: python3 tools/api_coverage.py --markdown docs/content/coverage.md

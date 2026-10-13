@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+    The one Snail.MCP.AfterEffects server of this Mac, over HTTP on 127.0.0.1:8080, started at login and again whenever
+    it ends. Publishing with -p:SnailMcpInstall=true writes this job with the machine's paths beside the publications in
+    ~/.s3l-mcp/Snail.MCP.AfterEffects/ and restarts it when launchd holds this very job; otherwise it prints the
+    commands that load it, which are the owner's to run.
+
+    The server is framework-dependent, so the job runs it through dotnet. After Effects stays on this machine beside it:
+    the bridge in its Startup folder reads ~/.s3l-mcp-aftereffects and dials the port this server announces there. The
+    operator's key comes from the settings file, ~/.config/s3l-mcp-aftereffects/config.json, not from this job, so that
+    a key is never read out of a plist a backup may carry.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>s3l.mcp.aftereffects</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>{{DOTNET}}</string>
+        <string>{{CURRENT}}/Snail.MCP.AfterEffects.dll</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>{{HOME}}</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>SNAIL_MCP_AFTEREFFECTS_TRANSPORT</key>
+        <string>Http</string>
+        <key>SNAIL_MCP_AFTEREFFECTS_HTTP__URL</key>
+        <string>http://127.0.0.1:8080</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>ProcessType</key>
+    <string>Background</string>
+    <key>StandardErrorPath</key>
+    <string>{{HOME}}/Library/Logs/Snail.MCP.AfterEffects.log</string>
+</dict>
+</plist>
