@@ -1,0 +1,4436 @@
+{
+ "version": "26.5x89",
+ "kinds": {
+  "app": {
+   "properties": [
+    "__proto__",
+    "activeViewer",
+    "appName",
+    "areToolTipsEnabled",
+    "availableGPUAccelTypes",
+    "buildName",
+    "buildNumber",
+    "ccUserGuid",
+    "disableRendering",
+    "disableScriptingProgressDialog",
+    "effects",
+    "exitAfterLaunchAndEval",
+    "exitCode",
+    "fonts",
+    "getAllowedAppThemes",
+    "getAppTheme",
+    "getUseReducedContrast",
+    "internalEffects",
+    "isAnalyticsEnabled",
+    "isBeta",
+    "isProfessionalVersion",
+    "isRenderEngine",
+    "isStagingEnvironment",
+    "isUISuppressed",
+    "isWatchFolder",
+    "isoLanguage",
+    "language",
+    "learnPanelContentDirPath",
+    "memoryInUse",
+    "preferences",
+    "project",
+    "reportErrorOnMissingFrame",
+    "saveProjectOnCrash",
+    "settings",
+    "version"
+   ],
+   "methods": [
+    "activate",
+    "beginSuppressDialogs",
+    "beginUndoGroup",
+    "cancelTask",
+    "cancelTimeout",
+    "dispatchCEPEvent",
+    "download",
+    "endSuppressDialogs",
+    "endUndoGroup",
+    "endWatchFolder",
+    "executeCommand",
+    "findMenuCommandId",
+    "getCCXUserJSONData",
+    "getDebugDatabase",
+    "getenv",
+    "hasDebugDatabaseValue",
+    "injectPresetAnimation",
+    "isBetaFeatureEnabled",
+    "log",
+    "newProject",
+    "newTeamProject",
+    "objectToJSON",
+    "onCEPEvent",
+    "open",
+    "openFast",
+    "openTeamProject",
+    "openTemplate",
+    "parseSwatchFile",
+    "pauseWatchFolder",
+    "purge",
+    "quit",
+    "removeDebugDatabaseEntry",
+    "restart",
+    "scheduleTask",
+    "setDebugDatabase",
+    "setExtensionPersistent",
+    "setMemoryUsageLimits",
+    "setMultiFrameRenderingConfig",
+    "setSavePreferencesOnQuit",
+    "setTimeout",
+    "themeColor",
+    "watchFolder"
+   ]
+  },
+  "project": {
+   "properties": [
+    "__proto__",
+    "activeItem",
+    "bitsPerChannel",
+    "colorManagementSystem",
+    "compensateForSceneReferredProfiles",
+    "dirty",
+    "displayStartFrame",
+    "expressionEngine",
+    "feetFramesFilmType",
+    "file",
+    "footageTimecodeDisplayStartType",
+    "framesCountType",
+    "framesUseFeetFrames",
+    "gpuAccelType",
+    "items",
+    "linearBlending",
+    "linearizeWorkingSpace",
+    "lutInterpolationMethod",
+    "numItems",
+    "ocioConfigurationFile",
+    "renderQueue",
+    "revision",
+    "rootFolder",
+    "selection",
+    "telemetryGuid",
+    "timeDisplayType",
+    "toolType",
+    "transparencyGridThumbnails",
+    "usedFonts",
+    "workingGamma",
+    "workingSpace",
+    "xmpPacket"
+   ],
+   "methods": [
+    "autoFixExpressions",
+    "close",
+    "closeTeamProject",
+    "consolidateFootage",
+    "convertTeamProjectToProject",
+    "createComp",
+    "importFile",
+    "importFileWithDialog",
+    "importPlaceholder",
+    "isAnyTeamProjectOpen",
+    "isLoggedInToTeamProject",
+    "isResolveCommandEnabled",
+    "isShareCommandEnabled",
+    "isSyncCommandEnabled",
+    "isTeamProjectEnabled",
+    "isTeamProjectOpen",
+    "item",
+    "itemByID",
+    "layerByID",
+    "listColorProfiles",
+    "listTeamProjects",
+    "newTeamProject",
+    "openTeamProject",
+    "placeAsset",
+    "reduceProject",
+    "removeUnusedFootage",
+    "replaceFont",
+    "resolveConflict",
+    "save",
+    "saveWithDialog",
+    "serializeToXML",
+    "setDefaultImportFolder",
+    "shareTeamProject",
+    "showWindow",
+    "syncTeamProject"
+   ]
+  },
+  "items": {
+   "properties": [
+    "__proto__",
+    "length"
+   ],
+   "methods": [
+    "addComp",
+    "addFolder"
+   ]
+  },
+  "CompItem": {
+   "properties": [
+    "__proto__",
+    "activeCamera",
+    "bgColor",
+    "comment",
+    "counters",
+    "displayStartFrame",
+    "displayStartTime",
+    "draft3d",
+    "dropFrame",
+    "duration",
+    "dynamicLinkGUID",
+    "footageMissing",
+    "frameBlending",
+    "frameDuration",
+    "frameRate",
+    "frameTime",
+    "genAIFootagePathsInWorkArea",
+    "guides",
+    "hasAudio",
+    "hasVideo",
+    "height",
+    "hideShyLayers",
+    "id",
+    "isMediaReplacementCompatible",
+    "label",
+    "layers",
+    "markerProperty",
+    "motionBlur",
+    "motionBlurAdaptiveSampleLimit",
+    "motionBlurSamplesPerFrame",
+    "motionGraphicsTemplateControllerCount",
+    "motionGraphicsTemplateName",
+    "name",
+    "numLayers",
+    "parentFolder",
+    "pixelAspect",
+    "preserveNestedFrameRate",
+    "preserveNestedResolution",
+    "proxySource",
+    "renderer",
+    "renderers",
+    "resolutionFactor",
+    "selected",
+    "selectedLayers",
+    "selectedProperties",
+    "shutterAngle",
+    "shutterPhase",
+    "time",
+    "typeName",
+    "useProxy",
+    "usedIn",
+    "width",
+    "workAreaDuration",
+    "workAreaStart"
+   ],
+   "methods": [
+    "addGuide",
+    "applyPreset",
+    "doContentAwareFill",
+    "duplicate",
+    "exportAsMotionGraphicsTemplate",
+    "getGuideAsObject",
+    "getMotionGraphicsTemplateControllerName",
+    "getRenderGUID",
+    "layer",
+    "openInEssentialGraphics",
+    "openInViewer",
+    "ramPreviewTest",
+    "remove",
+    "removeGuide",
+    "renderFrame",
+    "saveDraftFrameToPng",
+    "saveFrameToPng",
+    "savePreset",
+    "setGuide",
+    "setMotionGraphicsControllerName",
+    "setProxy",
+    "setProxyToNone",
+    "setProxyWithPlaceholder",
+    "setProxyWithSequence",
+    "setProxyWithSolid"
+   ]
+  },
+  "FolderItem": {
+   "properties": [
+    "__proto__",
+    "comment",
+    "dynamicLinkGUID",
+    "guides",
+    "id",
+    "items",
+    "label",
+    "name",
+    "numItems",
+    "parentFolder",
+    "selected",
+    "typeName"
+   ],
+   "methods": [
+    "addGuide",
+    "getGuideAsObject",
+    "item",
+    "remove",
+    "removeGuide",
+    "setGuide"
+   ]
+  },
+  "FootageItem": {
+   "properties": [
+    "__proto__",
+    "comment",
+    "duration",
+    "dynamicLinkGUID",
+    "file",
+    "footageMissing",
+    "frameDuration",
+    "frameRate",
+    "frameTime",
+    "guides",
+    "hasAudio",
+    "hasVideo",
+    "height",
+    "id",
+    "isMediaReplacementCompatible",
+    "label",
+    "mainSource",
+    "name",
+    "parentFolder",
+    "pixelAspect",
+    "proxySource",
+    "selected",
+    "time",
+    "typeName",
+    "useProxy",
+    "usedIn",
+    "width"
+   ],
+   "methods": [
+    "addGuide",
+    "getGuideAsObject",
+    "getRenderGUID",
+    "openInViewer",
+    "remove",
+    "removeGuide",
+    "replace",
+    "replaceWithPlaceholder",
+    "replaceWithSequence",
+    "replaceWithSolid",
+    "setGuide",
+    "setProxy",
+    "setProxyToNone",
+    "setProxyWithPlaceholder",
+    "setProxyWithSequence",
+    "setProxyWithSolid"
+   ]
+  },
+  "AVLayer": {
+   "properties": [
+    "__proto__",
+    "active",
+    "adjustmentLayer",
+    "audioActive",
+    "audioEnabled",
+    "autoOrient",
+    "blendingMode",
+    "canSetCollapseTransformation",
+    "canSetEnabled",
+    "canSetTimeRemapEnabled",
+    "collapseTransformation",
+    "comment",
+    "containingComp",
+    "effectsActive",
+    "elided",
+    "enabled",
+    "environmentLayer",
+    "frameBlending",
+    "frameBlendingType",
+    "guideLayer",
+    "guides",
+    "hasAudio",
+    "hasTrackMatte",
+    "hasVideo",
+    "height",
+    "id",
+    "inPoint",
+    "index",
+    "isEffect",
+    "isMask",
+    "isModified",
+    "isNameFromSource",
+    "isNameSet",
+    "isTrackMatte",
+    "label",
+    "lightSource",
+    "lightType",
+    "locked",
+    "matchName",
+    "motionBlur",
+    "name",
+    "nullLayer",
+    "numProperties",
+    "outPoint",
+    "parent",
+    "parentProperty",
+    "preserveTransparency",
+    "propertyDepth",
+    "propertyType",
+    "quality",
+    "samplingQuality",
+    "selected",
+    "selectedProperties",
+    "shy",
+    "solo",
+    "source",
+    "startTime",
+    "stretch",
+    "threeDLayer",
+    "threeDPerChar",
+    "time",
+    "timeRemapEnabled",
+    "trackMatteLayer",
+    "trackMatteType",
+    "width"
+   ],
+   "methods": [
+    "",
+    "==",
+    "activeAtTime",
+    "addGuide",
+    "addProperty",
+    "addToMotionGraphicsTemplate",
+    "addToMotionGraphicsTemplateAs",
+    "addVariableFontAxis",
+    "applyPreset",
+    "audioActiveAtTime",
+    "calculateTransformFromPoints",
+    "canAddProperty",
+    "canAddToMotionGraphicsTemplate",
+    "compPointToSource",
+    "copyToComp",
+    "doSceneEditDetection",
+    "duplicate",
+    "getGuideAsObject",
+    "getRenderGUID",
+    "moveAfter",
+    "moveBefore",
+    "moveTo",
+    "moveToBeginning",
+    "moveToEnd",
+    "openInViewer",
+    "property",
+    "propertyGroup",
+    "remove",
+    "removeGuide",
+    "removeTrackMatte",
+    "replaceSource",
+    "savePreset",
+    "setGuide",
+    "setParentWithJump",
+    "setTrackMatte",
+    "sourcePointToComp",
+    "sourceRectAtTime",
+    "splitLayer"
+   ]
+  },
+  "TextLayer": {
+   "properties": [
+    "__proto__",
+    "active",
+    "adjustmentLayer",
+    "audioActive",
+    "audioEnabled",
+    "autoOrient",
+    "blendingMode",
+    "canSetCollapseTransformation",
+    "canSetEnabled",
+    "canSetTimeRemapEnabled",
+    "collapseTransformation",
+    "comment",
+    "containingComp",
+    "effectsActive",
+    "elided",
+    "enabled",
+    "environmentLayer",
+    "frameBlending",
+    "frameBlendingType",
+    "guideLayer",
+    "guides",
+    "hasAudio",
+    "hasTrackMatte",
+    "hasVideo",
+    "height",
+    "id",
+    "inPoint",
+    "index",
+    "isEffect",
+    "isMask",
+    "isModified",
+    "isNameFromSource",
+    "isNameSet",
+    "isTrackMatte",
+    "label",
+    "lightSource",
+    "lightType",
+    "locked",
+    "matchName",
+    "motionBlur",
+    "name",
+    "nullLayer",
+    "numProperties",
+    "outPoint",
+    "parent",
+    "parentProperty",
+    "preserveTransparency",
+    "propertyDepth",
+    "propertyType",
+    "quality",
+    "samplingQuality",
+    "selected",
+    "selectedProperties",
+    "shy",
+    "solo",
+    "source",
+    "startTime",
+    "stretch",
+    "threeDLayer",
+    "threeDPerChar",
+    "time",
+    "timeRemapEnabled",
+    "trackMatteLayer",
+    "trackMatteType",
+    "width"
+   ],
+   "methods": [
+    "",
+    "==",
+    "activeAtTime",
+    "addGuide",
+    "addProperty",
+    "addToMotionGraphicsTemplate",
+    "addToMotionGraphicsTemplateAs",
+    "addVariableFontAxis",
+    "applyPreset",
+    "audioActiveAtTime",
+    "calculateTransformFromPoints",
+    "canAddProperty",
+    "canAddToMotionGraphicsTemplate",
+    "compPointToSource",
+    "copyToComp",
+    "doSceneEditDetection",
+    "duplicate",
+    "getGuideAsObject",
+    "getRenderGUID",
+    "moveAfter",
+    "moveBefore",
+    "moveTo",
+    "moveToBeginning",
+    "moveToEnd",
+    "openInViewer",
+    "property",
+    "propertyGroup",
+    "remove",
+    "removeGuide",
+    "removeTrackMatte",
+    "replaceSource",
+    "savePreset",
+    "setGuide",
+    "setParentWithJump",
+    "setTrackMatte",
+    "sourcePointToComp",
+    "sourceRectAtTime",
+    "splitLayer"
+   ]
+  },
+  "ShapeLayer": {
+   "properties": [
+    "__proto__",
+    "active",
+    "adjustmentLayer",
+    "audioActive",
+    "audioEnabled",
+    "autoOrient",
+    "blendingMode",
+    "canSetCollapseTransformation",
+    "canSetEnabled",
+    "canSetTimeRemapEnabled",
+    "collapseTransformation",
+    "comment",
+    "containingComp",
+    "effectsActive",
+    "elided",
+    "enabled",
+    "environmentLayer",
+    "frameBlending",
+    "frameBlendingType",
+    "guideLayer",
+    "guides",
+    "hasAudio",
+    "hasTrackMatte",
+    "hasVideo",
+    "height",
+    "id",
+    "inPoint",
+    "index",
+    "isEffect",
+    "isMask",
+    "isModified",
+    "isNameFromSource",
+    "isNameSet",
+    "isTrackMatte",
+    "label",
+    "lightSource",
+    "lightType",
+    "locked",
+    "matchName",
+    "motionBlur",
+    "name",
+    "nullLayer",
+    "numProperties",
+    "outPoint",
+    "parent",
+    "parentProperty",
+    "preserveTransparency",
+    "propertyDepth",
+    "propertyType",
+    "quality",
+    "samplingQuality",
+    "selected",
+    "selectedProperties",
+    "shy",
+    "solo",
+    "source",
+    "startTime",
+    "stretch",
+    "threeDLayer",
+    "threeDPerChar",
+    "time",
+    "timeRemapEnabled",
+    "trackMatteLayer",
+    "trackMatteType",
+    "width"
+   ],
+   "methods": [
+    "",
+    "==",
+    "activeAtTime",
+    "addGuide",
+    "addProperty",
+    "addToMotionGraphicsTemplate",
+    "addToMotionGraphicsTemplateAs",
+    "addVariableFontAxis",
+    "applyPreset",
+    "audioActiveAtTime",
+    "calculateTransformFromPoints",
+    "canAddProperty",
+    "canAddToMotionGraphicsTemplate",
+    "compPointToSource",
+    "copyToComp",
+    "doSceneEditDetection",
+    "duplicate",
+    "getGuideAsObject",
+    "getRenderGUID",
+    "moveAfter",
+    "moveBefore",
+    "moveTo",
+    "moveToBeginning",
+    "moveToEnd",
+    "openInViewer",
+    "property",
+    "propertyGroup",
+    "remove",
+    "removeGuide",
+    "removeTrackMatte",
+    "replaceSource",
+    "savePreset",
+    "setGuide",
+    "setParentWithJump",
+    "setTrackMatte",
+    "sourcePointToComp",
+    "sourceRectAtTime",
+    "splitLayer"
+   ]
+  },
+  "CameraLayer": {
+   "properties": [
+    "__proto__",
+    "active",
+    "adjustmentLayer",
+    "autoOrient",
+    "canSetEnabled",
+    "comment",
+    "containingComp",
+    "elided",
+    "enabled",
+    "environmentLayer",
+    "guides",
+    "hasVideo",
+    "id",
+    "inPoint",
+    "index",
+    "isEffect",
+    "isMask",
+    "isModified",
+    "isNameSet",
+    "label",
+    "lightSource",
+    "lightType",
+    "locked",
+    "matchName",
+    "name",
+    "nullLayer",
+    "numProperties",
+    "outPoint",
+    "parent",
+    "parentProperty",
+    "propertyDepth",
+    "propertyType",
+    "selected",
+    "selectedProperties",
+    "shy",
+    "solo",
+    "startTime",
+    "stretch",
+    "time"
+   ],
+   "methods": [
+    "",
+    "==",
+    "activeAtTime",
+    "addGuide",
+    "addProperty",
+    "addToMotionGraphicsTemplate",
+    "addToMotionGraphicsTemplateAs",
+    "addVariableFontAxis",
+    "applyPreset",
+    "canAddProperty",
+    "canAddToMotionGraphicsTemplate",
+    "copyToComp",
+    "doSceneEditDetection",
+    "duplicate",
+    "getGuideAsObject",
+    "getRenderGUID",
+    "moveAfter",
+    "moveBefore",
+    "moveTo",
+    "moveToBeginning",
+    "moveToEnd",
+    "property",
+    "propertyGroup",
+    "remove",
+    "removeGuide",
+    "savePreset",
+    "setGuide",
+    "setParentWithJump",
+    "splitLayer"
+   ]
+  },
+  "LightLayer": {
+   "properties": [
+    "__proto__",
+    "active",
+    "adjustmentLayer",
+    "autoOrient",
+    "canSetEnabled",
+    "comment",
+    "containingComp",
+    "elided",
+    "enabled",
+    "environmentLayer",
+    "guides",
+    "hasVideo",
+    "id",
+    "inPoint",
+    "index",
+    "isEffect",
+    "isMask",
+    "isModified",
+    "isNameSet",
+    "label",
+    "lightSource",
+    "lightType",
+    "locked",
+    "matchName",
+    "name",
+    "nullLayer",
+    "numProperties",
+    "outPoint",
+    "parent",
+    "parentProperty",
+    "propertyDepth",
+    "propertyType",
+    "selected",
+    "selectedProperties",
+    "shy",
+    "solo",
+    "startTime",
+    "stretch",
+    "time"
+   ],
+   "methods": [
+    "",
+    "==",
+    "activeAtTime",
+    "addGuide",
+    "addProperty",
+    "addToMotionGraphicsTemplate",
+    "addToMotionGraphicsTemplateAs",
+    "addVariableFontAxis",
+    "applyPreset",
+    "canAddProperty",
+    "canAddToMotionGraphicsTemplate",
+    "copyToComp",
+    "doSceneEditDetection",
+    "duplicate",
+    "getGuideAsObject",
+    "getRenderGUID",
+    "moveAfter",
+    "moveBefore",
+    "moveTo",
+    "moveToBeginning",
+    "moveToEnd",
+    "property",
+    "propertyGroup",
+    "remove",
+    "removeGuide",
+    "savePreset",
+    "setGuide",
+    "setParentWithJump",
+    "splitLayer"
+   ]
+  },
+  "NullLayer": {
+   "properties": [
+    "__proto__",
+    "active",
+    "adjustmentLayer",
+    "audioActive",
+    "audioEnabled",
+    "autoOrient",
+    "blendingMode",
+    "canSetCollapseTransformation",
+    "canSetEnabled",
+    "canSetTimeRemapEnabled",
+    "collapseTransformation",
+    "comment",
+    "containingComp",
+    "effectsActive",
+    "elided",
+    "enabled",
+    "environmentLayer",
+    "frameBlending",
+    "frameBlendingType",
+    "guideLayer",
+    "guides",
+    "hasAudio",
+    "hasTrackMatte",
+    "hasVideo",
+    "height",
+    "id",
+    "inPoint",
+    "index",
+    "isEffect",
+    "isMask",
+    "isModified",
+    "isNameFromSource",
+    "isNameSet",
+    "isTrackMatte",
+    "label",
+    "lightSource",
+    "lightType",
+    "locked",
+    "matchName",
+    "motionBlur",
+    "name",
+    "nullLayer",
+    "numProperties",
+    "outPoint",
+    "parent",
+    "parentProperty",
+    "preserveTransparency",
+    "propertyDepth",
+    "propertyType",
+    "quality",
+    "samplingQuality",
+    "selected",
+    "selectedProperties",
+    "shy",
+    "solo",
+    "source",
+    "startTime",
+    "stretch",
+    "threeDLayer",
+    "threeDPerChar",
+    "time",
+    "timeRemapEnabled",
+    "trackMatteLayer",
+    "trackMatteType",
+    "width"
+   ],
+   "methods": [
+    "",
+    "==",
+    "activeAtTime",
+    "addGuide",
+    "addProperty",
+    "addToMotionGraphicsTemplate",
+    "addToMotionGraphicsTemplateAs",
+    "addVariableFontAxis",
+    "applyPreset",
+    "audioActiveAtTime",
+    "calculateTransformFromPoints",
+    "canAddProperty",
+    "canAddToMotionGraphicsTemplate",
+    "compPointToSource",
+    "copyToComp",
+    "doSceneEditDetection",
+    "duplicate",
+    "getGuideAsObject",
+    "getRenderGUID",
+    "moveAfter",
+    "moveBefore",
+    "moveTo",
+    "moveToBeginning",
+    "moveToEnd",
+    "openInViewer",
+    "property",
+    "propertyGroup",
+    "remove",
+    "removeGuide",
+    "removeTrackMatte",
+    "replaceSource",
+    "savePreset",
+    "setGuide",
+    "setParentWithJump",
+    "setTrackMatte",
+    "sourcePointToComp",
+    "sourceRectAtTime",
+    "splitLayer"
+   ]
+  },
+  "LayerCollection": {
+   "properties": [
+    "__proto__",
+    "length"
+   ],
+   "methods": [
+    "add",
+    "addBoxText",
+    "addCamera",
+    "addLight",
+    "addNull",
+    "addParametricMesh",
+    "addShape",
+    "addSolid",
+    "addText",
+    "addVerticalBoxText",
+    "addVerticalText",
+    "byName",
+    "precompose"
+   ]
+  },
+  "Property": {
+   "properties": [
+    "LayerInputStageType",
+    "__proto__",
+    "active",
+    "alternateSource",
+    "canSetAlternateSource",
+    "canSetEnabled",
+    "canSetExpression",
+    "canVaryOverTime",
+    "dimensionsSeparated",
+    "elided",
+    "enabled",
+    "essentialPropertySource",
+    "expression",
+    "expressionEnabled",
+    "expressionError",
+    "hasMax",
+    "hasMin",
+    "inputLayerAndStage",
+    "isDropdownEffect",
+    "isEffect",
+    "isMask",
+    "isModified",
+    "isSeparationFollower",
+    "isSeparationLeader",
+    "isSpatial",
+    "isTimeVarying",
+    "layerInputStage",
+    "matchName",
+    "maxValue",
+    "mediaReplacementScaleMode",
+    "minValue",
+    "name",
+    "numKeys",
+    "parentProperty",
+    "propertyDepth",
+    "propertyIndex",
+    "propertyParameters",
+    "propertyType",
+    "propertyValueType",
+    "selected",
+    "selectedKeys",
+    "separationDimension",
+    "separationLeader",
+    "unitsText",
+    "value",
+    "valueText"
+   ],
+   "methods": [
+    "==",
+    "addKey",
+    "addToMotionGraphicsTemplate",
+    "addToMotionGraphicsTemplateAs",
+    "canAddToMotionGraphicsTemplate",
+    "duplicate",
+    "getInputStageCycleSafeLimit",
+    "getSeparationFollower",
+    "isInterpolationTypeValid",
+    "keyInInterpolationType",
+    "keyInSpatialTangent",
+    "keyInTemporalEase",
+    "keyLabel",
+    "keyOutInterpolationType",
+    "keyOutSpatialTangent",
+    "keyOutTemporalEase",
+    "keyRoving",
+    "keySelected",
+    "keySpatialAutoBezier",
+    "keySpatialContinuous",
+    "keyTemporalAutoBezier",
+    "keyTemporalContinuous",
+    "keyTime",
+    "keyValue",
+    "moveTo",
+    "nearestKeyIndex",
+    "propertyGroup",
+    "remove",
+    "removeKey",
+    "setAlternateSource",
+    "setInputLayerAndStage",
+    "setInterpolationTypeAtKey",
+    "setLabelAtKey",
+    "setLayerInputStage",
+    "setPropertyParameters",
+    "setRovingAtKey",
+    "setSelectedAtKey",
+    "setSpatialAutoBezierAtKey",
+    "setSpatialContinuousAtKey",
+    "setSpatialTangentsAtKey",
+    "setTemporalAutoBezierAtKey",
+    "setTemporalContinuousAtKey",
+    "setTemporalEaseAtKey",
+    "setValue",
+    "setValueAtKey",
+    "setValueAtTime",
+    "setValuesAtTimes",
+    "valueAtTime"
+   ]
+  },
+  "PropertyGroup": {
+   "properties": [
+    "__proto__",
+    "active",
+    "canSetEnabled",
+    "elided",
+    "enabled",
+    "isEffect",
+    "isMask",
+    "isModified",
+    "matchName",
+    "name",
+    "numProperties",
+    "parentProperty",
+    "propertyDepth",
+    "propertyIndex",
+    "propertyType",
+    "selected"
+   ],
+   "methods": [
+    "",
+    "==",
+    "addProperty",
+    "addToMotionGraphicsTemplate",
+    "addToMotionGraphicsTemplateAs",
+    "addVariableFontAxis",
+    "canAddProperty",
+    "canAddToMotionGraphicsTemplate",
+    "duplicate",
+    "moveTo",
+    "property",
+    "propertyGroup",
+    "remove"
+   ]
+  },
+  "MaskPropertyGroup": {
+   "properties": [
+    "__proto__",
+    "active",
+    "canSetEnabled",
+    "color",
+    "elided",
+    "enabled",
+    "inverted",
+    "isEffect",
+    "isMask",
+    "isModified",
+    "locked",
+    "maskFeatherFalloff",
+    "maskMode",
+    "maskMotionBlur",
+    "matchName",
+    "name",
+    "numProperties",
+    "parentProperty",
+    "propertyDepth",
+    "propertyIndex",
+    "propertyType",
+    "rotoBezier",
+    "selected"
+   ],
+   "methods": [
+    "",
+    "==",
+    "addProperty",
+    "addToMotionGraphicsTemplate",
+    "addToMotionGraphicsTemplateAs",
+    "addVariableFontAxis",
+    "canAddProperty",
+    "canAddToMotionGraphicsTemplate",
+    "duplicate",
+    "moveTo",
+    "property",
+    "propertyGroup",
+    "remove"
+   ]
+  },
+  "Effect": {
+   "properties": [
+    "__proto__",
+    "active",
+    "canSetEnabled",
+    "elided",
+    "enabled",
+    "isEffect",
+    "isMask",
+    "isModified",
+    "matchName",
+    "name",
+    "numProperties",
+    "parentProperty",
+    "propertyDepth",
+    "propertyIndex",
+    "propertyType",
+    "selected"
+   ],
+   "methods": [
+    "",
+    "==",
+    "addProperty",
+    "addToMotionGraphicsTemplate",
+    "addToMotionGraphicsTemplateAs",
+    "addVariableFontAxis",
+    "canAddProperty",
+    "canAddToMotionGraphicsTemplate",
+    "duplicate",
+    "moveTo",
+    "property",
+    "propertyGroup",
+    "remove"
+   ]
+  },
+  "TextAnimator": {
+   "properties": [
+    "__proto__",
+    "active",
+    "canSetEnabled",
+    "elided",
+    "enabled",
+    "isEffect",
+    "isMask",
+    "isModified",
+    "matchName",
+    "name",
+    "numProperties",
+    "parentProperty",
+    "propertyDepth",
+    "propertyIndex",
+    "propertyType",
+    "selected"
+   ],
+   "methods": [
+    "",
+    "==",
+    "addProperty",
+    "addToMotionGraphicsTemplate",
+    "addToMotionGraphicsTemplateAs",
+    "addVariableFontAxis",
+    "canAddProperty",
+    "canAddToMotionGraphicsTemplate",
+    "duplicate",
+    "moveTo",
+    "property",
+    "propertyGroup",
+    "remove"
+   ]
+  },
+  "TextSelector": {
+   "properties": [
+    "__proto__",
+    "active",
+    "canSetEnabled",
+    "elided",
+    "enabled",
+    "isEffect",
+    "isMask",
+    "isModified",
+    "matchName",
+    "name",
+    "numProperties",
+    "parentProperty",
+    "propertyDepth",
+    "propertyIndex",
+    "propertyType",
+    "selected"
+   ],
+   "methods": [
+    "",
+    "==",
+    "addProperty",
+    "addToMotionGraphicsTemplate",
+    "addToMotionGraphicsTemplateAs",
+    "addVariableFontAxis",
+    "canAddProperty",
+    "canAddToMotionGraphicsTemplate",
+    "duplicate",
+    "moveTo",
+    "property",
+    "propertyGroup",
+    "remove"
+   ]
+  },
+  "VectorGroup": {
+   "properties": [
+    "__proto__",
+    "active",
+    "canSetEnabled",
+    "elided",
+    "enabled",
+    "isEffect",
+    "isMask",
+    "isModified",
+    "matchName",
+    "name",
+    "numProperties",
+    "parentProperty",
+    "propertyDepth",
+    "propertyIndex",
+    "propertyType",
+    "selected"
+   ],
+   "methods": [
+    "",
+    "==",
+    "addProperty",
+    "addToMotionGraphicsTemplate",
+    "addToMotionGraphicsTemplateAs",
+    "addVariableFontAxis",
+    "canAddProperty",
+    "canAddToMotionGraphicsTemplate",
+    "duplicate",
+    "moveTo",
+    "property",
+    "propertyGroup",
+    "remove"
+   ]
+  },
+  "VectorRect": {
+   "properties": [
+    "__proto__",
+    "active",
+    "canSetEnabled",
+    "elided",
+    "enabled",
+    "isEffect",
+    "isMask",
+    "isModified",
+    "matchName",
+    "name",
+    "numProperties",
+    "parentProperty",
+    "propertyDepth",
+    "propertyIndex",
+    "propertyType",
+    "selected"
+   ],
+   "methods": [
+    "",
+    "==",
+    "addProperty",
+    "addToMotionGraphicsTemplate",
+    "addToMotionGraphicsTemplateAs",
+    "addVariableFontAxis",
+    "canAddProperty",
+    "canAddToMotionGraphicsTemplate",
+    "duplicate",
+    "moveTo",
+    "property",
+    "propertyGroup",
+    "remove"
+   ]
+  },
+  "TextDocument": {
+   "properties": [
+    "__proto__",
+    "allCaps",
+    "applyFill",
+    "applyStroke",
+    "autoHyphenate",
+    "autoKernType",
+    "autoLeading",
+    "baselineDirection",
+    "baselineLocs",
+    "baselineShift",
+    "boxAutoFitPolicy",
+    "boxFirstBaselineAlignment",
+    "boxFirstBaselineAlignmentMinimum",
+    "boxInsetSpacing",
+    "boxOverflow",
+    "boxText",
+    "boxTextPos",
+    "boxTextSize",
+    "boxVerticalAlignment",
+    "composedLineCount",
+    "composerEngine",
+    "digitSet",
+    "direction",
+    "endIndent",
+    "everyLineComposer",
+    "fauxBold",
+    "fauxItalic",
+    "fillColor",
+    "firstLineIndent",
+    "font",
+    "fontBaselineOption",
+    "fontCapsOption",
+    "fontFamily",
+    "fontLocation",
+    "fontObject",
+    "fontSize",
+    "fontStyle",
+    "hangingRoman",
+    "horizontalScale",
+    "justification",
+    "kerning",
+    "leading",
+    "leadingType",
+    "ligature",
+    "lineJoinType",
+    "lineOrientation",
+    "noBreak",
+    "paragraphCount",
+    "pointText",
+    "smallCaps",
+    "spaceAfter",
+    "spaceBefore",
+    "startIndent",
+    "strokeColor",
+    "strokeOverFill",
+    "strokeWidth",
+    "subscript",
+    "superscript",
+    "text",
+    "tracking",
+    "tsume",
+    "verticalScale"
+   ],
+   "methods": [
+    "characterRange",
+    "composedLineCharacterIndexesAt",
+    "composedLineRange",
+    "paragraphCharacterIndexesAt",
+    "paragraphRange",
+    "resetCharStyle",
+    "resetParagraphStyle"
+   ]
+  },
+  "RenderQueue": {
+   "properties": [
+    "__proto__",
+    "canQueueInAME",
+    "firstError",
+    "items",
+    "lastError",
+    "numItems",
+    "queueNotify",
+    "rendering"
+   ],
+   "methods": [
+    "item",
+    "pauseRendering",
+    "queueInAME",
+    "render",
+    "renderAsync",
+    "showWindow",
+    "stopRendering"
+   ]
+  },
+  "RQItem": {
+   "properties": [
+    "__proto__",
+    "comment",
+    "comp",
+    "elapsedSeconds",
+    "logType",
+    "numOutputModules",
+    "outputModules",
+    "queueItemNotify",
+    "render",
+    "skipFrames",
+    "startTime",
+    "status",
+    "templates",
+    "timeSpanDuration",
+    "timeSpanStart"
+   ],
+   "methods": [
+    "applyTemplate",
+    "duplicate",
+    "getSetting",
+    "getSettings",
+    "onComplete",
+    "onReorder",
+    "onStatus",
+    "outputModule",
+    "remove",
+    "saveAsTemplate",
+    "setSetting",
+    "setSettings"
+   ]
+  },
+  "OutputModule": {
+   "properties": [
+    "__proto__",
+    "file",
+    "includeSourceXMP",
+    "name",
+    "postRenderAction",
+    "templates"
+   ],
+   "methods": [
+    "applyTemplate",
+    "getSetting",
+    "getSettings",
+    "normalizeSettings",
+    "remove",
+    "saveAsTemplate",
+    "setSetting",
+    "setSettings"
+   ]
+  },
+  "Viewer": {
+   "properties": [
+    "__proto__",
+    "active",
+    "activeViewIndex",
+    "maximized",
+    "type",
+    "views"
+   ],
+   "methods": [
+    "setActive"
+   ]
+  },
+  "Preferences": {
+   "properties": [
+    "__proto__"
+   ],
+   "methods": [
+    "deletePref",
+    "getPrefAsBool",
+    "getPrefAsFloat",
+    "getPrefAsLong",
+    "getPrefAsString",
+    "havePref",
+    "reload",
+    "savePrefAsBool",
+    "savePrefAsFloat",
+    "savePrefAsLong",
+    "savePrefAsString",
+    "saveToDisk"
+   ]
+  },
+  "Settings": {
+   "properties": [
+    "__proto__"
+   ],
+   "methods": [
+    "getSetting",
+    "haveSetting",
+    "saveSetting"
+   ]
+  },
+  "MarkerValue": {
+   "properties": [
+    "__proto__",
+    "chapter",
+    "comment",
+    "cuePointName",
+    "duration",
+    "eventCuePoint",
+    "frameTarget",
+    "label",
+    "protectedRegion",
+    "url"
+   ],
+   "methods": [
+    "getParameters",
+    "setParameters"
+   ]
+  },
+  "Shape": {
+   "properties": [
+    "__proto__",
+    "closed",
+    "featherInterps",
+    "featherRadii",
+    "featherRelCornerAngles",
+    "featherRelSegLocs",
+    "featherSegLocs",
+    "featherTensions",
+    "featherTypes",
+    "inTangents",
+    "outTangents",
+    "vertices"
+   ],
+   "methods": []
+  },
+  "KeyframeEase": {
+   "properties": [
+    "__proto__",
+    "influence",
+    "speed"
+   ],
+   "methods": []
+  },
+  "ImportOptions": {
+   "properties": [
+    "__proto__",
+    "file",
+    "forceAlphabetical",
+    "importAs",
+    "rangeEnd",
+    "rangeStart",
+    "sequence"
+   ],
+   "methods": [
+    "canImportAs",
+    "isFileNameNumbered"
+   ]
+  },
+  "Fonts": {
+   "properties": [
+    "__proto__",
+    "allFonts",
+    "favoriteFontFamilyList",
+    "fontServerRevision",
+    "fontsDuplicateByPostScriptName",
+    "fontsWithDefaultDesignAxes",
+    "freezeSyncSubstitutedFonts",
+    "missingOrSubstitutedFonts",
+    "mruFontFamilyList",
+    "substitutedFontReplacementMatchPolicy"
+   ],
+   "methods": [
+    "getCTScriptForString",
+    "getDefaultFontForCTScript",
+    "getFontByID",
+    "getFontsByFamilyNameAndStyleName",
+    "getFontsByPostScriptName",
+    "pollForAndPushNonSystemFontFoldersChanges",
+    "setDefaultFontForCTScript"
+   ]
+  },
+  "System": {
+   "properties": [
+    "__proto__",
+    "machineName",
+    "osName",
+    "osVersion",
+    "userName"
+   ],
+   "methods": [
+    "callSystem",
+    "convert_unix_path"
+   ]
+  },
+  "Font": {
+   "properties": [
+    "__proto__",
+    "designAxesData",
+    "designVector",
+    "designVectorIsDefault",
+    "familyName",
+    "familyPrefix",
+    "fontID",
+    "fullName",
+    "hasDesignAxes",
+    "isFromAdobeFonts",
+    "isSubstitute",
+    "location",
+    "nativeFamilyName",
+    "nativeFullName",
+    "nativeStyleName",
+    "otherFontsWithSameDict",
+    "postScriptName",
+    "styleName",
+    "technology",
+    "type",
+    "version",
+    "writingScripts"
+   ],
+   "methods": [
+    "hasGlyphsFor",
+    "hasSameDict",
+    "postScriptNameForDesignVector"
+   ]
+  },
+  "CharacterRange": {
+   "properties": [
+    "__proto__",
+    "allCaps",
+    "applyFill",
+    "applyStroke",
+    "autoHyphenate",
+    "autoKernType",
+    "autoLeading",
+    "baselineDirection",
+    "baselineShift",
+    "characterEnd",
+    "characterStart",
+    "composerEngine",
+    "digitSet",
+    "direction",
+    "endIndent",
+    "everyLineComposer",
+    "fauxBold",
+    "fauxItalic",
+    "fillColor",
+    "firstLineIndent",
+    "font",
+    "fontBaselineOption",
+    "fontCapsOption",
+    "fontFamily",
+    "fontLocation",
+    "fontObject",
+    "fontSize",
+    "fontStyle",
+    "hangingRoman",
+    "horizontalScale",
+    "isRangeValid",
+    "justification",
+    "kerning",
+    "leading",
+    "leadingType",
+    "ligature",
+    "lineJoinType",
+    "noBreak",
+    "smallCaps",
+    "spaceAfter",
+    "spaceBefore",
+    "startIndent",
+    "strokeColor",
+    "strokeOverFill",
+    "strokeWidth",
+    "subscript",
+    "superscript",
+    "text",
+    "tracking",
+    "tsume",
+    "verticalScale"
+   ],
+   "methods": [
+    "pasteFrom",
+    "resetCharStyle",
+    "resetParagraphStyle"
+   ]
+  },
+  "ParagraphRange": {
+   "properties": [
+    "__proto__",
+    "characterEnd",
+    "characterStart",
+    "isRangeValid"
+   ],
+   "methods": [
+    "characterRange"
+   ]
+  },
+  "View": {
+   "properties": [
+    "__proto__",
+    "active",
+    "options"
+   ],
+   "methods": [
+    "onSync",
+    "saveBlittedImageToPng",
+    "setActive",
+    "startPlayback",
+    "stopPlayback"
+   ]
+  },
+  "ViewOptions": {
+   "properties": [
+    "__proto__",
+    "channels",
+    "checkerboards",
+    "exposure",
+    "fastPreview",
+    "guidesLocked",
+    "guidesSnap",
+    "guidesVisibility",
+    "rulers",
+    "zoom"
+   ],
+   "methods": []
+  }
+ },
+ "enums": {
+  "AlphaMode": [
+   "IGNORE",
+   "PREMULTIPLIED",
+   "STRAIGHT"
+  ],
+  "AutoOrientType": [
+   "ALONG_PATH",
+   "CAMERA_OR_POINT_OF_INTEREST",
+   "CHARACTERS_TOWARD_CAMERA",
+   "NO_AUTO_ORIENT"
+  ],
+  "BlendingMode": [
+   "ADD",
+   "ALPHA_ADD",
+   "CLASSIC_COLOR_BURN",
+   "CLASSIC_COLOR_DODGE",
+   "CLASSIC_DIFFERENCE",
+   "COLOR",
+   "COLOR_BURN",
+   "COLOR_DODGE",
+   "DANCING_DISSOLVE",
+   "DARKEN",
+   "DARKER_COLOR",
+   "DIFFERENCE",
+   "DISSOLVE",
+   "DIVIDE",
+   "EXCLUSION",
+   "HARD_LIGHT",
+   "HARD_MIX",
+   "HUE",
+   "LIGHTEN",
+   "LIGHTER_COLOR",
+   "LINEAR_BURN",
+   "LINEAR_DODGE",
+   "LINEAR_LIGHT",
+   "LUMINESCENT_PREMUL",
+   "LUMINOSITY",
+   "MULTIPLY",
+   "NORMAL",
+   "OVERLAY",
+   "PIN_LIGHT",
+   "SATURATION",
+   "SCREEN",
+   "SILHOUETE_ALPHA",
+   "SILHOUETTE_LUMA",
+   "SOFT_LIGHT",
+   "STENCIL_ALPHA",
+   "STENCIL_LUMA",
+   "SUBTRACT",
+   "VIVID_LIGHT"
+  ],
+  "CloseOptions": [
+   "DO_NOT_SAVE_CHANGES",
+   "PROMPT_TO_SAVE_CHANGES",
+   "SAVE_CHANGES"
+  ],
+  "FieldSeparationType": [
+   "LOWER_FIELD_FIRST",
+   "OFF",
+   "UPPER_FIELD_FIRST"
+  ],
+  "FrameBlendingType": [
+   "FRAME_MIX",
+   "NO_FRAME_BLEND",
+   "PIXEL_MOTION"
+  ],
+  "ImportAsType": [
+   "COMP",
+   "COMP_CROPPED_LAYERS",
+   "FOOTAGE",
+   "PROJECT"
+  ],
+  "KeyframeInterpolationType": [
+   "BEZIER",
+   "HOLD",
+   "LINEAR"
+  ],
+  "Language": [
+   "CHINESE",
+   "ENGLISH",
+   "FRENCH",
+   "GERMAN",
+   "ITALIAN",
+   "JAPANESE",
+   "KOREAN",
+   "PORTUGUESE",
+   "RUSSIAN",
+   "SPANISH"
+  ],
+  "LayerQuality": [
+   "BEST",
+   "DRAFT",
+   "WIREFRAME"
+  ],
+  "LayerSamplingQuality": [
+   "BICUBIC",
+   "BILINEAR"
+  ],
+  "LightType": [
+   "AMBIENT",
+   "ENVIRONMENT",
+   "PARALLEL",
+   "POINT",
+   "SPOT"
+  ],
+  "LogType": [
+   "ERRORS_AND_PER_FRAME_INFO",
+   "ERRORS_AND_SETTINGS",
+   "ERRORS_ONLY"
+  ],
+  "MaskFeatherFalloff": [
+   "FFO_LINEAR",
+   "FFO_SMOOTH"
+  ],
+  "MaskMode": [
+   "ADD",
+   "DARKEN",
+   "DIFFERENCE",
+   "INTERSECT",
+   "LIGHTEN",
+   "NONE",
+   "SUBTRACT"
+  ],
+  "MaskMotionBlur": [
+   "OFF",
+   "ON",
+   "SAME_AS_LAYER"
+  ],
+  "ParagraphJustification": [
+   "CENTER_JUSTIFY",
+   "FULL_JUSTIFY_LASTLINE_CENTER",
+   "FULL_JUSTIFY_LASTLINE_FULL",
+   "FULL_JUSTIFY_LASTLINE_LEFT",
+   "FULL_JUSTIFY_LASTLINE_RIGHT",
+   "LEFT_JUSTIFY",
+   "MULTIPLE_JUSTIFICATIONS",
+   "RIGHT_JUSTIFY"
+  ],
+  "PostRenderAction": [
+   "IMPORT",
+   "IMPORT_AND_REPLACE_USAGE",
+   "NONE",
+   "SET_PROXY"
+  ],
+  "PREFType": [
+   "PREF_Type_MACHINE_INDEPENDENT",
+   "PREF_Type_MACHINE_INDEPENDENT_COMPOSITION",
+   "PREF_Type_MACHINE_INDEPENDENT_OUTPUT",
+   "PREF_Type_MACHINE_INDEPENDENT_RENDER",
+   "PREF_Type_MACHINE_SPECIFIC",
+   "PREF_Type_MACHINE_SPECIFIC_EFFECTS",
+   "PREF_Type_MACHINE_SPECIFIC_EXPRESSION_SNIPPETS",
+   "PREF_Type_MACHINE_SPECIFIC_PAINT",
+   "PREF_Type_MACHINE_SPECIFIC_SCRIPT_SNIPPETS",
+   "PREF_Type_MACHINE_SPECIFIC_TEXT"
+  ],
+  "PropertyType": [
+   "INDEXED_GROUP",
+   "NAMED_GROUP",
+   "PROPERTY"
+  ],
+  "PropertyValueType": [
+   "COLOR",
+   "CUSTOM_VALUE",
+   "LAYER_INDEX",
+   "MARKER",
+   "MASK_INDEX",
+   "NO_VALUE",
+   "OneD",
+   "SHAPE",
+   "TEXT_DOCUMENT",
+   "ThreeD",
+   "ThreeD_SPATIAL",
+   "TwoD",
+   "TwoD_SPATIAL"
+  ],
+  "PulldownMethod": [
+   "ADVANCE_24P",
+   "PULLDOWN_3_2"
+  ],
+  "PulldownPhase": [
+   "OFF",
+   "SSWWW",
+   "SWWWS",
+   "SWWWW_24P_ADVANCE",
+   "WSSWW",
+   "WSWWW_24P_ADVANCE",
+   "WWSSW",
+   "WWSWW_24P_ADVANCE",
+   "WWWSS",
+   "WWWSW_24P_ADVANCE",
+   "WWWWS_24P_ADVANCE"
+  ],
+  "PurgeTarget": [
+   "ALL_CACHES",
+   "ALL_MEMORY_CACHES",
+   "IMAGE_CACHES",
+   "SNAPSHOT_CACHES",
+   "UNDO_CACHES"
+  ],
+  "ResolveType": [
+   "ACCEPT_THEIRS",
+   "ACCEPT_THEIRS_AND_COPY",
+   "ACCEPT_YOURS"
+  ],
+  "RQItemStatus": [
+   "DONE",
+   "ERR_STOPPED",
+   "NEEDS_OUTPUT",
+   "QUEUED",
+   "RENDERING",
+   "UNQUEUED",
+   "USER_STOPPED",
+   "WILL_CONTINUE"
+  ],
+  "TimeDisplayType": [
+   "FRAMES",
+   "TIMECODE"
+  ],
+  "ToolType": [
+   "Tool_Arrow",
+   "Tool_CameraDollyCamera",
+   "Tool_CameraDollyToCursor",
+   "Tool_CameraDollyTowardsCursor",
+   "Tool_CameraMaya",
+   "Tool_CameraOrbit",
+   "Tool_CameraOrbitCamera",
+   "Tool_CameraOrbitCursor",
+   "Tool_CameraOrbitScene",
+   "Tool_CameraPanCamera",
+   "Tool_CameraPanCursor",
+   "Tool_CameraTrackXY",
+   "Tool_CameraTrackZ",
+   "Tool_CloneStamp",
+   "Tool_Eraser",
+   "Tool_Feather",
+   "Tool_Hairbrush",
+   "Tool_Hand",
+   "Tool_Magnify",
+   "Tool_Oval",
+   "Tool_Paintbrush",
+   "Tool_PanBehind",
+   "Tool_Pen",
+   "Tool_PenConvert",
+   "Tool_PenMinus",
+   "Tool_PenPlus",
+   "Tool_Pin",
+   "Tool_PinAdvanced",
+   "Tool_PinBend",
+   "Tool_PinDepth",
+   "Tool_PinStarch",
+   "Tool_Polygon",
+   "Tool_Quickselect",
+   "Tool_Rect",
+   "Tool_Rotate",
+   "Tool_RoundedRect",
+   "Tool_Star",
+   "Tool_TextH",
+   "Tool_TextV"
+  ],
+  "TrackMatteType": [
+   "ALPHA",
+   "ALPHA_INVERTED",
+   "LUMA",
+   "LUMA_INVERTED",
+   "NO_TRACK_MATTE"
+  ],
+  "ViewerType": [
+   "VIEWER_COMPOSITION",
+   "VIEWER_FOOTAGE",
+   "VIEWER_LAYER"
+  ],
+  "FootageTimecodeDisplayStartType": [
+   "FTCS_START_0",
+   "FTCS_USE_SOURCE_MEDIA"
+  ],
+  "FeetFramesFilmType": [
+   "MM16",
+   "MM35"
+  ],
+  "FramesCountType": [
+   "FC_START_0",
+   "FC_START_1",
+   "FC_TIMECODE_CONVERSION"
+  ],
+  "GetSettingsFormat": [
+   "NUMBER",
+   "NUMBER_SETTABLE",
+   "SPEC",
+   "STRING",
+   "STRING_SETTABLE"
+  ],
+  "ChannelType": [
+   "CHANNEL_ALPHA",
+   "CHANNEL_ALPHA_BOUNDARY",
+   "CHANNEL_ALPHA_OVERLAY",
+   "CHANNEL_BLUE",
+   "CHANNEL_BLUE_COLORIZE",
+   "CHANNEL_GREEN",
+   "CHANNEL_GREEN_COLORIZE",
+   "CHANNEL_RED",
+   "CHANNEL_RED_COLORIZE",
+   "CHANNEL_RGB",
+   "CHANNEL_RGB_STRAIGHT"
+  ],
+  "CTFontTechnology": [
+   "CT_ANYTECHNOLOGY",
+   "CT_ATC_FONT",
+   "CT_BITMAP_FONT",
+   "CT_CID_FONT",
+   "CT_SVG_FONT",
+   "CT_TRUETYPE_FONT",
+   "CT_TYPE1_FONT",
+   "CT_TYPE3_FONT"
+  ],
+  "CTFontType": [
+   "CT_ATC_FONTTYPE",
+   "CT_BITMAP_FONTTYPE",
+   "CT_CID_FONTTYPE",
+   "CT_DONTKNOW_FONTTYPE",
+   "CT_OPENTYPE_CFF_FONTTYPE",
+   "CT_OPENTYPE_CID_FONTTYPE",
+   "CT_OPENTYPE_TT_FONTTYPE",
+   "CT_SVG_FONTTYPE",
+   "CT_TRUETYPE_FONTTYPE",
+   "CT_TYPE1_FONTTYPE",
+   "CT_TYPE3_FONTTYPE"
+  ],
+  "CTScript": [
+   "CT_ADLAM_SCRIPT",
+   "CT_ARABIC_SCRIPT",
+   "CT_ARMENIAN_SCRIPT",
+   "CT_BALINESE_SCRIPT",
+   "CT_BAMUM_SCRIPT",
+   "CT_BASSAVAH_SCRIPT",
+   "CT_BENGALI_SCRIPT",
+   "CT_BRAHMI_SCRIPT",
+   "CT_BRAVANESE_SCRIPT",
+   "CT_BUGINESE_SCRIPT",
+   "CT_BURMESE_SCRIPT",
+   "CT_CARIAN_SCRIPT",
+   "CT_CHEROKEE_SCRIPT",
+   "CT_COPTIC_SCRIPT",
+   "CT_CYPRIOT_SCRIPT",
+   "CT_CYRILLIC_SCRIPT",
+   "CT_DEVANAGARI_SCRIPT",
+   "CT_DONTKNOW_SCRIPT",
+   "CT_EASTEUROPEANROMAN_SCRIPT",
+   "CT_EGYPTIAN_SCRIPT",
+   "CT_EMOJI_SCRIPT",
+   "CT_EXTENDEDARABIC_SCRIPT",
+   "CT_GEEZ_SCRIPT",
+   "CT_GEORGIAN_SCRIPT",
+   "CT_GLAGOLITIC_SCRIPT",
+   "CT_GOTHIC_SCRIPT",
+   "CT_GREEK_SCRIPT",
+   "CT_GUJARATI_SCRIPT",
+   "CT_GURMUKHI_SCRIPT",
+   "CT_HEBREW_SCRIPT",
+   "CT_IMPERIALARAMAIC_SCRIPT",
+   "CT_JAPANESE_SCRIPT",
+   "CT_JAVANESE_SCRIPT",
+   "CT_KANNADA_SCRIPT",
+   "CT_KAYAHLI_SCRIPT",
+   "CT_KHAROSHTHI_SCRIPT",
+   "CT_KHMER_SCRIPT",
+   "CT_KLINGON_SCRIPT",
+   "CT_KOREAN_SCRIPT",
+   "CT_LAOTIAN_SCRIPT",
+   "CT_LAO_SCRIPT",
+   "CT_LISU_SCRIPT",
+   "CT_LONTARA_SCRIPT",
+   "CT_LYCIAN_SCRIPT",
+   "CT_LYDIAN_SCRIPT",
+   "CT_MALAYALAM_SCRIPT",
+   "CT_MANDAIC_SCRIPT",
+   "CT_MEROITICCURSIVE_SCRIPT",
+   "CT_MONGOLIAN_SCRIPT",
+   "CT_NEWA_SCRIPT",
+   "CT_NEWTAILU_SCRIPT",
+   "CT_NKO_SCRIPT",
+   "CT_OGHAM_SCRIPT",
+   "CT_OLCHIKI_SCRIPT",
+   "CT_OLDHANGUL_SCRIPT",
+   "CT_OLDITALIC_SCRIPT",
+   "CT_ORIYA_SCRIPT",
+   "CT_ORKHON_SCRIPT",
+   "CT_OSAGE_SCRIPT",
+   "CT_PAHLAVI_SCRIPT",
+   "CT_PARTHIAN_SCRIPT",
+   "CT_PERSIAN_SCRIPT",
+   "CT_PHOENICIAN_SCRIPT",
+   "CT_RIGHTLEFT_SCRIPT",
+   "CT_ROHINGYA_SCRIPT",
+   "CT_ROMAN_SCRIPT",
+   "CT_RUNIC_SCRIPT",
+   "CT_SCRIPT",
+   "CT_SHAVIAN_SCRIPT",
+   "CT_SIMPLIFIEDCHINESE_SCRIPT",
+   "CT_SINHALESE_SCRIPT",
+   "CT_SORASOMPENG_SCRIPT",
+   "CT_SUMAKKCUNEIFORM_SCRIPT",
+   "CT_SUNDANESE_SCRIPT",
+   "CT_SYRIAC_SCRIPT",
+   "CT_TAILE_SCRIPT",
+   "CT_TAITHAM_SCRIPT",
+   "CT_TAIVIET_SCRIPT",
+   "CT_TAMIL_SCRIPT",
+   "CT_TELUGU_SCRIPT",
+   "CT_THAANA_SCRIPT",
+   "CT_THAI_SCRIPT",
+   "CT_TIBETAN_SCRIPT",
+   "CT_TIFINAGH_SCRIPT",
+   "CT_TRADITIONALCHINESE_SCRIPT",
+   "CT_UCAS_SCRIPT",
+   "CT_UGARITIC_SCRIPT",
+   "CT_VAI_SCRIPT",
+   "CT_VIETNAMESE_SCRIPT"
+  ],
+  "BoxAutoFitPolicy": [
+   "HEIGHT_BASELINE",
+   "HEIGHT_CURSOR",
+   "HEIGHT_PRECISE_BOUNDS",
+   "NONE"
+  ],
+  "BoxVerticalAlignment": [
+   "BOTTOM",
+   "CENTER",
+   "JUSTIFY",
+   "TOP"
+  ],
+  "ComposerEngine": [
+   "LATIN_CJK_ENGINE",
+   "UNIVERSAL_TYPE_ENGINE"
+  ],
+  "DigitSet": [
+   "ARABIC_DIGITS",
+   "ARABIC_DIGITS_RTL",
+   "DEFAULT_DIGITS",
+   "FARSI_DIGITS",
+   "HINDI_DIGITS"
+  ],
+  "FontBaselineOption": [
+   "FONT_FAUXED_SUBSCRIPT",
+   "FONT_FAUXED_SUPERSCRIPT",
+   "FONT_NORMAL_BASELINE"
+  ],
+  "FontCapsOption": [
+   "FONT_ALL_CAPS",
+   "FONT_ALL_SMALL_CAPS",
+   "FONT_NORMAL_CAPS",
+   "FONT_SMALL_CAPS"
+  ],
+  "LineJoinType": [
+   "LINE_JOIN_BEVEL",
+   "LINE_JOIN_MITER",
+   "LINE_JOIN_ROUND"
+  ],
+  "LineOrientation": [
+   "HORIZONTAL",
+   "VERTICAL_LEFT_TO_RIGHT",
+   "VERTICAL_RIGHT_TO_LEFT"
+  ],
+  "AutoKernType": [
+   "METRIC_KERN",
+   "NO_AUTO_KERN",
+   "OPTICAL_KERN"
+  ],
+  "GpuAccelType": [
+   "CUDA",
+   "DIRECTX",
+   "METAL",
+   "OPENCL",
+   "SOFTWARE",
+   "VULKAN"
+  ],
+  "BoxFirstBaselineAlignment": [
+   "ASCENT",
+   "CAP_HEIGHT",
+   "EM_BOX",
+   "LEADING",
+   "LEGACY_METRIC",
+   "MINIMUM_VALUE_ASIAN",
+   "MINIMUM_VALUE_ROMAN",
+   "TYPO_ASCENT",
+   "X_HEIGHT"
+  ],
+  "ParagraphDirection": [
+   "DIRECTION_LEFT_TO_RIGHT",
+   "DIRECTION_RIGHT_TO_LEFT"
+  ],
+  "LeadingType": [
+   "JAPANESE_LEADING_TYPE",
+   "ROMAN_LEADING_TYPE"
+  ],
+  "BaselineDirection": [
+   "BASELINE_VERTICAL_CROSS_STREAM",
+   "BASELINE_VERTICAL_ROTATED",
+   "BASELINE_WITH_STREAM"
+  ]
+ },
+ "effects": [
+  [
+   "CINEMA 4D Effect",
+   "Cineware",
+   "Cinema 4D"
+  ],
+  [
+   "Cryptomatte",
+   "Cryptomatte",
+   "Канал 3D"
+  ],
+  [
+   "CC Ball Action",
+   "CC Ball Action",
+   "Имитация"
+  ],
+  [
+   "CC Bend It",
+   "CC Bend It",
+   "Искажение"
+  ],
+  [
+   "CC Bender",
+   "CC Bender",
+   "Искажение"
+  ],
+  [
+   "CC Blobbylize",
+   "CC Blobbylize",
+   "Искажение"
+  ],
+  [
+   "CS BlockLoad",
+   "CC Block Load",
+   "Стилизация"
+  ],
+  [
+   "CC Bubbles",
+   "CC Bubbles",
+   "Имитация"
+  ],
+  [
+   "CC Burn Film",
+   "CC Burn Film",
+   "Стилизация"
+  ],
+  [
+   "CS Color Neutralizer",
+   "CC Color Neutralizer",
+   "Коррекция цвета"
+  ],
+  [
+   "CC Color Offset",
+   "CC Color Offset",
+   "Коррекция цвета"
+  ],
+  [
+   "CS Composite",
+   "CC Composite",
+   "Канал"
+  ],
+  [
+   "CC Composite",
+   "CC Composite (obsolete)",
+   "_Obsolete"
+  ],
+  [
+   "CS CrossBlur",
+   "CC Cross Blur",
+   "Разм. и резкость"
+  ],
+  [
+   "CC Cylinder",
+   "CC Cylinder",
+   "Перспектива"
+  ],
+  [
+   "CC Drizzle",
+   "CC Drizzle",
+   "Имитация"
+  ],
+  [
+   "CC Environment",
+   "CC Environment",
+   "Перспектива"
+  ],
+  [
+   "CC Flo Motion",
+   "CC Flo Motion",
+   "Искажение"
+  ],
+  [
+   "CC Force Motion Blur",
+   "CC Force Motion Blur",
+   "Время"
+  ],
+  [
+   "CC Glass",
+   "CC Glass",
+   "Стилизация"
+  ],
+  [
+   "CC Glass Wipe",
+   "CC Glass Wipe",
+   "Переход"
+  ],
+  [
+   "CC Glue Gun",
+   "CC Glue Gun",
+   "Создать"
+  ],
+  [
+   "CC Grid Wipe",
+   "CC Grid Wipe",
+   "Переход"
+  ],
+  [
+   "CC Griddler",
+   "CC Griddler",
+   "Искажение"
+  ],
+  [
+   "CC Hair",
+   "CC Hair",
+   "Имитация"
+  ],
+  [
+   "CS HexTile",
+   "CC HexTile",
+   "Стилизация"
+  ],
+  [
+   "CC Image Wipe",
+   "CC Image Wipe",
+   "Переход"
+  ],
+  [
+   "CC Jaws",
+   "CC Jaws",
+   "Переход"
+  ],
+  [
+   "CC Kaleida",
+   "CC Kaleida",
+   "Стилизация"
+  ],
+  [
+   "CS Kernel",
+   "CC Kernel",
+   "Коррекция цвета"
+  ],
+  [
+   "CC Lens",
+   "CC Lens",
+   "Искажение"
+  ],
+  [
+   "CC Light Burst 2.5",
+   "CC Light Burst 2.5",
+   "Создать"
+  ],
+  [
+   "CC Light Rays",
+   "CC Light Rays",
+   "Создать"
+  ],
+  [
+   "CC Light Sweep",
+   "CC Light Sweep",
+   "Создать"
+  ],
+  [
+   "CC Light Wipe",
+   "CC Light Wipe",
+   "Переход"
+  ],
+  [
+   "CS LineSweep",
+   "CC Line Sweep",
+   "Переход"
+  ],
+  [
+   "CC Mr. Mercury",
+   "CC Mr. Mercury",
+   "Имитация"
+  ],
+  [
+   "CC Mr. Smoothie",
+   "CC Mr. Smoothie",
+   "Стилизация"
+  ],
+  [
+   "CC Overbrights",
+   "CC Overbrights",
+   "Программа"
+  ],
+  [
+   "CC PS Classic",
+   "CC PS Classic (obsolete)",
+   "_Obsolete"
+  ],
+  [
+   "CC PS LE Classic",
+   "CC PS LE Classic (obsolete)",
+   "_Obsolete"
+  ],
+  [
+   "CC Page Turn",
+   "CC Page Turn",
+   "Искажение"
+  ],
+  [
+   "CC Particle Systems II",
+   "CC Particle Systems II",
+   "Имитация"
+  ],
+  [
+   "CC Particle World",
+   "CC Particle World",
+   "Имитация"
+  ],
+  [
+   "CC Pixel Polly",
+   "CC Pixel Polly",
+   "Имитация"
+  ],
+  [
+   "CC Plastic",
+   "CC Plastic",
+   "Стилизация"
+  ],
+  [
+   "CC Power Pin",
+   "CC Power Pin",
+   "Искажение"
+  ],
+  [
+   "CC Radial Blur",
+   "CC Radial Blur",
+   "Разм. и резкость"
+  ],
+  [
+   "CC Radial Fast Blur",
+   "CC Radial Fast Blur",
+   "Разм. и резкость"
+  ],
+  [
+   "CC Radial ScaleWipe",
+   "CC Radial ScaleWipe",
+   "Переход"
+  ],
+  [
+   "CC Rain",
+   "CC Rain (obsolete)",
+   "_Obsolete"
+  ],
+  [
+   "CSRainfall",
+   "CC Rainfall",
+   "Имитация"
+  ],
+  [
+   "CC RepeTile",
+   "CC RepeTile",
+   "Стилизация"
+  ],
+  [
+   "CC Ripple Pulse",
+   "CC Ripple Pulse",
+   "Искажение"
+  ],
+  [
+   "CC Scale Wipe",
+   "CC Scale Wipe",
+   "Переход"
+  ],
+  [
+   "CC Scatterize",
+   "CC Scatterize",
+   "Имитация"
+  ],
+  [
+   "CC Simple Wire Removal",
+   "CC Simple Wire Removal",
+   "Прозр. налож."
+  ],
+  [
+   "CC Slant",
+   "CC Slant",
+   "Искажение"
+  ],
+  [
+   "CC Smear",
+   "CC Smear",
+   "Искажение"
+  ],
+  [
+   "CC Snow",
+   "CC Snow (obsolete)",
+   "_Obsolete"
+  ],
+  [
+   "CSSnowfall",
+   "CC Snowfall",
+   "Имитация"
+  ],
+  [
+   "CC Sphere",
+   "CC Sphere",
+   "Перспектива"
+  ],
+  [
+   "CC Split",
+   "CC Split",
+   "Искажение"
+  ],
+  [
+   "CC Split 2",
+   "CC Split 2",
+   "Искажение"
+  ],
+  [
+   "CC Spotlight",
+   "CC Spotlight",
+   "Перспектива"
+  ],
+  [
+   "CC Star Burst",
+   "CC Star Burst",
+   "Имитация"
+  ],
+  [
+   "CS Threads",
+   "CC Threads",
+   "Создать"
+  ],
+  [
+   "CC Threshold",
+   "CC Threshold",
+   "Стилизация"
+  ],
+  [
+   "CC Threshold RGB",
+   "CC Threshold RGB",
+   "Стилизация"
+  ],
+  [
+   "CC Tiler",
+   "CC Tiler",
+   "Искажение"
+  ],
+  [
+   "CC Time Blend",
+   "CC Time Blend",
+   "_Obsolete"
+  ],
+  [
+   "CC Time Blend FX",
+   "CC Time Blend FX",
+   "_Obsolete"
+  ],
+  [
+   "CC Toner",
+   "CC Toner",
+   "Коррекция цвета"
+  ],
+  [
+   "CC Twister",
+   "CC Twister",
+   "Переход"
+  ],
+  [
+   "CC Vector Blur",
+   "CC Vector Blur",
+   "Разм. и резкость"
+  ],
+  [
+   "CS Vignette",
+   "CC Vignette",
+   "Стилизация"
+  ],
+  [
+   "CC WarpoMatic",
+   "CC WarpoMatic",
+   "Переход"
+  ],
+  [
+   "CC Wide Time",
+   "CC Wide Time",
+   "Время"
+  ],
+  [
+   "EXtractoR",
+   "EXtractoR",
+   "Канал 3D"
+  ],
+  [
+   "IDentifier",
+   "IDentifier",
+   "Канал 3D"
+  ],
+  [
+   "Keylight 906",
+   "Keylight (1.2)",
+   "Прозр. налож."
+  ],
+  [
+   "ISL MochaShapeImporter",
+   "mocha shape",
+   "Устаревший"
+  ],
+  [
+   "mochaAECC",
+   "Mocha AE",
+   "Boris FX Mocha"
+  ],
+  [
+   "ADBE 3D Tracker",
+   "Функция 3D Camera Tracker",
+   "Перспектива"
+  ],
+  [
+   "ADBE 3D Glasses2",
+   "3D-очки",
+   "Перспектива"
+  ],
+  [
+   "ADBE 3D Glasses",
+   "3D-очки (устаревшая версия)",
+   "_Obsolete"
+  ],
+  [
+   "VISINF Grain Implant",
+   "Добавить зернистость",
+   "Шум и зерно"
+  ],
+  [
+   "ADBE Alpha Levels2",
+   "Уровни альфа-канала",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Alpha Levels3",
+   "Уровни альфа-канала",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Apply Color LUT2",
+   "Применить цвета LUT",
+   "Программа"
+  ],
+  [
+   "ADBE Apply Color LUT",
+   "Применить цвета LUT",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Arithmetic",
+   "Арифметический",
+   "Канал"
+  ],
+  [
+   "ADBE AudSpect",
+   "Спектр аудио",
+   "Создать"
+  ],
+  [
+   "ADBE AudWave",
+   "Форма звуковой волны",
+   "Создать"
+  ],
+  [
+   "ADBE Aud BT",
+   "ВЧ и НЧ",
+   "Аудио"
+  ],
+  [
+   "ADBE Aud Compressor",
+   "Компрессор",
+   "Аудио"
+  ],
+  [
+   "ADBE Aud Delay",
+   "Задержка",
+   "Аудио"
+  ],
+  [
+   "ADBE Aud Distortion",
+   "Искажение",
+   "Аудио"
+  ],
+  [
+   "ADBE Aud_Flange",
+   "Фланджер и хор",
+   "Аудио"
+  ],
+  [
+   "ADBE Aud Gate",
+   "Шумоподавитель",
+   "Аудио"
+  ],
+  [
+   "ADBE Aud HiLo",
+   "Фильтр НЧ и ВЧ",
+   "Аудио"
+  ],
+  [
+   "ADBE Aud Stereo Mixer",
+   "Стереомикшер",
+   "Аудио"
+  ],
+  [
+   "ADBE Aud Modulator",
+   "Модулятор",
+   "Аудио"
+  ],
+  [
+   "ADBE Param EQ",
+   "Параметр. коррекция",
+   "Аудио"
+  ],
+  [
+   "ADBE Aud Reverb",
+   "Реверберация",
+   "Аудио"
+  ],
+  [
+   "ADBE Aud Reverse",
+   "Назад",
+   "Аудио"
+  ],
+  [
+   "ADBE Aud Tone",
+   "Тон",
+   "Аудио"
+  ],
+  [
+   "ADBE AutoColor",
+   "Автоцвет",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE AutoContrast",
+   "Автоконтраст",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE AutoLevels",
+   "Автоуровни",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE AUX CHANNEL EXTRACT",
+   "Извлечение канала 3D",
+   "Канал 3D"
+  ],
+  [
+   "ADBE Brightness & Contrast",
+   "Яркость и контрастность",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Basic 3D",
+   "Базовый 3D",
+   "Устаревший"
+  ],
+  [
+   "ADBE Basic Text2",
+   "Основной текст",
+   "Устаревший"
+  ],
+  [
+   "ADBE Laser",
+   "Луч",
+   "Создать"
+  ],
+  [
+   "ADBE Bevel Alpha",
+   "Скос альфа-канала",
+   "Перспектива"
+  ],
+  [
+   "ADBE Bevel Edges",
+   "Скошенные края",
+   "Перспектива"
+  ],
+  [
+   "ADBE BEZMESH",
+   "Деформация по Безье",
+   "Искажение"
+  ],
+  [
+   "ADBE Bilateral",
+   "Двухстороннее размытие",
+   "Разм. и резкость"
+  ],
+  [
+   "ADBE Blend",
+   "Смешение",
+   "Канал"
+  ],
+  [
+   "ADBE Block Dissolve",
+   "Растворение блоков",
+   "Переход"
+  ],
+  [
+   "ADBE Box Blur2",
+   "Быстрое размытие по рамке",
+   "Разм. и резкость"
+  ],
+  [
+   "ADBE Box Blur",
+   "Размытие по рамке",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Broadcast Colors",
+   "Цвета телетрансляции",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Brush Strokes",
+   "Мазки кисти",
+   "Стилизация"
+  ],
+  [
+   "ADBE Bulge",
+   "Выпуклость",
+   "Искажение"
+  ],
+  [
+   "ADBE Calculations",
+   "Вычисления",
+   "Канал"
+  ],
+  [
+   "ADBE WRPMESH",
+   "Деформация",
+   "Искажение"
+  ],
+  [
+   "APC CardDanceCam",
+   "Танец карт",
+   "Имитация"
+  ],
+  [
+   "APC CardWipeCam",
+   "Вытеснение карт",
+   "Переход"
+  ],
+  [
+   "ADBE Cartoonify",
+   "Мультипликация",
+   "Стилизация"
+  ],
+  [
+   "APC Caustics",
+   "Каустические кривые",
+   "Имитация"
+  ],
+  [
+   "ADBE Cell Pattern",
+   "Мозаич.текстура",
+   "Создать"
+  ],
+  [
+   "ADBE Change To Color",
+   "Заменить на цвет",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Change Color",
+   "Изменить цвет",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Channel Combiner",
+   "Инстр.комбинир.каналов",
+   "Канал"
+  ],
+  [
+   "ADBE Channel Blur",
+   "Размытие каналов",
+   "Разм. и резкость"
+  ],
+  [
+   "ADBE CHANNEL MIXER",
+   "Микширование каналов",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Checkerboard",
+   "Шахматная доска",
+   "Создать"
+  ],
+  [
+   "ADBE Cineon Converter",
+   "Конвертер Cineon",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Cineon Converter2",
+   "Конвертер Cineon",
+   "Программа"
+  ],
+  [
+   "ADBE Circle",
+   "Круг",
+   "Создать"
+  ],
+  [
+   "ADBE Color Link",
+   "Привязка цвета",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Color Balance",
+   "Цветовой баланс",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Color Balance 2",
+   "Цветовой баланс",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Color Difference Key",
+   "Ключ разности цвета",
+   "Прозр. налож."
+  ],
+  [
+   "ADBE Color Emboss",
+   "Цветовое тиснение",
+   "Стилизация"
+  ],
+  [
+   "ADBE Color Balance (HLS)",
+   "Цветовой баланс (HLS)",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Color Key",
+   "Цветовой ключ",
+   "Устаревший"
+  ],
+  [
+   "ADBE Color Range",
+   "Цветовой диапазон",
+   "Прозр. налож."
+  ],
+  [
+   "APC Colorama",
+   "Colorama",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE 4ColorGradient",
+   "4-цветный градиент",
+   "Создать"
+  ],
+  [
+   "ADBE Compound Arithmetic",
+   "Сложный арифметический",
+   "Канал"
+  ],
+  [
+   "ADBE Compound Blur",
+   "Сложное размытие",
+   "Разм. и резкость"
+  ],
+  [
+   "ADBE Corner Pin",
+   "Прив. по углам",
+   "Искажение"
+  ],
+  [
+   "ADBE Curl Noise",
+   "Вихревой шум",
+   "Шум и зерно"
+  ],
+  [
+   "ADBE CurvesCustom",
+   "Кривые",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE CameraShakeDeblur",
+   "Дрож. камеры: восст. резк.",
+   "Разм. и резкость"
+  ],
+  [
+   "ADBE Deflicker",
+   "Стабилизатор цвета",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE DEPTH FIELD",
+   "Глубина поля",
+   "Канал 3D"
+  ],
+  [
+   "ADBE DEPTH MATTE",
+   "Подложка глубины",
+   "Канал 3D"
+  ],
+  [
+   "ADBE Difference Matte2",
+   "Подложка разницы",
+   "Прозр. налож."
+  ],
+  [
+   "ADBE Difference",
+   "Разница во времени",
+   "Время"
+  ],
+  [
+   "ADBE Motion Blur",
+   "Направл. разм.",
+   "Разм. и резкость"
+  ],
+  [
+   "ADBE Displacement Map",
+   "Карта смещения",
+   "Искажение"
+  ],
+  [
+   "ADBE Drop Shadow",
+   "Тень",
+   "Перспектива"
+  ],
+  [
+   "ADBE Dust & Scratches",
+   "Пыль и царапины",
+   "Шум и зерно"
+  ],
+  [
+   "ADBE Echo",
+   "Эхо",
+   "Время"
+  ],
+  [
+   "ADBE ELLIPSE",
+   "Эллипс",
+   "Создать"
+  ],
+  [
+   "ADBE Emboss",
+   "Тиснение",
+   "Стилизация"
+  ],
+  [
+   "ADBE Equalize",
+   "Выровнять",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Compander",
+   "Расширитель HDR",
+   "Программа"
+  ],
+  [
+   "ADBE Exposure2",
+   "Экспозиция",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Exposure",
+   "Экспозиция",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Checkbox Control",
+   "Эл.упр.«Флажок»",
+   "Эл.упр.выражения"
+  ],
+  [
+   "ADBE Slider Control",
+   "Эл.упр.«Ползунок»",
+   "Эл.упр.выражения"
+  ],
+  [
+   "ADBE Layer Control",
+   "Эл.упр.слоями",
+   "Эл.упр.выражения"
+  ],
+  [
+   "ADBE Color Control",
+   "Эл.упр.цветом",
+   "Эл.упр.выражения"
+  ],
+  [
+   "ADBE Point3D Control",
+   "Эле.упр.3D-точки",
+   "Эл.упр.выражения"
+  ],
+  [
+   "ADBE Point Control",
+   "Эл.упр.точкой",
+   "Эл.упр.выражения"
+  ],
+  [
+   "ADBE Angle Control",
+   "Эл.упр.углами",
+   "Эл.упр.выражения"
+  ],
+  [
+   "ADBE Dropdown Control",
+   "Управ. раскр. меню",
+   "Эл.упр.выражения"
+  ],
+  [
+   "ADBE Extract",
+   "Извлечь",
+   "Прозр. налож."
+  ],
+  [
+   "ADBE Eyedropper Fill",
+   "Заливка пипеткой",
+   "Создать"
+  ],
+  [
+   "ADBE Fast Blur",
+   "Б.разм.(уст.вер.)",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Reduce Interlace Flicker",
+   "Умен.мерц.в чересстр.разв.",
+   "Устаревший"
+  ],
+  [
+   "ADBE Fill",
+   "Заливка",
+   "Создать"
+  ],
+  [
+   "ADBE Find Edges",
+   "Выделение краев",
+   "Стилизация"
+  ],
+  [
+   "APC Foam",
+   "Пена",
+   "Имитация"
+  ],
+  [
+   "ADBE FOG_3D",
+   "3D туман",
+   "Канал 3D"
+  ],
+  [
+   "ADBE Fractal",
+   "Фрактал",
+   "Создать"
+  ],
+  [
+   "ADBE Fractal Noise",
+   "Фрактальный шум",
+   "Шум и зерно"
+  ],
+  [
+   "ADBE Gaussian Blur",
+   "Разм.по Гауссу (преж. вер.)",
+   "Устаревший"
+  ],
+  [
+   "ADBE Gaussian Blur 2",
+   "Размытие по Гауссу",
+   "Разм. и резкость"
+  ],
+  [
+   "ADBE Glo2",
+   "Свечение",
+   "Стилизация"
+  ],
+  [
+   "ADBE Gamma/Pedestal/Gain2",
+   "Гамма/Основа/Усиление",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Gradient Wipe",
+   "Градиентное вытеснение",
+   "Переход"
+  ],
+  [
+   "ADBE Grid",
+   "Сетка",
+   "Создать"
+  ],
+  [
+   "ADBE GROW BOUNDS",
+   "Нарастить границы",
+   "Программа"
+  ],
+  [
+   "ADBE HUE SATURATION",
+   "Цв. тон/Насыщенность",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE ID MATTE",
+   "Подложка идентификатора",
+   "Канал 3D"
+  ],
+  [
+   "ADBE ATG Extract",
+   "Внутренний/внешний ключ",
+   "Прозр. налож."
+  ],
+  [
+   "ADBE Invert",
+   "Обратить",
+   "Канал"
+  ],
+  [
+   "ADBE IRIS_WIPE",
+   "Вытеснение диафрагмы",
+   "Переход"
+  ],
+  [
+   "ADBE KeyCleaner",
+   "Key Cleaner",
+   "Прозр. налож."
+  ],
+  [
+   "ADBE Leave Color",
+   "Оставить цвет",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Lens Flare",
+   "Блики",
+   "Создать"
+  ],
+  [
+   "ADBE Easy Levels",
+   "Уровни",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Easy Levels2",
+   "Уровни",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Pro Levels2",
+   "Уровни (отд.эл.управ.)",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Pro Levels",
+   "Уровни (отд.эл.управ.)",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Lightning",
+   "Молния",
+   "Устаревший"
+  ],
+  [
+   "ADBE Lightning 2",
+   "Расширенное освещение",
+   "Создать"
+  ],
+  [
+   "ADBE Linear Color Key2",
+   "Линейный цветовой ключ",
+   "Прозр. налож."
+  ],
+  [
+   "ADBE Linear Wipe",
+   "Линейное стирание",
+   "Переход"
+  ],
+  [
+   "ADBE LIQUIFY",
+   "Пластика",
+   "Искажение"
+  ],
+  [
+   "ADBE Luma Key",
+   "Ключ яркости",
+   "Устаревший"
+  ],
+  [
+   "ADBE Lumetri",
+   "Цвет Lumetri",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Magnify",
+   "Увеличение",
+   "Искажение"
+  ],
+  [
+   "VISINF Grain Duplication",
+   "Соответствие зернистости",
+   "Шум и зерно"
+  ],
+  [
+   "ADBE Matte Choker",
+   "Подавление подложки",
+   "Подложка"
+  ],
+  [
+   "ADBE Median",
+   "Median (предыдущая версия)",
+   "Шум и зерно"
+  ],
+  [
+   "ADBE Minimax",
+   "Минимакс",
+   "Канал"
+  ],
+  [
+   "ADBE Mirror",
+   "Зеркало",
+   "Искажение"
+  ],
+  [
+   "ADBE Mosaic",
+   "Мозаика",
+   "Стилизация"
+  ],
+  [
+   "ADBE MESH WARP",
+   "Деформация сетки",
+   "Искажение"
+  ],
+  [
+   "ADBE Noise2",
+   "Шум",
+   "Шум и зерно"
+  ],
+  [
+   "ADBE Noise",
+   "Шум",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Noise Alpha2",
+   "Альфа-канал шума",
+   "Шум и зерно"
+  ],
+  [
+   "ADBE Noise Alpha",
+   "Альфа-канал шума",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Noise HLS",
+   "Шум HLS",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Noise HLS2",
+   "Шум HLS",
+   "Шум и зерно"
+  ],
+  [
+   "ADBE Noise HLS Auto2",
+   "Автошум HLS",
+   "Шум и зерно"
+  ],
+  [
+   "ADBE Noise HLS Auto",
+   "Автошум HLS",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Numbers2",
+   "Нумерация",
+   "Текст"
+  ],
+  [
+   "ADBE OCIO CDL Transform",
+   "Преобразование CDL OCIO",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE OCIO Color Space Transform",
+   "Преобраз.цв.пр-ва OCIO",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE OCIO Display Transform",
+   "Преобраз.отображ.OCIO",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE OCIO FILE Transform",
+   "Преобразование файла OCIO",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE OCIO Look Transform",
+   "Преобразование вида OCIO",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Offset",
+   "Смещение",
+   "Искажение"
+  ],
+  [
+   "ADBE Optics Compensation",
+   "Компенсация оптики",
+   "Искажение"
+  ],
+  [
+   "ADBE PhotoFilterPS",
+   "Фотофильтр",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE SelectiveColor",
+   "Выб. коррекция цвета",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Vibrance",
+   "Красочность",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Brightness & Contrast 2",
+   "Яркость и контрастность",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE PS Median",
+   "Медиана",
+   "Шум и зерно"
+  ],
+  [
+   "ADBE Black&White",
+   "Черное и белое",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE PSL Bevel Emboss",
+   "Фаска и тиснение Photoshop",
+   "_Obsolete"
+  ],
+  [
+   "ADBE PSL Drop Shadow",
+   "Отбрасывание тени Photoshop",
+   "_Obsolete"
+  ],
+  [
+   "ADBE PSL Inner Glow",
+   "Внутреннее свечение Photoshop",
+   "_Obsolete"
+  ],
+  [
+   "ADBE PSL Inner Shadow",
+   "Внутренняя тень Photoshop",
+   "_Obsolete"
+  ],
+  [
+   "ADBE PSL Outer Glow",
+   "Внешнее свечение Photoshop",
+   "_Obsolete"
+  ],
+  [
+   "ADBE PSL Solid Fill",
+   "Сплошная заливка Photoshop",
+   "_Obsolete"
+  ],
+  [
+   "ADBE PS Arbitrary Map",
+   "Произвольная карта PS",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Paint Bucket",
+   "Заливка",
+   "Создать"
+  ],
+  [
+   "ADBE Playgnd",
+   "Площадка для частиц",
+   "Имитация"
+  ],
+  [
+   "ADBE Path Text",
+   "Текст по контуру",
+   "Устаревший"
+  ],
+  [
+   "ADBE Photo Filter",
+   "Фотофильтр",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Polar Coordinates",
+   "Полярные координаты",
+   "Искажение"
+  ],
+  [
+   "ADBE Posterize",
+   "Постеризация",
+   "Стилизация"
+  ],
+  [
+   "ADBE Posterize Time",
+   "Время постеризации",
+   "Время"
+  ],
+  [
+   "ADBE ProfileToProfile",
+   "Конвертер профиля цвета",
+   "Программа"
+  ],
+  [
+   "ADBE HDR ToneMap",
+   "Сжатие подсветки HDR",
+   "Программа"
+  ],
+  [
+   "ADBE Radial Shadow",
+   "Радиальная тень",
+   "Перспектива"
+  ],
+  [
+   "ADBE Radial Blur",
+   "Радиальное размытие",
+   "Разм. и резкость"
+  ],
+  [
+   "ADBE Radial Wipe",
+   "Радиальное вытеснение",
+   "Переход"
+  ],
+  [
+   "APC Radio Waves",
+   "Радиоволны",
+   "Создать"
+  ],
+  [
+   "ADBE Ramp",
+   "Цветовая шкала градиента",
+   "Создать"
+  ],
+  [
+   "VISINF Grain Removal",
+   "Удалить зернистость",
+   "Шум и зерно"
+  ],
+  [
+   "ADBE RESHAPE",
+   "Изменить форму",
+   "Искажение"
+  ],
+  [
+   "ADBE Ripple",
+   "Рябь",
+   "Искажение"
+  ],
+  [
+   "ADBE OFMotionBlur",
+   "Разм. пикселей в движ.",
+   "Время"
+  ],
+  [
+   "ADBE Rolling Shutter",
+   "Устр.эфф.плав.затвора",
+   "Искажение"
+  ],
+  [
+   "ADBE Timewarp",
+   "Искажение времени",
+   "Время"
+  ],
+  [
+   "ADBE Roughen Edges",
+   "Шероховатые края",
+   "Стилизация"
+  ],
+  [
+   "ADBE Scatter",
+   "Рассеивание",
+   "Стилизация"
+  ],
+  [
+   "ADBE Scribble Fill",
+   "Каракули",
+   "Создать"
+  ],
+  [
+   "ADBE Set Channels",
+   "Задать каналы",
+   "Канал"
+  ],
+  [
+   "ADBE Set Matte3",
+   "Настроить подложку",
+   "Канал"
+  ],
+  [
+   "ADBE Set Matte2",
+   "Настроить подложку",
+   "_Obsolete"
+  ],
+  [
+   "ADBE ShadowHighlight",
+   "Тень/подсветка",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Camera Lens Blur",
+   "Разм.мал.гл.рез. ",
+   "Разм. и резкость"
+  ],
+  [
+   "ADBE Sharpen",
+   "Увел. четкость",
+   "Разм. и резкость"
+  ],
+  [
+   "APC Shatter",
+   "Разброс",
+   "Имитация"
+  ],
+  [
+   "ADBE Shift Channels",
+   "Сдвинуть каналы",
+   "Канал"
+  ],
+  [
+   "ADBE Simple Choker",
+   "Упрощенное подавление",
+   "Подложка"
+  ],
+  [
+   "ADBE Smart Blur",
+   "Умное размытие",
+   "Разм. и резкость"
+  ],
+  [
+   "ADBE SCHMEAR",
+   "Пятно",
+   "Искажение"
+  ],
+  [
+   "ADBE Solid Composite",
+   "Сплошной совмещенный",
+   "Канал"
+  ],
+  [
+   "ADBE Spherize",
+   "Сферизация",
+   "Искажение"
+  ],
+  [
+   "ADBE Spill Suppressor",
+   "Подавление разлития",
+   "Устаревший"
+  ],
+  [
+   "ADBE Spill2",
+   "Advanced Spill Suppressor",
+   "Прозр. налож."
+  ],
+  [
+   "ADBE SubspaceStabilizer",
+   "Стабилизатор деформации",
+   "Искажение"
+  ],
+  [
+   "ADBE Strobe",
+   "Проблесковый свет",
+   "Стилизация"
+  ],
+  [
+   "ADBE Stroke",
+   "Обводка",
+   "Создать"
+  ],
+  [
+   "ADBE Texturize",
+   "Текстуризация",
+   "Стилизация"
+  ],
+  [
+   "ADBE Three-Way Color Corrector",
+   "Трехкомп. корректор цв.",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Threshold",
+   "порог. значение",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Threshold2",
+   "порог. значение",
+   "Стилизация"
+  ],
+  [
+   "ADBE Tile",
+   "Мозаика движения",
+   "Стилизация"
+  ],
+  [
+   "ADBE Time Displacement",
+   "Смещ. по вр.",
+   "Время"
+  ],
+  [
+   "ADBE Timecode",
+   "Тайм-код",
+   "Текст"
+  ],
+  [
+   "ADBE Tint",
+   "Оттенок",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Geometry",
+   "Преобразовать",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Geometry2",
+   "Преобразовать",
+   "Искажение"
+  ],
+  [
+   "ADBE Tritone",
+   "Трехкрасочный",
+   "Коррекция цвета"
+  ],
+  [
+   "ADBE Turbulent Displace",
+   "Вихревое смещение",
+   "Искажение"
+  ],
+  [
+   "ADBE AIF Perlin Noise 3D",
+   "Турбулентный шум",
+   "Шум и зерно"
+  ],
+  [
+   "ADBE Twirl",
+   "Twirl (Legacy)",
+   "Искажение"
+  ],
+  [
+   "ADBE Unmult",
+   "Unmult",
+   "Прозр. налож."
+  ],
+  [
+   "ADBE Remove Color Matting",
+   "Удал. обр. краев цветом",
+   "Канал"
+  ],
+  [
+   "ADBE Unsharp Mask2",
+   "Контур. резкость",
+   "Разм. и резкость"
+  ],
+  [
+   "ADBE Unsharp Mask",
+   "Контур. резкость",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Upscale",
+   "Увел.с сохран.ур.детализ.",
+   "Искажение"
+  ],
+  [
+   "Mettle SkyBox Chromatic Aberrat",
+   "Хроматич. аберрации VR",
+   "Видео с погруж."
+  ],
+  [
+   "Mettle SkyBox Color Gradients",
+   "Градиенты цвета VR",
+   "Видео с погруж."
+  ],
+  [
+   "Mettle SkyBox Converter",
+   "Конвертер VR",
+   "Видео с погруж."
+  ],
+  [
+   "Mettle SkyBox Denoise",
+   "Понижение уровня шума VR",
+   "Видео с погруж."
+  ],
+  [
+   "Mettle SkyBox Digital Glitch",
+   "Цифровой сбой VR",
+   "Видео с погруж."
+  ],
+  [
+   "Mettle SkyBox Fractal Noise",
+   "Фрактальный шум VR",
+   "Видео с погруж."
+  ],
+  [
+   "Mettle SkyBox Blur",
+   "Размытие VR",
+   "Видео с погруж."
+  ],
+  [
+   "Mettle SkyBox Glow",
+   "Свечение VR",
+   "Видео с погруж."
+  ],
+  [
+   "Mettle SkyBox Project 2D",
+   "Плоскость VR в сферу",
+   "Видео с погруж."
+  ],
+  [
+   "Mettle SkyBox Rotate Sphere",
+   "Повернуть сферу VR",
+   "Видео с погруж."
+  ],
+  [
+   "Mettle SkyBox Sharpen",
+   "Увеличить четкость VR",
+   "Видео с погруж."
+  ],
+  [
+   "Mettle SkyBox Viewer",
+   "Сфера VR в плоскость",
+   "Видео с погруж."
+  ],
+  [
+   "APC Vegas",
+   "Vegas",
+   "Создать"
+  ],
+  [
+   "ADBE Venetian Blinds",
+   "Жалюзи",
+   "Переход"
+  ],
+  [
+   "ADBE DigitalVideoLimiter",
+   "Видеоограничитель",
+   "Коррекция цвета"
+  ],
+  [
+   "APC Wave World",
+   "Мир волн",
+   "Имитация"
+  ],
+  [
+   "ADBE Wave Warp",
+   "Волнообразная деформация",
+   "Искажение"
+  ],
+  [
+   "ADBE Write-on",
+   "Надпись",
+   "Создать"
+  ],
+  [
+   "ADBE Samurai",
+   "«К. для рот.» и «Ут. кр.»",
+   "_Obsolete"
+  ],
+  [
+   "ADBE Paint",
+   "Раскрасить",
+   "_Obsolete"
+  ],
+  [
+   "ADBE FreePin3",
+   "Марионетка",
+   "_Obsolete"
+  ],
+  [
+   "ADBE RefineRBMatte",
+   "Уточ. жесткую подложку",
+   "Подложка"
+  ],
+  [
+   "ADBE RefineMatte",
+   "Уточнить подложку",
+   "_Obsolete"
+  ],
+  [
+   "ADBE RefineMatte2",
+   "Уточнить мягкую подложку",
+   "Подложка"
+  ],
+  [
+   "ADBE Color Swirl",
+   "Цветное скручивание",
+   ""
+  ],
+  [
+   "ADBE Getting Jiggy",
+   "Эффект затухающих колеба",
+   ""
+  ],
+  [
+   "ADBE Separate XYZ Position",
+   "Разделить положен. по XYZ",
+   ""
+  ],
+  [
+   "ADBE Separate XYZ Scale",
+   "Отд. шкала XYZ",
+   ""
+  ],
+  [
+   "ADBE CM InsetVideoFramed",
+   "Вставка видео - с обрамлен",
+   ""
+  ],
+  [
+   "ADBE CM InsetVideoTorn",
+   "Вставка видел - рваные кра",
+   ""
+  ],
+  [
+   "ADBE CM MoodLightAmorph",
+   "Декор. подсветка - аморфна",
+   ""
+  ],
+  [
+   "ADBE CM MoodLightDigital",
+   "Декор. подсветка - цифрова",
+   ""
+  ],
+  [
+   "ADBE CM MoodLightStreaks",
+   "Декор. подсветка - полосы",
+   ""
+  ],
+  [
+   "ADBE CM CrackedTiles",
+   "Потрескавшаяся мозаика",
+   ""
+  ],
+  [
+   "ADBE CM LightLeaksMarkers",
+   "Утечки света - по марк. cло",
+   ""
+  ],
+  [
+   "ADBE CM LightLeaksRandom",
+   "Утечки света - произвольн",
+   ""
+  ],
+  [
+   "ADBE CM OpacityFlashMarkers",
+   "Миган. непрозр. - марк. cлоя",
+   ""
+  ],
+  [
+   "ADBE CM OpacityFlashRandom",
+   "Миган. непрозр. - произвол",
+   ""
+  ],
+  [
+   "ADBE CM CropEdges",
+   "Обрезать края",
+   ""
+  ],
+  [
+   "ADBE CM AutoscrollHorizontal",
+   "Автопрокрутка - по гориз.",
+   ""
+  ],
+  [
+   "ADBE CM AutoscrollVertical",
+   "Автопрокрутка - по вертик",
+   ""
+  ],
+  [
+   "ADBE CM Throw",
+   "Перемещение во времени",
+   ""
+  ],
+  [
+   "ADBE CM FadeInOutFrames",
+   "Нарастание+затухание (кад",
+   ""
+  ],
+  [
+   "ADBE CM FadeInOutmsec",
+   "Нарастание+затухание - мс",
+   ""
+  ],
+  [
+   "ADBE CM Spin",
+   "Поворот во времени",
+   ""
+  ],
+  [
+   "ADBE CM ScaleBounceMarkers",
+   "Масш. отраж. сигн.-марк. сл",
+   ""
+  ],
+  [
+   "ADBE CM ScaleBounceRandom",
+   "Масш. отраж.сигн.-произвол",
+   ""
+  ],
+  [
+   "ADBE CM WiggleGelatin",
+   "Покачивание - желе",
+   ""
+  ],
+  [
+   "ADBE CM WigglePosition",
+   "Покачивание - положение",
+   ""
+  ],
+  [
+   "ADBE CM WiggleRotation",
+   "Покачивание - поворот",
+   ""
+  ],
+  [
+   "ADBE CM WiggleScale",
+   "Покачивание - масштаб",
+   ""
+  ],
+  [
+   "ADBE CM WiggleShear",
+   "Покачивание - наклон",
+   ""
+  ],
+  [
+   "ADBE CM Wigglerama",
+   "Колебания",
+   ""
+  ],
+  [
+   "ADBE CM DissolveUnmelt",
+   "Растворение - отмен. распл",
+   ""
+  ],
+  [
+   "ADBE CM Zoom2DSpin",
+   "Масштаб - скручивание 2D",
+   ""
+  ],
+  [
+   "ADBE CM Zoom3DTumble",
+   "Масштаб - переворот 3D",
+   ""
+  ],
+  [
+   "ADBE CM ZoomWobble",
+   "Масштаб - колебания",
+   ""
+  ],
+  [
+   "ADBE CM ZoomBubble",
+   "Масштаб - пузырек",
+   ""
+  ],
+  [
+   "ADBE CM ZoomSpiral",
+   "Масштаб - спираль",
+   ""
+  ],
+  [
+   "ADBE CM SlideVariable",
+   "Слайд - переменная",
+   ""
+  ],
+  [
+   "ADBE CM FlyToInset",
+   "Переход к вставке",
+   ""
+  ],
+  [
+   "ADBE CM CornerReveal",
+   "Угловое раскрытие",
+   ""
+  ],
+  [
+   "ADBE CM GridWipe",
+   "Вытеснение сетки",
+   ""
+  ],
+  [
+   "ADBE CM TransComplete",
+   "Основной элемент переход",
+   ""
+  ],
+  [
+   "ADBE CM TransStretch",
+   "Осн. эл. упр. растягивание",
+   ""
+  ],
+  [
+   "ADBE CM TransDissolve",
+   "Осн. эл. упр. pастворением",
+   ""
+  ],
+  [
+   "ADBE CM TransFade",
+   "Мастер-управление наплыв",
+   ""
+  ],
+  [
+   "ADBE CM TransFadeMask",
+   "Эл. управления наплывом м",
+   ""
+  ],
+  [
+   "ADBE CM TransWipe",
+   "Осн. элемент упр. вытеснен",
+   ""
+  ],
+  [
+   "ADBE CM TransWipeFeath",
+   "Осн. элем-ты упр. вытеснен",
+   ""
+  ],
+  [
+   "ADBE CM TransCard",
+   "Осн. эл. упр. вытеснен. kарт",
+   ""
+  ],
+  [
+   "ADBE CM TransSlide",
+   "Осн. эл. управления слайдо",
+   ""
+  ],
+  [
+   "ADBE CM TransCorner",
+   "Осн. эл. упр. растягив.(уго",
+   ""
+  ],
+  [
+   "ADBE CM TransDirection",
+   "Осн. эл. упр. растягив.(кра",
+   ""
+  ],
+  [
+   "ADBE CM TransIris",
+   "Осн. эл. упр. вытес. диафра",
+   ""
+  ],
+  [
+   "ADBE CM TransRadial",
+   "Осн. эл. упр. радиал. вытес",
+   ""
+  ],
+  [
+   "ADBE DE Jiggle",
+   "Смещение",
+   ""
+  ],
+  [
+   "ADBE DE Jiggle At Marker",
+   "Смещение по маркеру",
+   ""
+  ],
+  [
+   "ADBE DE Jiggle On Beat",
+   "Смещение по ритму",
+   ""
+  ],
+  [
+   "ADBE DE Jiggle Random",
+   "Произвольное смещение",
+   ""
+  ],
+  [
+   "ADBE DE Pulse",
+   "Пульсация",
+   ""
+  ],
+  [
+   "ADBE DE Pulse At Marker",
+   "Пульсация по маркеру",
+   ""
+  ],
+  [
+   "ADBE DE Pulse On Beat",
+   "Пульсация по ритму",
+   ""
+  ],
+  [
+   "ADBE DE Pulse Random",
+   "Произвольная пульсация",
+   ""
+  ],
+  [
+   "ADBE DE Bounce",
+   "Одиночное отражение сигн",
+   ""
+  ],
+  [
+   "ADBE DE Bounce At Marker",
+   "Отражен. сигнала по марке",
+   ""
+  ],
+  [
+   "ADBE DE Bounce On Beat",
+   "Отражение сигнала по ритм",
+   ""
+  ],
+  [
+   "ADBE DE Bounce Random",
+   "Произвольн. отражение сиг",
+   ""
+  ],
+  [
+   "ADBE DE Opacity Pulse",
+   "Пульсация непрозрачности",
+   ""
+  ],
+  [
+   "ADBE DE Opacity Pulse At Marker",
+   "Пульсация непрозр. по мар",
+   ""
+  ],
+  [
+   "ADBE DE Opacity Pulse On Beat",
+   "Пульсация непрозр. по рит",
+   ""
+  ],
+  [
+   "ADBE DE Opacity Pulse Random",
+   "Пульс. непрозр. - произвол",
+   ""
+  ],
+  [
+   "ADBE DE Oscillate",
+   "Колебания",
+   ""
+  ],
+  [
+   "ADBE DE Oscillate At Marker",
+   "Колебания по маркеру",
+   ""
+  ],
+  [
+   "ADBE DE Oscillate On Beat",
+   "Колебания по ритму",
+   ""
+  ],
+  [
+   "ADBE DE Oscillate Random",
+   "Произвольные колебания",
+   ""
+  ],
+  [
+   "ADBE DE Pendulum",
+   "Маятник",
+   ""
+  ],
+  [
+   "ADBE DE Pendulum At Marker",
+   "Маятник по маркеру",
+   ""
+  ],
+  [
+   "ADBE DE Pendulum On Beat",
+   "Маятник по ритму",
+   ""
+  ],
+  [
+   "ADBE DE Pendulum Random",
+   "Произвольный маятник",
+   ""
+  ],
+  [
+   "ADBE DE Swarm",
+   "Скопление",
+   ""
+  ],
+  [
+   "ADBE DE Follow",
+   "Следовать",
+   ""
+  ],
+  [
+   "ADBE DE Orbit",
+   "Орбита",
+   ""
+  ],
+  [
+   "ADBE DE Orbit 3D",
+   "Орбита 3D",
+   ""
+  ],
+  [
+   "ADBE DE Random Motion 1D",
+   "Произв. движение в 1 плоск.",
+   ""
+  ],
+  [
+   "ADBE DE Random Motion",
+   "Произвольное движение",
+   ""
+  ],
+  [
+   "ADBE DE Random Rotation",
+   "Произвольный поворот",
+   ""
+  ],
+  [
+   "ADBE DE Random Rotation 3D",
+   "Произвольный 3D-поворот",
+   ""
+  ],
+  [
+   "ADBE DE Random Opacity",
+   "Произвольная непрозрачно",
+   ""
+  ],
+  [
+   "ADBE DE Random Scale",
+   "Произвольный масштаб",
+   ""
+  ],
+  [
+   "ADBE DE Random Fill Color",
+   "Произвольный цвет заливк",
+   ""
+  ],
+  [
+   "ADBE DE Z Spring",
+   "Скачок по оси Z",
+   ""
+  ],
+  [
+   "ADBE DE Z Spring At Marker",
+   "Прыжок по оси Z - по маркер",
+   ""
+  ],
+  [
+   "ADBE DE Wobble Bounce",
+   "Отражение сигнала колеба",
+   ""
+  ],
+  [
+   "ADBE DE Wobble Bounce At Marker",
+   "Отраж. сигн. колеб.- по мар",
+   ""
+  ],
+  [
+   "ADBE DE Wobble Bounce On Beat",
+   "Отраж. сигн. колеб.-по ритм",
+   ""
+  ],
+  [
+   "ADBE DE Wobble Bounce Random",
+   "Отраж. сигн. колеб.-произв",
+   ""
+  ],
+  [
+   "ADBE CM Animated Shape Control",
+   "Эл. управления аним. фигур",
+   ""
+  ],
+  [
+   "ADBE CM Animated Shape 2",
+   "Эл. управления отслеживан",
+   ""
+  ],
+  [
+   "ADBE CM Animated Shape 3",
+   "Эл. управления аним. фигур",
+   ""
+  ],
+  [
+   "ADBE Sample Image",
+   "Образец изображения",
+   ""
+  ],
+  [
+   "ADBE Stereo 3D Controls",
+   "Элементы управления Stereo 3D",
+   ""
+  ],
+  [
+   "Pseudo/ADBE Animal Head66",
+   "Точки трассировки лица",
+   ""
+  ],
+  [
+   "Pseudo/ADBE Animal Head14",
+   "Измерения лица",
+   ""
+  ],
+  [
+   "Pseudo/ADBE Trace Path",
+   "Отследить контур",
+   ""
+  ],
+  [
+   "Pseudo/ADBE Pattern Template",
+   "Шаблон узора",
+   ""
+  ],
+  [
+   "Pseudo/ADBE Counter Controls",
+   "Эл.упр.счетчиком",
+   ""
+  ],
+  [
+   "Pseudo/ADBE Currency Controls",
+   "Эл.упр.валютой",
+   ""
+  ],
+  [
+   "Pseudo/ADBE Percentage Controls",
+   "Элементы управления проц",
+   ""
+  ],
+  [
+   "Pseudo/ADBE Timer Controls",
+   "Эл.упр.таймером",
+   ""
+  ],
+  [
+   "Pseudo/ADBE 2D Text Box",
+   "Текстовое поле 2D",
+   ""
+  ]
+ ]
+}

@@ -1,0 +1,69 @@
+site_name: Snail.MCP.AfterEffects
+site_description: MCP server for Adobe After Effects — an always-on base layer and ten on-demand skills, for an After Effects on this machine or reached over HTTP
+site_url: https://orldev.github.io/Snail.MCP.AfterEffects/
+repo_url: https://github.com/orldev/Snail.MCP.AfterEffects
+repo_name: orldev/Snail.MCP.AfterEffects
+edit_uri: ""
+docs_dir: content
+
+plugins:
+  - search
+
+validation:
+  nav:
+    omitted_files: warn
+  links:
+    anchors: warn
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Architecture: architecture.md
+  - Configuration: configuration.md
+  - Over HTTP: http.md
+  - Containers: docker.md
+  - Workers: workers.md
+  - Prompts: prompts.md
+  - Troubleshooting: troubleshooting.md
+  - Scripting API coverage: coverage.md
+  - Tools:
+      - Overview: tools/index.md
+      - Diagnostics and the bridge: tools/diagnostics.md
+      - Skills: tools/skills.md
+      - Finding a tool: tools/discovery.md
+      - Programs: tools/programs.md
+      - Undo, menu commands, sequences and scripts: tools/application.md
+      - Project and items: tools/project.md
+      - Compositions: tools/compositions.md
+      - Layers: tools/layers.md
+      - Properties: tools/properties.md
+      - Pictures: tools/capture.md
+      - Keyframes, expressions, markers and time remapping: tools/animation.md
+      - Text: tools/text.md
+      - Shape layers and masks: tools/shapes.md
+      - Effects, presets and layer styles: tools/effects.md
+      - Cameras, lights, materials and the renderer: tools/threed.md
+      - Precomposing, footage, proxies and the project's files: tools/compositing.md
+      - The render queue: tools/rendering.md
+      - Background renders through aerender: tools/farm.md
+      - Motion graphics templates: tools/templates.md
+      - Files between the client and the server: tools/transfer.md
+      - Measuring, guides and placing: tools/layout.md
+      - Project and application settings: tools/settings.md
+      - The viewer: tools/viewer.md
+      - After Effects workers of your own: tools/workers.md
