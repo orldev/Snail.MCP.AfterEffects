@@ -48,4 +48,17 @@
         <InternalsVisibleTo Include="Snail.MCP.AfterEffects.Benchmarks" />
     </ItemGroup>
 
+    <!--
+        Both package types, set here because Snail.Sdk.Mcp.targets sets PackageType to McpServer alone and its import
+        comes last, so a value in a PropertyGroup of this file is overwritten. PackageType replaces what PackAsTool
+        would add rather than joining it, and nuget.org then refuses the package: "A package cannot contain the
+        'McpServer' package type without the 'DotnetTool' package type", a 400 on the push of 0.1.0-preview.2. Remove
+        this once the SDK sets both types itself.
+    -->
+    <Target Name="BothPackageTypes" BeforeTargets="GenerateNuspec">
+        <PropertyGroup>
+            <PackageType>McpServer;DotnetTool</PackageType>
+        </PropertyGroup>
+    </Target>
+
 </Project>
