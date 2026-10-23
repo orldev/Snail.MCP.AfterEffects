@@ -125,6 +125,10 @@ jobs:
           VERSION: ${{ needs.versions.outputs.version }}
         run: |
           mkdir -p secrets state
+          # The server runs as the image's app user (uid 1654) and writes its state into the mounted folder. A bind mount keeps the
+          # host's ownership, and on Linux that ownership is enforced: without this the server dies at start with
+          # 'Access to the path /state/state is denied'. Docker Desktop on macOS does not enforce it, which is why this only shows here.
+          sudo chown 1654:1654 state
           openssl rand -hex 32 > secrets/client.token
           docker run -d --name server -p 8080:8080 -v "$PWD/secrets:/run/secrets:ro" -v "$PWD/state:/state" \
             -e SNAIL_MCP_AFTEREFFECTS_HTTP__TOKEN_FILE=/run/secrets/client.token \

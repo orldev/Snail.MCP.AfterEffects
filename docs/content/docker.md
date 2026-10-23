@@ -22,6 +22,19 @@ The container's bridge listener binds every interface inside and is published on
 `127.0.0.1` as the host to dial, which is what After Effects on the host sees. The MCP endpoint is published on the address the reverse
 proxy reaches, and `HTTP__PUBLIC_URL` is the address clients use, which signed links and the session cookie are built on.
 
+### The state folder on a Linux host
+
+The server runs inside the image as the user `app`, uid 1654, and writes into the state folder through the bind mount. A bind mount
+keeps the host's ownership, and Linux enforces it: a folder owned by you is not writable by uid 1654, and the server dies at start
+with `Access to the path '/state/state' is denied`. Give the folder to that user once:
+
+```bash
+sudo chown -R 1654:1654 ~/.s3l-mcp-aftereffects
+```
+
+Docker Desktop on macOS and Windows does not enforce the ownership of a bind mount, so there the folder works as it is. That is
+why this is easy to miss: the same compose file runs on a laptop and fails on a Linux host.
+
 ## Docker Desktop on Windows
 
 Leave Docker Desktop in **Linux containers** mode. That is the mode under WSL 2 in which the Blender server gets CUDA, and it is the
