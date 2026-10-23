@@ -1,0 +1,15 @@
+<Project Sdk="Snail.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace>Snail.MCP.AfterEffects.Benchmarks</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BenchmarkDotNet" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\src\Snail.MCP.AfterEffects.csproj" />
+    </ItemGroup>
+
+</Project>
