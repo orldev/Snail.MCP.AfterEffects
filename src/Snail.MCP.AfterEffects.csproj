@@ -8,17 +8,6 @@
         of the McpServer kind, Install into ~/.s3l-mcp.
     -->
     <PropertyGroup>
-        <!--
-            Said here rather than left to Snail.Sdk.Mcp, because this project takes Microsoft.NET.Sdk.Razor as its SDK and brings the
-            Snail one in with an Sdk element, whose targets are imported after Microsoft.NET.Sdk.targets. That file imports the .NET
-            SDK's tool packaging only when PackAsTool already reads true, so set later it is never read: the package came out with no
-            tools folder and no DotnetToolSettings.xml, and nuget.org refused it for carrying the McpServer type without DotnetTool
-            (a 400 on the push of 0.1.0-preview.2). Set here, in the body of the project, it is read in time.
-        -->
-        <PackAsTool>true</PackAsTool>
-        <!-- Named here for the same reason: the .NET SDK's tool packaging defaults the command to the assembly name before Snail.Sdk.Mcp
-             is imported, and its own s3l-mcp-<short> then finds the property already set. -->
-        <ToolCommandName>s3l-mcp-aftereffects</ToolCommandName>
         <SnailMcpNative>false</SnailMcpNative>
         <SnailMcpTransport>Both</SnailMcpTransport>
         <SnailMcpContainer>true</SnailMcpContainer>
