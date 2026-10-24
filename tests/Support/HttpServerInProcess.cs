@@ -13,7 +13,12 @@ namespace Snail.MCP.AfterEffects.Tests.Support;
 /// endpoints as the published one, on a port of its own, with a bridge that only remembers what it was sent.</summary>
 /// <remarks>The contract tests start the server as a process, which is what a client does and what the stdio and HTTP
 /// contracts are about. This one runs in the test's own process instead, so a test may reach into its services, and so the
-/// pages and endpoints it exercises are measured like any other code.</remarks>
+/// pages and endpoints it exercises are measured like any other code.
+///
+/// Both ports are asked of the operating system rather than chosen: picking a free port and binding it a moment later is a
+/// race, and with several servers starting at once it is lost often enough to fail a run — it failed one on 24.10.2026 with
+/// "address already in use". Kestrel is given port 0 and the address it bound is read back, and the settings are told that
+/// address afterwards, because the links the server signs carry it.</remarks>
 internal sealed class HttpServerInProcess : IAsyncDisposable
 {
     private readonly WebApplication _app;
@@ -41,15 +46,14 @@ internal sealed class HttpServerInProcess : IAsyncDisposable
     public static async Task<HttpServerInProcess> StartAsync(string token, Func<BridgeCommand, JsonObject, BridgeReply>? answer = null)
     {
         var dataDirectory = TestFolder.Create();
-        var address = new Uri($"http://127.0.0.1:{FreePort()}");
         var bridge = new StubBridge(answer ?? ((_, _) => BridgeReply.Ok(new JsonObject { ["stub"] = true })));
         var settings = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
         {
             [$"{ServerConfig.SectionName}:Transport"] = nameof(Transport.Http),
             [$"{ServerConfig.SectionName}:DataDirectory"] = dataDirectory,
-            [$"{ServerConfig.SectionName}:Http:Url"] = address.ToString(),
+            [$"{ServerConfig.SectionName}:Http:Url"] = "http://127.0.0.1:0",
             [$"{ServerConfig.SectionName}:Http:Token"] = token,
-            [$"{ServerConfig.SectionName}:Bridge:Port"] = FreePort().ToString(System.Globalization.CultureInfo.InvariantCulture),
+            [$"{ServerConfig.SectionName}:Bridge:Port"] = "0",
         }).Build();
 
         var builder = WebApplication.CreateSlimBuilder();
@@ -59,15 +63,10 @@ internal sealed class HttpServerInProcess : IAsyncDisposable
         var app = builder.Build().UseHttpServer();
         await app.StartAsync();
 
+        var address = new Uri(app.Urls.First());
+        app.Services.GetRequiredService<ServerConfig>().Http.Url = address.ToString();
+
         return new HttpServerInProcess(app, dataDirectory, address, bridge);
-    }
-
-    private static int FreePort()
-    {
-        using var socket = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
-        socket.Start();
-
-        return ((System.Net.IPEndPoint)socket.LocalEndpoint).Port;
     }
 
     public async ValueTask DisposeAsync()
