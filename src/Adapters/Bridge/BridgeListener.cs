@@ -27,7 +27,12 @@ internal sealed class BridgeListener(
     /// <summary>The port the listener took; 0 before it is up.</summary>
     public int Port => (_listener?.LocalEndpoint as IPEndPoint)?.Port ?? 0;
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    /// <summary>Takes the port and announces it before the server answers anything.</summary>
+    /// <remarks>Binding in <see cref="ExecuteAsync"/> leaves a moment in which the server is up and the listener is not: the host runs a
+    /// background service after it has started the ones before it, and on a loaded machine the first call arrives first. A diagnosis asked
+    /// in that moment reported no port and no announcement, which is a lie about a server that is about to listen — it failed a contract
+    /// test on 24.10.2026. Started here, the port exists before the transport serves its first request.</remarks>
+    public override Task StartAsync(CancellationToken cancellationToken)
     {
         _listener = new TcpListener(BindAddress(options), options.Port);
         _listener.Start();
@@ -35,11 +40,21 @@ internal sealed class BridgeListener(
         announcement.Publish(Port);
         Log.ListeningForBridge(logger, BindAddress(options), Port);
 
+        return base.StartAsync(cancellationToken);
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        if (_listener is not { } listener)
+        {
+            return;
+        }
+
         try
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                var client = await _listener.AcceptTcpClientAsync(stoppingToken).ConfigureAwait(false);
+                var client = await listener.AcceptTcpClientAsync(stoppingToken).ConfigureAwait(false);
                 _ = AdmitAsync(client, stoppingToken);
             }
         }
@@ -53,7 +68,7 @@ internal sealed class BridgeListener(
         finally
         {
             announcement.Withdraw();
-            _listener.Stop();
+            listener.Stop();
         }
     }
 
