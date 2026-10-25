@@ -65,10 +65,22 @@ internal sealed class BridgeListener(
         {
             Log.BridgeListenerStopped(logger, failure.Message);
         }
+    }
+
+    /// <summary>Gives the port up and takes the announcement back, so nothing points at a listener that has stopped.</summary>
+    /// <remarks>Here rather than at the end of <see cref="ExecuteAsync"/>, which is where it was: the host's StopAsync waits for the accept
+    /// loop only as long as its own token allows, so the loop's last lines could run after the server was considered stopped and the
+    /// announcement outlive it. Said here, stopping is as definite as starting.</remarks>
+    public override async Task StopAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await base.StopAsync(cancellationToken).ConfigureAwait(false);
+        }
         finally
         {
             announcement.Withdraw();
-            listener.Stop();
+            _listener?.Stop();
         }
     }
 
