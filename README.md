@@ -4,7 +4,8 @@ An MCP server that lets your AI assistant drive a running **Adobe After Effects*
 talks to your client over stdio, and reaches After Effects through a small ExtendScript bridge that lives in its scripts folder and
 dials the server on its own.
 
-Work in progress: the bridge, the base tools, fourteen skills, the worker pool, the HTTP transport and the server image are in place; publication follows.
+[![NuGet](https://img.shields.io/nuget/v/Snail.MCP.AfterEffects.svg)](https://www.nuget.org/packages/Snail.MCP.AfterEffects/)
+[![Documentation](https://img.shields.io/badge/docs-orldev.github.io-blue)](https://orldev.github.io/Snail.MCP.AfterEffects/)
 
 ## What it can do
 
@@ -29,8 +30,9 @@ Work in progress: the bridge, the base tools, fourteen skills, the worker pool, 
 
 ## Install
 
-1. `dotnet build -c Release`, then give your MCP client the command `dotnet` with `src/bin/Release/net10.0/Snail.MCP.AfterEffects.dll`
-   as its argument (for Claude Code: `claude mcp add aftereffects -- dotnet <path to the dll>`).
+1. `dotnet tool install --global Snail.MCP.AfterEffects`, then give your MCP client the command `s3l-mcp-aftereffects`
+   (for Claude Code: `claude mcp add aftereffects -- s3l-mcp-aftereffects`). To run it from a checkout instead:
+   `dotnet build -c Release` and the command `dotnet` with `src/bin/Release/net10.0/Snail.MCP.AfterEffects.dll` as its argument.
 2. In After Effects open Preferences → Scripting & Expressions and switch on *Allow Scripts to Write Files and Access Network*, once.
 3. Ask the agent to run `ae_install_bridge`: it copies the bridge into After Effects' user `Scripts/Startup` folder and starts it in the
    running After Effects; from then on the bridge starts with After Effects and dials every server that is running.
