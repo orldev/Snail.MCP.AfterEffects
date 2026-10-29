@@ -16,7 +16,7 @@ internal static class PromptTexts
         3. ae_add_layer kind text with the title; ae_text_fonts to pick a font that exists, then ae_text_style with font, size, fill colour, tracking and justification; ae_update_layer or ae_transform_layer to place it.
         4. Animate the entrance: ae_set_keyframes on opacity (0 to 100 over the first 0.6 s) and position or scale, with preset easy_ease; or ae_add_text_animator with an opacity or position property and a range selector, then ae_set_keyframes on the selector's start so the characters arrive one after another.
         5. ae_capture_frame at a time in the middle of the entrance and at the end; look at the pictures and fix size, placement, colour or timing before going on.
-        6. Deliver: ae_project_save, then ae_add_render with an output template and path followed by ae_render for a short composition, or ae_farm_submit and polling ae_farm_jobs when it is long or After Effects must stay free.
+        6. Deliver: ae_project_save, then ae_add_render with an output template and path followed by ae_render for a short composition, or ae_farm_submit and as a job when it is long or After Effects must stay free — ae_farm_submit answers when it ends or with the job to read.
         7. Report the composition name, the file path and what you would still improve.
         """;
 

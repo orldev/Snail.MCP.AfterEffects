@@ -12,6 +12,7 @@ using Snail.MCP.AfterEffects.Tools;
 using Snail.MCP.AfterEffects.Tools.Prompts;
 using Snail.MCP.AfterEffects.Web.Access;
 using Snail.Sdk.Mcp.Hosting;
+using Snail.Sdk.Mcp.Hosting.Jobs;
 
 namespace Snail.MCP.AfterEffects.Extensions;
 
@@ -59,6 +60,7 @@ internal static class TransportRegistrationExtensions
                 })
                 .WithBaseTools()
                 .WithPrompts<PipelinePrompts>()
+                .WithJobs("aftereffects")
                 .WithRequestFilters(filters => filters.AddCallToolFilter(TrackActivity));
 
         /// <summary>Every session and every sessionless request gets options of its own, and with them a client of its own: a tool collection

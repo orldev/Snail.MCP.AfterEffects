@@ -18,6 +18,7 @@ internal static class FarmRegistrationExtensions
             services.AddSingleton<IAerender, Aerender>();
             services.AddSingleton<ProjectForRender>();
             services.AddSingleton<RenderFarm>();
+            services.AddSingleton<FarmJobs>();
             services.AddHostedService(provider => provider.GetRequiredService<RenderFarm>());
 
             return services;

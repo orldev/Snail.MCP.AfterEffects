@@ -10,7 +10,7 @@ namespace Snail.MCP.AfterEffects.Tools.Farm;
 /// <summary>Background renders through aerender: the farm skill.</summary>
 [Skill(Skills.Farm, SkillDescriptions.Farm)]
 [McpServerToolType]
-internal sealed class FarmTools(RenderFarm farm, ProjectForRender projects)
+internal sealed class FarmTools(RenderFarm farm, ProjectForRender projects, FarmJobs background)
 {
     [McpServerTool(Name = "ae_farm_submit", ReadOnly = false, Destructive = false, Idempotent = false, OpenWorld = true)]
     [Description(ToolDescriptions.Farm.Submit)]
@@ -30,6 +30,7 @@ internal sealed class FarmTools(RenderFarm farm, ProjectForRender projects)
         [Description("How many times a failed job is tried again; 0 by default.")] int retries = 0,
         [Description("Multi-frame rendering on or off; aerender's default when empty.")] bool? multiFrame = null,
         [Description("Most CPU percent multi-frame rendering may take, 1 to 100.")] int? cpuPercent = null,
+        [Description(ToolDescriptions.Parameters.Wait)] int wait = 60,
         CancellationToken cancellationToken = default)
     {
         if (!farm.IsAvailable)
@@ -60,28 +61,18 @@ internal sealed class FarmTools(RenderFarm farm, ProjectForRender projects)
             multiFrame,
             cpuPercent);
 
-        var job = farm.Submit(request);
-        var described = job.Describe(0);
-        described["project_saved"] = resolved.WasSaved;
-        described["aerender"] = farm.Executable;
+        var job = background.Submit(request);
+        var note = new JsonObject { ["project_saved"] = resolved.WasSaved, ["aerender"] = farm.Executable };
 
-        return ToolResponse.Success(described);
+        return ToolResponse.Job(await job.ForAsync(TimeSpan.FromSeconds(wait), cancellationToken).ConfigureAwait(false), note);
     }
 
     [McpServerTool(Name = "ae_farm_jobs", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false)]
     [Description(ToolDescriptions.Farm.Jobs)]
     public CallToolResult Jobs(
-        [Description(ToolDescriptions.Parameters.JobId)] string? id = null,
         [Description("Only jobs in this state: queued, running, done, failed or cancelled.")] string? state = null,
-        [Description("Lines from the end of each job's log to include; 10 for one job, 0 for the list.")] int? logLines = null)
+        [Description("Lines from the end of each job's log to include; 0 by default.")] int? logLines = null)
     {
-        if (id is not null)
-        {
-            return farm.Find(id) is { } job
-                ? ToolResponse.Success(job.Describe(logLines ?? 10))
-                : ToolResponse.Failure(Messages.UnknownJob(id), Messages.UnknownJobHint);
-        }
-
         var jobs = farm.Jobs
             .Where(job => state is null || string.Equals(job.State, state, StringComparison.OrdinalIgnoreCase))
             .OrderByDescending(job => job.Submitted)
