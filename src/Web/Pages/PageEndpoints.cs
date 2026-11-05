@@ -65,7 +65,7 @@ internal static class PageEndpoints
             return Page<LoginPage>(new { ReturnUrl = Local(returnUrl), IsRefused = true }, StatusCodes.Status401Unauthorized);
         }
 
-        var identity = new ClaimsIdentity([new Claim(ClaimTypes.Name, client.Name), .. client.Scopes.Select(scope => new Claim(WebAccess.ScopeClaim, scope))], WebAccess.CookieScheme);
+        var identity = new ClaimsIdentity([new Claim(ClaimTypes.Name, client.Name), new Claim(ClaimTypes.NameIdentifier, client.Name), .. client.Scopes.Select(scope => new Claim(WebAccess.ScopeClaim, scope))], WebAccess.CookieScheme);
         await context.SignInAsync(WebAccess.CookieScheme, new ClaimsPrincipal(identity));
 
         return Results.LocalRedirect(Local(returnUrl));
