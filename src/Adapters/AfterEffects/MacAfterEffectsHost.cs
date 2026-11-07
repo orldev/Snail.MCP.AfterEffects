@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Snail.MCP.AfterEffects.Configuration;
 
 namespace Snail.MCP.AfterEffects.Adapters.AfterEffects;
@@ -11,6 +12,14 @@ namespace Snail.MCP.AfterEffects.Adapters.AfterEffects;
 internal sealed class MacAfterEffectsHost(ILogger<MacAfterEffectsHost> logger) : IAfterEffectsHost
 {
     public const string ProcessName = "After Effects";
+
+    /// <summary>How long osascript may take to hand After Effects a script.</summary>
+    /// <remarks>Under AppleScript's own two-minute wait for an Apple event, past which no answer is coming: After Effects accepts a script in
+    /// seconds, and one that holds it longer is behind a dialog somebody has to click away.</remarks>
+    private static readonly TimeSpan ScriptHandover = TimeSpan.FromSeconds(60);
+
+    /// <summary>How long pgrep or ps may take to answer whether After Effects runs.</summary>
+    private static readonly TimeSpan Lookup = TimeSpan.FromSeconds(5);
 
     private static string PreferencesRoot => Path.Combine(ServerPaths.Home, "Library", "Preferences", "Adobe", "After Effects");
 
@@ -36,21 +45,26 @@ internal sealed class MacAfterEffectsHost(ILogger<MacAfterEffectsHost> logger) :
             return new ScriptRun(false, false, "After Effects is not running.");
         }
 
-        var start = new ProcessStartInfo("osascript") { RedirectStandardOutput = true, RedirectStandardError = true };
+        var start = new ProcessStartInfo("osascript");
         start.ArgumentList.Add("-e");
         start.ArgumentList.Add($"tell application \"{Path.GetFileNameWithoutExtension(bundle)}\" to DoScriptFile \"{scriptPath}\" with override");
 
         try
         {
-            using var process = Process.Start(start)!;
-            var error = await process.StandardError.ReadToEndAsync(cancellationToken).ConfigureAwait(false);
-            await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
+            var run = await ChildProcess.RunAsync(start, ScriptHandover, cancellationToken).ConfigureAwait(false);
 
-            if (process.ExitCode != 0)
+            if (run.HasTimedOut)
             {
-                Log.OsascriptRefused(logger, scriptPath, error.Trim());
+                Log.OsascriptRefused(logger, scriptPath, $"no answer within {ScriptHandover.TotalSeconds:0} s");
 
-                return new ScriptRun(true, false, $"osascript exited with {process.ExitCode}: {error.Trim()}");
+                return new ScriptRun(true, false, $"osascript did not answer within {ScriptHandover.TotalSeconds:0} s; After Effects may be holding a dialog open.");
+            }
+
+            if (run.ExitCode != 0)
+            {
+                Log.OsascriptRefused(logger, scriptPath, run.Error.Trim());
+
+                return new ScriptRun(true, false, $"osascript exited with {run.ExitCode}: {run.Error.Trim()}");
             }
 
             return new ScriptRun(true, true, "accepted");
@@ -84,22 +98,22 @@ internal sealed class MacAfterEffectsHost(ILogger<MacAfterEffectsHost> logger) :
     private static string? Executable(int pid) =>
         Run("ps", ["-p", pid.ToString(System.Globalization.CultureInfo.InvariantCulture), "-o", "comm="]).Trim() is { Length: > 0 } path ? path : null;
 
+    /// <summary>What a lookup program wrote to standard output; empty when it could not start or did not answer in time.</summary>
+    [SuppressMessage("Usage", "VSTHRD002", Justification = "IsRunning is a property of the port, read by synchronous callers; the wait is bounded by Lookup, and no synchronization context runs here.")]
     private static string Run(string command, string[] arguments)
     {
         try
         {
-            var start = new ProcessStartInfo(command) { RedirectStandardOutput = true, RedirectStandardError = true };
+            var start = new ProcessStartInfo(command);
 
             foreach (var argument in arguments)
             {
                 start.ArgumentList.Add(argument);
             }
 
-            using var process = Process.Start(start)!;
-            var output = process.StandardOutput.ReadToEnd();
-            process.WaitForExit(5000);
+            var run = ChildProcess.RunAsync(start, Lookup, CancellationToken.None).GetAwaiter().GetResult();
 
-            return output;
+            return run.Output;
         }
         catch (Exception failure) when (failure is System.ComponentModel.Win32Exception or InvalidOperationException)
         {

@@ -14,14 +14,23 @@ namespace Snail.MCP.AfterEffects.Adapters.Programs;
 
 /// <summary>Runs a JavaScript program whose only door to the outside is the command catalog: no files, no network, no clock but its own.</summary>
 /// <remarks>The engine is synchronous, so the program runs on a thread of its own and each command it sends waits there for the link. Nothing of
-/// the host is reachable from the script — the engine is created without CLR access — and the program is bounded three ways: the timeout it was
-/// given, a memory ceiling, and a cap on how many commands it may send, because a program is a way to spend one call, not to hide a thousand.
+/// the host is reachable from the script — the engine is created without CLR access — and the program is bounded five ways: the timeout it was
+/// given, a memory ceiling, a depth of calls, a count of statements, and a cap on how many commands it may send, because a program is a way to
+/// spend one call, not to hide a thousand.
 /// The script command is put to the server's scripting setting first: without this, a server with scripts switched off ran them by way of one
 /// line of JavaScript.</remarks>
 internal sealed class JavaScriptPrograms(IAfterEffectsBridge bridge, ServerConfig config, ToolScopes scopes, ClientSessions clients) : IProgramRunner
 {
     /// <summary>Commands one program may send.</summary>
     public const int MostCalls = 200;
+
+    /// <summary>Calls a program may have open at once.</summary>
+    /// <remarks>Unbounded, a recursion that never ends is stopped only by the thread's stack, and a stack overflow ends the server, not the program.</remarks>
+    public const int DeepestRecursion = 256;
+
+    /// <summary>Statements a program may execute.</summary>
+    /// <remarks>The timeout alone lets a tight loop burn a whole core for as long as it was given; the count ends it on work done rather than time spent.</remarks>
+    public const int MostStatements = 1_000_000;
 
     private const long MemoryBytes = 32L * 1024 * 1024;
 
@@ -51,6 +60,8 @@ internal sealed class JavaScriptPrograms(IAfterEffectsBridge bridge, ServerConfi
         using var engine = new Engine(options => options
             .Strict()
             .LimitMemory(MemoryBytes)
+            .LimitRecursion(DeepestRecursion)
+            .MaxStatements(MostStatements)
             .TimeoutInterval(timeout)
             .CancellationToken(cancellationToken));
 
@@ -78,9 +89,17 @@ internal sealed class JavaScriptPrograms(IAfterEffectsBridge bridge, ServerConfi
         }
         catch (Exception failure) when (failure is MemoryLimitExceededException or StatementsCountOverflowException or RecursionDepthOverflowException)
         {
-            return new ProgramRun(null, log, calls, new BridgeError("ProgramTooLarge", $"the program asked for more than a program may use ({failure.GetType().Name}); split the work into several."));
+            return new ProgramRun(null, log, calls, new BridgeError("ProgramTooLarge", Exceeded(failure)));
         }
     }
+
+    /// <summary>Which bound a program crossed, in words the caller can act on.</summary>
+    private static string Exceeded(Exception failure) => failure switch
+    {
+        RecursionDepthOverflowException => $"the program nested calls deeper than {DeepestRecursion}; a recursion that never ends, or one to unroll into a loop.",
+        StatementsCountOverflowException => $"the program executed more than {MostStatements} statements; split the work into several programs.",
+        _ => $"the program used more than the {MemoryBytes / (1024 * 1024)} MB a program may hold; split the work into several programs.",
+    };
 
     /// <summary>The catalog as an object of functions: <c>ae.layer_add({ kind: "text" })</c> for every command the bridge answers.</summary>
     private ObjectInstance Catalog(Engine engine, List<ProgramCall> calls, List<string> log, Stopwatch running, TimeSpan timeout, CancellationToken cancellationToken)

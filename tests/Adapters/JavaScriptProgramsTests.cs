@@ -108,12 +108,61 @@ public class JavaScriptProgramsTests
         Assert.Equal(JavaScriptPrograms.MostCalls, run.Calls.Count);
     }
 
+    /// <summary>A program whose commands take longer than it was given is stopped on time.</summary>
+    /// <remarks>The time goes on commands rather than on a bare loop: an empty loop now runs into the statement count in some tens of milliseconds,
+    /// long before any timeout worth giving, so waiting on After Effects is what the timeout is left to bound.</remarks>
     [Fact]
     public async Task Program_ThatRunsTooLong_IsStopped()
     {
-        var run = await Programs(new StubBridge((_, _) => BridgeReply.Ok(new JsonObject()))).RunAsync("while (true) {}", null, TimeSpan.FromMilliseconds(300), CancellationToken.None);
+        var bridge = new StubBridge((_, _) =>
+        {
+            Thread.Sleep(50);
+
+            return BridgeReply.Ok(new JsonObject());
+        });
+
+        var run = await Programs(bridge).RunAsync("while (true) { ae.ping({}); }", null, TimeSpan.FromMilliseconds(300), CancellationToken.None);
 
         Assert.Equal(BridgeError.TimeoutType, run.Error!.Type);
+        Assert.InRange(bridge.Sent.Count, 1, JavaScriptPrograms.MostCalls - 1);
+    }
+
+    /// <summary>A recursion that never ends is stopped by the depth limit and said to be one, rather than overflowing the stack the server runs on.</summary>
+    [Fact]
+    public async Task Program_ThatRecursesWithoutEnd_IsStoppedByTheDepthLimit()
+    {
+        var run = await Programs(new StubBridge((_, _) => BridgeReply.Ok(new JsonObject())))
+            .RunAsync("function down(n) { return down(n + 1); } return down(0);", null, TimeSpan.FromSeconds(10), CancellationToken.None);
+
+        Assert.Equal("ProgramTooLarge", run.Error!.Type);
+        Assert.Contains(JavaScriptPrograms.DeepestRecursion.ToString(), run.Error.Message, StringComparison.Ordinal);
+    }
+
+    /// <summary>A loop that would outlast the statement count is ended by the count, well inside the time it was given.</summary>
+    [Fact]
+    public async Task Program_ThatExecutesMoreStatementsThanTheLimit_IsStopped()
+    {
+        var run = await Programs(new StubBridge((_, _) => BridgeReply.Ok(new JsonObject())))
+            .RunAsync("let total = 0; for (let i = 0; i < 100000000; i++) { total += i; } return total;", null, TimeSpan.FromSeconds(30), CancellationToken.None);
+
+        Assert.Equal("ProgramTooLarge", run.Error!.Type);
+        Assert.Contains(JavaScriptPrograms.MostStatements.ToString(), run.Error.Message, StringComparison.Ordinal);
+    }
+
+    /// <summary>The limits leave room for ordinary work: a recursion some levels deep and a loop of some thousands of steps still finish.</summary>
+    [Fact]
+    public async Task Program_WithinTheLimits_StillRuns()
+    {
+        var run = await Programs(new StubBridge((_, _) => BridgeReply.Ok(new JsonObject()))).RunAsync("""
+            function depth(n) { return n === 0 ? 0 : 1 + depth(n - 1); }
+            let total = 0;
+            for (let i = 0; i < 10000; i++) { total += i; }
+            return { depth: depth(100), total };
+            """, null, TimeSpan.FromSeconds(10), CancellationToken.None);
+
+        Assert.Null(run.Error);
+        Assert.Equal(100, run.Result!["depth"]!.GetValue<int>());
+        Assert.Equal(49995000, run.Result["total"]!.GetValue<int>());
     }
 
     [Fact]
