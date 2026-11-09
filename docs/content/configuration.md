@@ -23,8 +23,8 @@ A token — `HTTP__TOKEN`, `BRIDGE__TOKEN` — belongs in `~/.config/s3l-mcp-aft
 | `SNAIL_MCP_AFTEREFFECTS_DATA_DIRECTORY` | `~/.s3l-mcp-aftereffects` | The server's own files: the bridge token, the announcements the bridge reads, captures and renders when there is no project, the farm's logs, the client keys |
 | `SNAIL_MCP_AFTEREFFECTS_PROJECT_DIRECTORY` | the folder the client starts the server in | Where captures and renders land when nobody names a place, and the files area over HTTP. The home folder and the root count as no project; a server over HTTP ignores it |
 | `SNAIL_MCP_AFTEREFFECTS_SCRIPTING` | `Allow` | `Off` refuses `ae_script` and the `script` command inside `run_tools` and `run_program` |
-| `SNAIL_MCP_AFTEREFFECTS_SKILL_IDLE_MINUTES` | `0` | Unload a skill unused for this many minutes; `0` keeps skills loaded, which suits clients that cache the tool list. The `farm` skill stays while a job of the client runs |
-| `SNAIL_MCP_AFTEREFFECTS_IDLE_TIMEOUT_MINUTES` | `0` | Over stdio: exit after this long without a tool call; `0` disables it, since a client that ends closes the pipe and the server exits with it |
+| `SNAIL_MCP_AFTEREFFECTS_SKILL_IDLE_MINUTES` | `0` | Unload a skill unused for this many minutes; `0` keeps skills loaded, which suits clients that cache the tool list |
+| `SNAIL_MCP_AFTEREFFECTS_IDLE_TIMEOUT_MINUTES` | `0` | Over stdio: exit after this long without an MCP message; `0` disables it, since a client that ends closes the pipe and the server exits with it |
 | `SNAIL_MCP_AFTEREFFECTS_FARM_PARALLEL` | `1` | How many `aerender` renders the farm runs at once, 1 to 16 |
 | `SNAIL_MCP_AFTEREFFECTS_WORKERS__MAX` | `2` | Most After Effects workers the server keeps alive at once, 0 to 16; `0` switches launching off — [Workers](workers.md) |
 | `SNAIL_MCP_AFTEREFFECTS_WORKERS__MIN` | `0` | Workers kept running at all times; `0` launches them only when a client leases one |
@@ -40,9 +40,9 @@ A token — `HTTP__TOKEN`, `BRIDGE__TOKEN` — belongs in `~/.config/s3l-mcp-aft
 | `SNAIL_MCP_AFTEREFFECTS_BRIDGE__TOKEN` | — | The secret the bridge presents; empty reads the one the first server minted into `<data>/state/token` |
 | `SNAIL_MCP_AFTEREFFECTS_BRIDGE__TOKEN_FILE` | `<data>/state/token` | Where that token lives when it is kept elsewhere |
 | `SNAIL_MCP_AFTEREFFECTS_TRANSPORT` | `Stdio` | `Http` runs the server on its own beside After Effects — [Over HTTP](http.md) |
-| `SNAIL_MCP_AFTEREFFECTS_HTTP__URL` | `http://127.0.0.1:8080` | Over HTTP: where to listen; a container listens on `http://0.0.0.0:8080` |
+| `SNAIL_MCP_AFTEREFFECTS_HTTP__URL` | `http://127.0.0.1:8080` | Over HTTP: where to listen — the loopback, or `0.0.0.0` for every interface, as a container listens; another address of this machine is refused at the start. `SNAIL_MCP_AFTEREFFECTS_URL` wins over it and `SNAIL_MCP_AFTEREFFECTS_PORT` replaces its port |
 | `SNAIL_MCP_AFTEREFFECTS_HTTP__TOKEN` | — | The operator's key, every scope; required over HTTP unless `HTTP__TOKEN_FILE` holds one |
 | `SNAIL_MCP_AFTEREFFECTS_HTTP__TOKEN_FILE` | — | A file holding that key, the way a container receives a secret |
-| `SNAIL_MCP_AFTEREFFECTS_HTTP__PUBLIC_URL` | `HTTP__URL` | The address behind a reverse proxy, which signed links are built on; an `https` address marks the session cookie Secure |
+| `SNAIL_MCP_AFTEREFFECTS_HTTP__PUBLIC_URL` | the address the server listens on | The address behind a reverse proxy, which signed links are built on; an `https` address marks the session cookie Secure |
 | `SNAIL_MCP_AFTEREFFECTS_HTTP__LINK_MINUTES` | `15` | How long a signed link to a file works, 1 to 1440 |
 | `SNAIL_MCP_AFTEREFFECTS_HTTP__UPLOAD_PART_MB` | `16` | Megabytes an upload sends in one request, which a reverse proxy must read within its own body timeout |

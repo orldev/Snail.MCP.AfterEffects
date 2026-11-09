@@ -4,7 +4,7 @@ Part of the `farm` skill: these tools appear once it is loaded — by `ae_enable
 
 ## <code>ae_<wbr>farm_<wbr>submit</code>
 
-Queue a render of a composition on the farm: aerender renders the saved project in its own engine, so After Effects stays free and the job runs on after this call returns. The open project is saved first unless save is false; a project path renders that file instead. Frames, templates and settings are aerender's own. The answer is the job with its id; poll it with ae_farm_jobs.
+Queue a render of a composition on the farm: aerender renders the saved project in its own engine, so After Effects stays free and the job runs on after this call returns. The open project is saved first unless save is false; a project path renders that file instead. Frames, templates and settings are aerender's own. Answers when the render ends within `wait` seconds, with the farm's account of it; a longer render answers with the job running — read its resource (job://aftereffects/render/&lt;id&gt;) for frames rendered, the last frame and the log, or wait on it.
 
 *only adds · every call adds · reaches files or programs outside After Effects.*
 
@@ -25,6 +25,7 @@ Queue a render of a composition on the farm: aerender renders the saved project 
 | `retries` | `integer` | — | `0` | How many times a failed job is tried again; 0 by default. |
 | `multiFrame` | `boolean?` | — | `null` | Multi-frame rendering on or off; aerender's default when empty. |
 | `cpuPercent` | `integer?` | — | `null` | Most CPU percent multi-frame rendering may take, 1 to 100. |
+| `wait` | `integer` | — | `60` | Seconds to wait for the render to end before answering with it still running; 60 by default, 0 answers at once with the job to read or wait on. |
 
 <details><summary>JSON Schema</summary>
 
@@ -138,6 +139,11 @@ Queue a render of a composition on the farm: aerender renders the saved project 
         "null"
       ],
       "default": null
+    },
+    "wait": {
+      "description": "Seconds to wait for the render to end before answering with it still running; 60 by default, 0 answers at once with the job to read or wait on.",
+      "type": "integer",
+      "default": 60
     }
   },
   "required": [
@@ -150,15 +156,14 @@ Queue a render of a composition on the farm: aerender renders the saved project 
 
 ## <code>ae_<wbr>farm_<wbr>jobs</code>
 
-The farm's jobs, newest first, or one job by id: state (queued, running, done, failed, cancelled), frames rendered against the total when the span is known, the last frame and timecode, attempts and retries left, the error if any, and the tail of the log.
+The farm's jobs, newest first: state (queued, running, done, failed, cancelled), frames rendered against the total when the span is known, the last frame and timecode, attempts and retries left, the error if any, and the tail of the log. One render's progress is its resource, job://aftereffects/render/&lt;id&gt;.
 
 *read-only · repeat-safe · stays inside After Effects.*
 
 | Parameter | Type | Required | Default | Description |
 | --- | --- | --- | --- | --- |
-| `id` | `string?` | — | `null` | The job id as ae_farm_submit and ae_farm_jobs give it. |
 | `state` | `string?` | — | `null` | Only jobs in this state: queued, running, done, failed or cancelled. |
-| `logLines` | `integer?` | — | `null` | Lines from the end of each job's log to include; 10 for one job, 0 for the list. |
+| `logLines` | `integer?` | — | `null` | Lines from the end of each job's log to include; 0 by default. |
 
 <details><summary>JSON Schema</summary>
 
@@ -166,14 +171,6 @@ The farm's jobs, newest first, or one job by id: state (queued, running, done, f
 {
   "type": "object",
   "properties": {
-    "id": {
-      "description": "The job id as ae_farm_submit and ae_farm_jobs give it.",
-      "type": [
-        "string",
-        "null"
-      ],
-      "default": null
-    },
     "state": {
       "description": "Only jobs in this state: queued, running, done, failed or cancelled.",
       "type": [
@@ -183,7 +180,7 @@ The farm's jobs, newest first, or one job by id: state (queued, running, done, f
       "default": null
     },
     "logLines": {
-      "description": "Lines from the end of each job\u0027s log to include; 10 for one job, 0 for the list.",
+      "description": "Lines from the end of each job\u0027s log to include; 0 by default.",
       "type": [
         "integer",
         "null"
@@ -204,7 +201,7 @@ Stop a queued or running job; a running render is killed and its partial output 
 
 | Parameter | Type | Required | Default | Description |
 | --- | --- | --- | --- | --- |
-| `id` | `string` | yes | — | The job id as ae_farm_submit and ae_farm_jobs give it. |
+| `id` | `string` | yes | — | The farm's job id, as ae_farm_jobs lists it and the result of ae_farm_submit carries it. |
 
 <details><summary>JSON Schema</summary>
 
@@ -213,7 +210,7 @@ Stop a queued or running job; a running render is killed and its partial output 
   "type": "object",
   "properties": {
     "id": {
-      "description": "The job id as ae_farm_submit and ae_farm_jobs give it.",
+      "description": "The farm\u0027s job id, as ae_farm_jobs lists it and the result of ae_farm_submit carries it.",
       "type": "string"
     }
   },
@@ -233,7 +230,7 @@ Queue a finished, failed or cancelled job again as a new job with the same reque
 
 | Parameter | Type | Required | Default | Description |
 | --- | --- | --- | --- | --- |
-| `id` | `string` | yes | — | The job id as ae_farm_submit and ae_farm_jobs give it. |
+| `id` | `string` | yes | — | The farm's job id, as ae_farm_jobs lists it and the result of ae_farm_submit carries it. |
 
 <details><summary>JSON Schema</summary>
 
@@ -242,7 +239,7 @@ Queue a finished, failed or cancelled job again as a new job with the same reque
   "type": "object",
   "properties": {
     "id": {
-      "description": "The job id as ae_farm_submit and ae_farm_jobs give it.",
+      "description": "The farm\u0027s job id, as ae_farm_jobs lists it and the result of ae_farm_submit carries it.",
       "type": "string"
     }
   },

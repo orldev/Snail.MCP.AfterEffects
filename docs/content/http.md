@@ -15,7 +15,8 @@ dotnet Snail.MCP.AfterEffects.dll clients add titles --scope read,write,farm
 dotnet Snail.MCP.AfterEffects.dll
 ```
 
-The server refuses to start without a token: it would turn every client away while looking healthy. The token is the operator's key and
+The server refuses to start without a token — one line on stderr naming `SNAIL_MCP_AFTEREFFECTS_HTTP__TOKEN`, and exit code 1 — since it
+would turn every client away while looking healthy. The token is the operator's key and
 holds every scope; `clients add` mints a key per client, printed once, and `clients list` and `clients revoke <name>` manage them. A revoked
 key is turned away on its next request, without restarting the server.
 

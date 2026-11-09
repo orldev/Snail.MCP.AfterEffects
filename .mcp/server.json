@@ -60,7 +60,7 @@
         },
         {
           "name": "SNAIL_MCP_AFTEREFFECTS_IDLE_TIMEOUT_MINUTES",
-          "description": "Minutes without a tool call after which the process exits on its own; 0, the default, disables the watchdog, since a client that ends closes the pipe and the server exits with it.",
+          "description": "Over stdio: minutes without an MCP message after which the process exits on its own; 0, the default, disables the watchdog, since a client that ends closes the pipe and the server exits with it.",
           "isRequired": false,
           "default": "0"
         },
@@ -193,7 +193,7 @@
         },
         {
           "name": "SNAIL_MCP_AFTEREFFECTS_IDLE_TIMEOUT_MINUTES",
-          "description": "Minutes without a tool call after which the process exits on its own; 0, the default, disables the watchdog, since a client that ends closes the pipe and the server exits with it.",
+          "description": "Over stdio: minutes without an MCP message after which the process exits on its own; 0, the default, disables the watchdog, since a client that ends closes the pipe and the server exits with it.",
           "isRequired": false,
           "default": "0"
         },

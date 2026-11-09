@@ -101,7 +101,7 @@ Run any command of After Effects' menus, by its name in After Effects' language 
 
 ## <code>run_<wbr>tools</code>
 
-Run a list of bridge commands in one call and one undo step: each step names a command — the tool name without ae_, parameters in snake_case as the bridge reads them, e.g. {"command": "layer_add", "params": {"kind": "text", "text": "Hi"}} — and gets its own result or error. A build of twenty layers costs one round trip instead of twenty.
+Run a list of bridge commands in one call and one undo step: each step names a command — the tool name without ae_, parameters in snake_case as the bridge reads them, e.g. {"command": "layer_add", "params": {"kind": "text", "text": "Hi"}} — and gets its own result or error.
 
 *may overwrite or delete · every call adds · reaches files or programs outside After Effects.*
 

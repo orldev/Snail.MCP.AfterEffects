@@ -2,7 +2,7 @@
 
 ## <code>ae_<wbr>skills</code>
 
-The skills this server can load — groups of tools for animation, text, shapes, effects, 3D, compositing, rendering — with which are loaded and the tools each brings.
+Lists this server's skills — groups of tools loaded on demand — with whether each is loaded and its tools.
 
 *read-only · repeat-safe · stays inside After Effects.*
 
@@ -21,13 +21,13 @@ Takes no parameters.
 
 ## <code>ae_<wbr>enable_<wbr>skill</code>
 
-Load a skill: its tools join the tool list at once, and the client is told the list changed. Skills stay loaded until ae_disable_skill, unless the server unloads idle ones.
+Loads a skill: its tools join this session's tool list.
 
 *only adds · repeat-safe · stays inside After Effects.*
 
 | Parameter | Type | Required | Default | Description |
 | --- | --- | --- | --- | --- |
-| `name` | `string` | yes | — | Skill name as ae_skills lists it. |
+| `name` | `string` | yes | — | The skill's name, as the skills tool lists it. |
 
 <details><summary>JSON Schema</summary>
 
@@ -36,7 +36,7 @@ Load a skill: its tools join the tool list at once, and the client is told the l
   "type": "object",
   "properties": {
     "name": {
-      "description": "Skill name as ae_skills lists it.",
+      "description": "The skill\u0027s name, as the skills tool lists it.",
       "type": "string"
     }
   },
@@ -50,13 +50,13 @@ Load a skill: its tools join the tool list at once, and the client is told the l
 
 ## <code>ae_<wbr>disable_<wbr>skill</code>
 
-Unload a skill, taking its tools out of the list.
+Unloads a skill: its tools leave this session's tool list until it is loaded again.
 
 *only adds · repeat-safe · stays inside After Effects.*
 
 | Parameter | Type | Required | Default | Description |
 | --- | --- | --- | --- | --- |
-| `name` | `string` | yes | — | Skill name as ae_skills lists it. |
+| `name` | `string` | yes | — | The skill's name, as the skills tool lists it. |
 
 <details><summary>JSON Schema</summary>
 
@@ -65,7 +65,7 @@ Unload a skill, taking its tools out of the list.
   "type": "object",
   "properties": {
     "name": {
-      "description": "Skill name as ae_skills lists it.",
+      "description": "The skill\u0027s name, as the skills tool lists it.",
       "type": "string"
     }
   },

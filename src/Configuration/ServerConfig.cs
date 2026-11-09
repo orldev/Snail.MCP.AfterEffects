@@ -31,7 +31,7 @@ internal sealed class ServerConfig
     /// every folder of a server reached over HTTP, which sees none of the client's.</summary>
     public string? ProjectDirectory { get; set; }
 
-    /// <summary>Minutes without a tool call after which the process exits; 0, the default, disables the watchdog.</summary>
+    /// <summary>Over stdio, minutes without an MCP message after which the process exits; 0, the default, disables the watchdog.</summary>
     /// <remarks>Off by default because the transport already solves the problem it was for: a client that ends, crashes or is killed closes
     /// the pipe, and the stdio server exits within a second. A watchdog on top ended sessions that were merely idle between two tasks.</remarks>
     [Range(0, int.MaxValue)]

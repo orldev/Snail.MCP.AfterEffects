@@ -2,15 +2,16 @@
 
 ## <code>find_<wbr>tool</code>
 
-Find the tool for a task across every skill, loaded or not, by saying what you want in English words. Each match carries the tool's command and parameters as a program sends them (snake_case; the tool takes the same names in camelCase), which is enough to call it through run_program without loading anything; pass enable to load the skills the matches live in so the tools can be called by name. Ask here before concluding that something has no tool.
+Finds tools of this server for a task in words, best first, with the parameters of each. Ask it before deciding that no tool exists. It searches unloaded skills too: enable: true loads them, and run_program or this server's own run_tools (see its description) runs them without loading.
 
 *only adds · repeat-safe · stays inside After Effects.*
 
 | Parameter | Type | Required | Default | Description |
 | --- | --- | --- | --- | --- |
-| `intent` | `string` | yes | — | What you are trying to do, in English words: "ease the keyframes of a position", "add a drop shadow", "render the composition to a file". |
-| `limit` | `integer` | — | `8` | Most tools to return, 1 to 25; 8 by default. |
-| `enable` | `boolean` | — | `false` | Load the skills the matches live in, so their tools join the tool list; false by default, because the answer already carries what it takes to call them through run_program. |
+| `task` | `string?` | — | `null` | What you are trying to do, in words: 'ease the keyframes of a position', 'add a drop shadow', 'render the composition to a file'. |
+| `limit` | `integer` | — | `5` | How many tools to name, 1 to 20. |
+| `enable` | `boolean` | — | `false` | Load the skills of the tools found, so they join the tool list. |
+| `intent` | `string?` | — | `null` | Same as task. |
 
 <details><summary>JSON Schema</summary>
 
@@ -18,24 +19,33 @@ Find the tool for a task across every skill, loaded or not, by saying what you w
 {
   "type": "object",
   "properties": {
-    "intent": {
-      "description": "What you are trying to do, in English words: \u0022ease the keyframes of a position\u0022, \u0022add a drop shadow\u0022, \u0022render the composition to a file\u0022.",
-      "type": "string"
+    "task": {
+      "description": "What you are trying to do, in words: \u0027ease the keyframes of a position\u0027, \u0027add a drop shadow\u0027, \u0027render the composition to a file\u0027.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
     },
     "limit": {
-      "description": "Most tools to return, 1 to 25; 8 by default.",
+      "description": "How many tools to name, 1 to 20.",
       "type": "integer",
-      "default": 8
+      "default": 5
     },
     "enable": {
-      "description": "Load the skills the matches live in, so their tools join the tool list; false by default, because the answer already carries what it takes to call them through run_program.",
+      "description": "Load the skills of the tools found, so they join the tool list.",
       "type": "boolean",
       "default": false
+    },
+    "intent": {
+      "description": "Same as task.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
     }
-  },
-  "required": [
-    "intent"
-  ]
+  }
 }
 ```
 

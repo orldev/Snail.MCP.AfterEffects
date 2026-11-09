@@ -3,17 +3,17 @@
 147 tools in 24 families: 40 always on, the rest in skills that load on demand.
 The names, descriptions and schemas are generated from the server itself, so they are exactly what the model receives in `tools/list`.
 
-Skills load with `ae_enable_skill`, or through `find_tool` for the tools a search returns. A loaded skill stays loaded until `ae_disable_skill`, unless `SNAIL_MCP_AFTEREFFECTS_SKILL_IDLE_MINUTES` unloads idle ones; `farm` stays while a render job runs. The table shows the first sentence of each description.
+Skills load with `ae_enable_skill`, or through `find_tool` for the tools a search returns. A loaded skill stays loaded until `ae_disable_skill`, unless `SNAIL_MCP_AFTEREFFECTS_SKILL_IDLE_MINUTES` unloads idle ones. Each MCP session loads its own; a client of the 2026-07-28 revision keeps no session and shares one set with every other such client. The table shows the first sentence of each description.
 
 | Tool | Family | Skill | What it does |
 | --- | --- | --- | --- |
 | [`ae_diagnose`](diagnostics.md#ae_diagnose) | Diagnostics and the bridge | — | Health of this server and of the link into After Effects: the server version, whether After Effects has connected, the port the bridge dials, where the token… |
 | [`ae_install_bridge`](diagnostics.md#ae_install_bridge) | Diagnostics and the bridge | — | Install the bridge this server ships into After Effects' user scripts folder (Startup runs it on every launch) and, when After Effects is running, start it t… |
-| [`ae_skills`](skills.md#ae_skills) | Skills | — | The skills this server can load — groups of tools for animation, text, shapes, effects, 3D, compositing, rendering — with which are loaded and the tools each… |
-| [`ae_enable_skill`](skills.md#ae_enable_skill) | Skills | — | Load a skill: its tools join the tool list at once, and the client is told the list changed. |
-| [`ae_disable_skill`](skills.md#ae_disable_skill) | Skills | — | Unload a skill, taking its tools out of the list. |
-| [`find_tool`](discovery.md#find_tool) | Finding a tool | — | Find the tool for a task across every skill, loaded or not, by saying what you want in English words. |
-| [`run_program`](programs.md#run_program) | Programs | — | Run a small JavaScript program here on the server that calls the bridge commands itself — ae.layer_add({...}), ae.property_set({...}) — with loops and the re… |
+| [`ae_skills`](skills.md#ae_skills) | Skills | — | Lists this server's skills — groups of tools loaded on demand — with whether each is loaded and its tools. |
+| [`ae_enable_skill`](skills.md#ae_enable_skill) | Skills | — | Loads a skill: its tools join this session's tool list. |
+| [`ae_disable_skill`](skills.md#ae_disable_skill) | Skills | — | Unloads a skill: its tools leave this session's tool list until it is loaded again. |
+| [`find_tool`](discovery.md#find_tool) | Finding a tool | — | Finds tools of this server for a task in words, best first, with the parameters of each. |
+| [`run_program`](programs.md#run_program) | Programs | — | Run a JavaScript program here whose functions are the bridge commands — ae.layer_add({...}): the command find_tool names beside a tool, parameters in snake_c… |
 | [`ae_undo`](application.md#ae_undo) | Undo, menu commands, sequences and scripts | — | Undo the last steps in After Effects; every tool call is one step, run_tools is one step for its whole list. |
 | [`ae_redo`](application.md#ae_redo) | Undo, menu commands, sequences and scripts | — | Redo steps undone with ae_undo; the answer says it was asked for. |
 | [`ae_run_menu_command`](application.md#ae_run_menu_command) | Undo, menu commands, sequences and scripts | — | Run any command of After Effects' menus, by its name in After Effects' language or by its numeric id, on the current selection: ae_select_layers chooses the … |
@@ -110,7 +110,7 @@ Skills load with `ae_enable_skill`, or through `find_tool` for the tools a searc
 | [`ae_watch_folder`](rendering.md#ae_watch_folder) | The render queue | rendering | Turn this After Effects into a watch folder render node, as File &gt; Watch Folder does, or stop or pause it. |
 | [`ae_render_in_media_encoder`](rendering.md#ae_render_in_media_encoder) | The render queue | rendering | Send the render queue to Adobe Media Encoder, which renders in its own process and leaves After Effects free; with render_immediately it starts at once. |
 | [`ae_farm_submit`](farm.md#ae_farm_submit) | Background renders through aerender | farm | Queue a render of a composition on the farm: aerender renders the saved project in its own engine, so After Effects stays free and the job runs on after this… |
-| [`ae_farm_jobs`](farm.md#ae_farm_jobs) | Background renders through aerender | farm | The farm's jobs, newest first, or one job by id: state (queued, running, done, failed, cancelled), frames rendered against the total when the span is known, … |
+| [`ae_farm_jobs`](farm.md#ae_farm_jobs) | Background renders through aerender | farm | The farm's jobs, newest first: state (queued, running, done, failed, cancelled), frames rendered against the total when the span is known, the last frame and… |
 | [`ae_farm_cancel`](farm.md#ae_farm_cancel) | Background renders through aerender | farm | Stop a queued or running job; a running render is killed and its partial output stays on disk. |
 | [`ae_farm_retry`](farm.md#ae_farm_retry) | Background renders through aerender | farm | Queue a finished, failed or cancelled job again as a new job with the same request. |
 | [`ae_farm_cleanup`](farm.md#ae_farm_cleanup) | Background renders through aerender | farm | Forget finished jobs older than a number of minutes, and delete their logs; 0 forgets every finished job. |

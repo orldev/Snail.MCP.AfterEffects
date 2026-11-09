@@ -2,15 +2,20 @@
 
 ## <code>run_<wbr>program</code>
 
-Run a small JavaScript program here on the server that calls the bridge commands itself — ae.layer_add({...}), ae.property_set({...}) — with loops and the results in hand, so a build that decides as it goes costs one call and one reply. Only what the program returns and logs comes back. The program reaches the commands only: no files, no network, no After Effects API beyond them.
+Run a JavaScript program here whose functions are the bridge commands — ae.layer_add({...}): the command find_tool names beside a tool, parameters in snake_case — so a build that decides as it goes costs one call. A failed command throws with the bridge's type.
+What the program returns comes back as result, log(…) writes lines that come back with it, and input is the object
+passed alongside. A failed or refused command throws { error, message, hint, type, details }, which the program may
+catch and act on; a command the server does not have stops the program with the names nearest to it. The program
+reaches nothing but the commands: no files, no network, no clock but its own. The reply lists every command it sent.
+Limits: 200 commands, 1000000 statements, calls nested 256 deep, 32 MB of memory, and 120 seconds unless timeoutSeconds gives up to 600.
 
 *may overwrite or delete · every call adds · reaches files or programs outside After Effects.*
 
 | Parameter | Type | Required | Default | Description |
 | --- | --- | --- | --- | --- |
-| `code` | `string` | yes | — | JavaScript. Call commands as ae.&lt;command&gt;({...}) — the tool name without ae_, parameters in snake_case — read input, return a value, log(...) to add a line. A failed command throws {type, message, details}. Up to 200 commands, no files, no network. |
-| `input` | `object?` | — | `null` | Values the program reads as input, e.g. {"count": 8}. |
-| `timeoutSeconds` | `integer` | — | `120` | Seconds to wait for After Effects, 1 to 600. |
+| `code` | `string` | yes | — | The body of the program: JavaScript in strict mode, with return for whatever should come back as result. |
+| `input` | `object?` | — | `null` | Values the program reads as input, so that the code itself can stay the same between calls. |
+| `timeoutSeconds` | `integer?` | — | `null` | Seconds the program may run; the description of run_program states the default and the most it may be given. |
 
 <details><summary>JSON Schema</summary>
 
@@ -19,11 +24,11 @@ Run a small JavaScript program here on the server that calls the bridge commands
   "type": "object",
   "properties": {
     "code": {
-      "description": "JavaScript. Call commands as ae.\u003Ccommand\u003E({...}) \u2014 the tool name without ae_, parameters in snake_case \u2014 read input, return a value, log(...) to add a line. A failed command throws {type, message, details}. Up to 200 commands, no files, no network.",
+      "description": "The body of the program: JavaScript in strict mode, with return for whatever should come back as result.",
       "type": "string"
     },
     "input": {
-      "description": "Values the program reads as input, e.g. {\u0022count\u0022: 8}.",
+      "description": "Values the program reads as input, so that the code itself can stay the same between calls.",
       "type": [
         "object",
         "null"
@@ -31,9 +36,12 @@ Run a small JavaScript program here on the server that calls the bridge commands
       "default": null
     },
     "timeoutSeconds": {
-      "description": "Seconds to wait for After Effects, 1 to 600.",
-      "type": "integer",
-      "default": 120
+      "description": "Seconds the program may run; the description of run_program states the default and the most it may be given.",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "default": null
     }
   },
   "required": [

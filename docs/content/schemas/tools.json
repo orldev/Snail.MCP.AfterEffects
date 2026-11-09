@@ -31,7 +31,7 @@
   },
   {
     "name": "ae_skills",
-    "description": "The skills this server can load \u2014 groups of tools for animation, text, shapes, effects, 3D, compositing, rendering \u2014 with which are loaded and the tools each brings.",
+    "description": "Lists this server\u0027s skills \u2014 groups of tools loaded on demand \u2014 with whether each is loaded and its tools.",
     "inputSchema": {
       "type": "object",
       "properties": {}
@@ -46,12 +46,12 @@
   },
   {
     "name": "ae_enable_skill",
-    "description": "Load a skill: its tools join the tool list at once, and the client is told the list changed. Skills stay loaded until ae_disable_skill, unless the server unloads idle ones.",
+    "description": "Loads a skill: its tools join this session\u0027s tool list.",
     "inputSchema": {
       "type": "object",
       "properties": {
         "name": {
-          "description": "Skill name as ae_skills lists it.",
+          "description": "The skill\u0027s name, as the skills tool lists it.",
           "type": "string"
         }
       },
@@ -69,12 +69,12 @@
   },
   {
     "name": "ae_disable_skill",
-    "description": "Unload a skill, taking its tools out of the list.",
+    "description": "Unloads a skill: its tools leave this session\u0027s tool list until it is loaded again.",
     "inputSchema": {
       "type": "object",
       "properties": {
         "name": {
-          "description": "Skill name as ae_skills lists it.",
+          "description": "The skill\u0027s name, as the skills tool lists it.",
           "type": "string"
         }
       },
@@ -92,28 +92,37 @@
   },
   {
     "name": "find_tool",
-    "description": "Find the tool for a task across every skill, loaded or not, by saying what you want in English words. Each match carries the tool\u0027s command and parameters as a program sends them (snake_case; the tool takes the same names in camelCase), which is enough to call it through run_program without loading anything; pass enable to load the skills the matches live in so the tools can be called by name. Ask here before concluding that something has no tool.",
+    "description": "Finds tools of this server for a task in words, best first, with the parameters of each. Ask it before deciding that no tool exists. It searches unloaded skills too: enable: true loads them, and run_program or this server\u0027s own run_tools (see its description) runs them without loading.",
     "inputSchema": {
       "type": "object",
       "properties": {
-        "intent": {
-          "description": "What you are trying to do, in English words: \u0022ease the keyframes of a position\u0022, \u0022add a drop shadow\u0022, \u0022render the composition to a file\u0022.",
-          "type": "string"
+        "task": {
+          "description": "What you are trying to do, in words: \u0027ease the keyframes of a position\u0027, \u0027add a drop shadow\u0027, \u0027render the composition to a file\u0027.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null
         },
         "limit": {
-          "description": "Most tools to return, 1 to 25; 8 by default.",
+          "description": "How many tools to name, 1 to 20.",
           "type": "integer",
-          "default": 8
+          "default": 5
         },
         "enable": {
-          "description": "Load the skills the matches live in, so their tools join the tool list; false by default, because the answer already carries what it takes to call them through run_program.",
+          "description": "Load the skills of the tools found, so they join the tool list.",
           "type": "boolean",
           "default": false
+        },
+        "intent": {
+          "description": "Same as task.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null
         }
-      },
-      "required": [
-        "intent"
-      ]
+      }
     },
     "annotations": {
       "destructiveHint": false,
@@ -125,16 +134,16 @@
   },
   {
     "name": "run_program",
-    "description": "Run a small JavaScript program here on the server that calls the bridge commands itself \u2014 ae.layer_add({...}), ae.property_set({...}) \u2014 with loops and the results in hand, so a build that decides as it goes costs one call and one reply. Only what the program returns and logs comes back. The program reaches the commands only: no files, no network, no After Effects API beyond them.",
+    "description": "Run a JavaScript program here whose functions are the bridge commands \u2014 ae.layer_add({...}): the command find_tool names beside a tool, parameters in snake_case \u2014 so a build that decides as it goes costs one call. A failed command throws with the bridge\u0027s type.\nWhat the program returns comes back as result, log(\u2026) writes lines that come back with it, and input is the object\npassed alongside. A failed or refused command throws { error, message, hint, type, details }, which the program may\ncatch and act on; a command the server does not have stops the program with the names nearest to it. The program\nreaches nothing but the commands: no files, no network, no clock but its own. The reply lists every command it sent.\nLimits: 200 commands, 1000000 statements, calls nested 256 deep, 32 MB of memory, and 120 seconds unless timeoutSeconds gives up to 600.",
     "inputSchema": {
       "type": "object",
       "properties": {
         "code": {
-          "description": "JavaScript. Call commands as ae.\u003Ccommand\u003E({...}) \u2014 the tool name without ae_, parameters in snake_case \u2014 read input, return a value, log(...) to add a line. A failed command throws {type, message, details}. Up to 200 commands, no files, no network.",
+          "description": "The body of the program: JavaScript in strict mode, with return for whatever should come back as result.",
           "type": "string"
         },
         "input": {
-          "description": "Values the program reads as input, e.g. {\u0022count\u0022: 8}.",
+          "description": "Values the program reads as input, so that the code itself can stay the same between calls.",
           "type": [
             "object",
             "null"
@@ -142,9 +151,12 @@
           "default": null
         },
         "timeoutSeconds": {
-          "description": "Seconds to wait for After Effects, 1 to 600.",
-          "type": "integer",
-          "default": 120
+          "description": "Seconds the program may run; the description of run_program states the default and the most it may be given.",
+          "type": [
+            "integer",
+            "null"
+          ],
+          "default": null
         }
       },
       "required": [
@@ -240,7 +252,7 @@
   },
   {
     "name": "run_tools",
-    "description": "Run a list of bridge commands in one call and one undo step: each step names a command \u2014 the tool name without ae_, parameters in snake_case as the bridge reads them, e.g. {\u0022command\u0022: \u0022layer_add\u0022, \u0022params\u0022: {\u0022kind\u0022: \u0022text\u0022, \u0022text\u0022: \u0022Hi\u0022}} \u2014 and gets its own result or error. A build of twenty layers costs one round trip instead of twenty.",
+    "description": "Run a list of bridge commands in one call and one undo step: each step names a command \u2014 the tool name without ae_, parameters in snake_case as the bridge reads them, e.g. {\u0022command\u0022: \u0022layer_add\u0022, \u0022params\u0022: {\u0022kind\u0022: \u0022text\u0022, \u0022text\u0022: \u0022Hi\u0022}} \u2014 and gets its own result or error.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -6497,7 +6509,7 @@
   },
   {
     "name": "ae_farm_submit",
-    "description": "Queue a render of a composition on the farm: aerender renders the saved project in its own engine, so After Effects stays free and the job runs on after this call returns. The open project is saved first unless save is false; a project path renders that file instead. Frames, templates and settings are aerender\u0027s own. The answer is the job with its id; poll it with ae_farm_jobs.",
+    "description": "Queue a render of a composition on the farm: aerender renders the saved project in its own engine, so After Effects stays free and the job runs on after this call returns. The open project is saved first unless save is false; a project path renders that file instead. Frames, templates and settings are aerender\u0027s own. Answers when the render ends within \u0060wait\u0060 seconds, with the farm\u0027s account of it; a longer render answers with the job running \u2014 read its resource (job://aftereffects/render/\u003Cid\u003E) for frames rendered, the last frame and the log, or wait on it.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -6607,6 +6619,11 @@
             "null"
           ],
           "default": null
+        },
+        "wait": {
+          "description": "Seconds to wait for the render to end before answering with it still running; 60 by default, 0 answers at once with the job to read or wait on.",
+          "type": "integer",
+          "default": 60
         }
       },
       "required": [
@@ -6623,18 +6640,10 @@
   },
   {
     "name": "ae_farm_jobs",
-    "description": "The farm\u0027s jobs, newest first, or one job by id: state (queued, running, done, failed, cancelled), frames rendered against the total when the span is known, the last frame and timecode, attempts and retries left, the error if any, and the tail of the log.",
+    "description": "The farm\u0027s jobs, newest first: state (queued, running, done, failed, cancelled), frames rendered against the total when the span is known, the last frame and timecode, attempts and retries left, the error if any, and the tail of the log. One render\u0027s progress is its resource, job://aftereffects/render/\u003Cid\u003E.",
     "inputSchema": {
       "type": "object",
       "properties": {
-        "id": {
-          "description": "The job id as ae_farm_submit and ae_farm_jobs give it.",
-          "type": [
-            "string",
-            "null"
-          ],
-          "default": null
-        },
         "state": {
           "description": "Only jobs in this state: queued, running, done, failed or cancelled.",
           "type": [
@@ -6644,7 +6653,7 @@
           "default": null
         },
         "logLines": {
-          "description": "Lines from the end of each job\u0027s log to include; 10 for one job, 0 for the list.",
+          "description": "Lines from the end of each job\u0027s log to include; 0 by default.",
           "type": [
             "integer",
             "null"
@@ -6668,7 +6677,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "description": "The job id as ae_farm_submit and ae_farm_jobs give it.",
+          "description": "The farm\u0027s job id, as ae_farm_jobs lists it and the result of ae_farm_submit carries it.",
           "type": "string"
         }
       },
@@ -6691,7 +6700,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "description": "The job id as ae_farm_submit and ae_farm_jobs give it.",
+          "description": "The farm\u0027s job id, as ae_farm_jobs lists it and the result of ae_farm_submit carries it.",
           "type": "string"
         }
       },

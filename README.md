@@ -88,7 +88,7 @@ first that exists of `.s3l-mcp-aftereffects.json` and `s3l-mcp-aftereffects.json
 | `SNAIL_MCP_AFTEREFFECTS_WORKERS__MAX` | `2` | Most After Effects workers the server launches for clients that lease one; `0` switches it off |
 | `SNAIL_MCP_AFTEREFFECTS_WORKERS__IDLE_MINUTES` | `15` | Minutes an idle worker waits before quitting on its own |
 | `SNAIL_MCP_AFTEREFFECTS_TRANSPORT` | `Stdio` | `Http` runs the server on its own beside After Effects |
-| `SNAIL_MCP_AFTEREFFECTS_HTTP__URL` | `http://127.0.0.1:8080` | Where the HTTP server listens |
+| `SNAIL_MCP_AFTEREFFECTS_HTTP__URL` | `http://127.0.0.1:8080` | Where the HTTP server listens: the loopback, or `0.0.0.0` for every interface |
 | `SNAIL_MCP_AFTEREFFECTS_HTTP__TOKEN` | | The operator's key; `HTTP__TOKEN_FILE` reads it from a file |
 | `SNAIL_MCP_AFTEREFFECTS_HTTP__PUBLIC_URL` | | The address behind a reverse proxy, which signed links are built on |
 
