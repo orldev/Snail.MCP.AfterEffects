@@ -91,6 +91,8 @@ internal sealed class BridgeOptions
 internal sealed class HttpOptions
 {
     /// <summary>The address to listen on; a container listens on every interface, a server started by hand on the loopback only.</summary>
+    /// <remarks>The HTTP server replaces it with the address it really listens on, which <c>Url</c> at the root (<c>SNAIL_MCP_AFTEREFFECTS_URL</c>)
+    /// or a <c>Port</c> may have moved, so what is built on it — the links, the status page — names that address.</remarks>
     public string Url { get; set; } = DefaultUrl;
 
     public const string DefaultUrl = "http://127.0.0.1:8080";

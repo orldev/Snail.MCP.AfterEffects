@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Snail.MCP.AfterEffects.Application.Farm;
 using Snail.MCP.AfterEffects.Configuration;
 using Snail.Sdk.Mcp.Hosting;
 
@@ -28,10 +30,15 @@ internal static class McpServerRegistrationExtensions
                 .AddFarm()
                 .AddWorkers()
                 .AddStorage()
-                .AddIdleShutdown(TimeSpan.FromMinutes(config.IdleTimeoutMinutes))
+                .AddIdleShutdown(TimeSpan.FromMinutes(config.IdleTimeoutMinutes), IsRendering)
                 .AddMcpTransport(config);
 
             return builder;
         }
     }
+
+    /// <summary>Whether a render of the farm is queued or running: a client that waits for its frames sends nothing meanwhile,
+    /// and the idle shutdown would otherwise stop the server, and the renders it follows, under it.</summary>
+    private static bool IsRendering(IServiceProvider services) =>
+        services.GetService<RenderFarm>()?.Jobs.Any(job => job.IsActive) == true;
 }

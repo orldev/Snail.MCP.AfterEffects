@@ -10,6 +10,9 @@ namespace Snail.MCP.AfterEffects.Application.Access;
 /// once, and never replaced, so a token the bridge has already read stays the one every server expects.</remarks>
 internal sealed class BridgeToken(BridgeOptions options, ILogger<BridgeToken> logger)
 {
+    /// <summary>How many random bytes the token is, the length <see cref="ServerSecret.ReadOrCreateHex(string)"/> writes; the file holds twice as many hex digits.</summary>
+    private const int TokenBytes = 32;
+
     private readonly Lazy<string> _value = new(() => Resolve(options, logger));
 
     public string Value => _value.Value;
@@ -35,10 +38,9 @@ internal sealed class BridgeToken(BridgeOptions options, ILogger<BridgeToken> lo
         }
 
         var file = options.TokenFile ?? throw new InvalidOperationException("The bridge token file is not configured.");
-        var isNew = !File.Exists(file);
-        var token = ServerSecret.ReadOrCreateHex(file);
+        var token = ServerSecret.ReadOrCreateHex(file, TokenBytes, out var created);
 
-        if (isNew)
+        if (created)
         {
             Log.BridgeTokenWritten(logger, file);
         }

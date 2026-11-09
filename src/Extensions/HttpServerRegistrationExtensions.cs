@@ -22,14 +22,21 @@ internal static class HttpServerRegistrationExtensions
 
     /// <summary>The host of the HTTP server over <paramref name="settings"/>, listening where <paramref name="endpoint"/> says, its services
     /// registered and nothing yet built: what the program runs, and what a test builds in its own process with a bridge of its own.</summary>
+    /// <remarks>The address it listens on is written back into <see cref="HttpOptions.Url"/>: <c>SNAIL_MCP_AFTEREFFECTS_URL</c> or a <c>Port</c>
+    /// moves the listener away from <c>Http:Url</c>, and the links, the status page and the cookie policy built on that setting named the old address.</remarks>
     public static WebApplicationBuilder CreateHttpBuilder(string[] args, McpEndpoint endpoint, IConfiguration settings)
     {
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { Args = args });
+        var listening = endpoint.Url.AbsoluteUri.TrimEnd('/');
         builder.Configuration.AddConfiguration(settings);
 
-        return builder
+        builder
             .UseMcpEndpoint(endpoint)
             .ConfigureHttpServer(settings);
+
+        builder.Services.PostConfigure<ServerConfig>(config => config.Http.Url = listening);
+
+        return builder;
     }
 
     extension(WebApplicationBuilder builder)
