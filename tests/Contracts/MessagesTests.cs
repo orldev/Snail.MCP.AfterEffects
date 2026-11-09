@@ -21,7 +21,7 @@ public sealed partial class MessagesTests
     [InlineData(BridgeError.WorkerGoneType)]
     [InlineData("UnknownCommand")]
     [InlineData("BadRequest")]
-    [InlineData("ScriptingDisabled")]
+    [InlineData(FailureTypes.ScriptingDisabled)]
     [InlineData("NotFound")]
     [InlineData("NotAText")]
     [InlineData("Busy")]
@@ -177,21 +177,10 @@ public sealed partial class MessagesTests
         Assert.Contains("stopping", Messages.WorkerNotReady("w1", "stopping"), StringComparison.Ordinal);
         Assert.Contains("j7", Messages.UnknownJob("j7"), StringComparison.Ordinal);
         Assert.Contains("j7", Messages.JobNotActive("j7", "done"), StringComparison.Ordinal);
-        Assert.Contains("text", Messages.UnknownSkill("text"), StringComparison.Ordinal);
-        Assert.Contains("text", Messages.KnownSkills(["text", "shapes"]), StringComparison.Ordinal);
         Assert.Contains("nowhere", Messages.NoSuchArea("nowhere"), StringComparison.Ordinal);
         Assert.Contains("files", Messages.PathOutsideArea("../x", "files"), StringComparison.Ordinal);
         Assert.Contains("plate.png", Messages.CaptureNotWritten("plate.png"), StringComparison.Ordinal);
-        Assert.Contains("blur", Messages.NoToolFor("blur"), StringComparison.Ordinal);
         Assert.Contains("j7", Messages.CancelledFromThePage("j7"), StringComparison.Ordinal);
-    }
-
-    /// <summary>A server that ships skills says which; one that ships none says that instead of listing nothing.</summary>
-    [Fact]
-    public void TheSkillsHint_ReadsRight_WithSkillsAndWithout()
-    {
-        Assert.Contains("ae_skills", Messages.KnownSkills(["text"]), StringComparison.Ordinal);
-        Assert.Contains("always on", Messages.KnownSkills([]), StringComparison.Ordinal);
     }
 
     /// <summary>Nothing deleted is said as such, and a deletion names what went.</summary>

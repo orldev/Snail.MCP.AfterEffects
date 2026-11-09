@@ -3,6 +3,7 @@ using Snail.MCP.AfterEffects.Application.Access;
 using Snail.MCP.AfterEffects.Application.Announcements;
 using Snail.MCP.AfterEffects.Configuration;
 using Snail.MCP.AfterEffects.Tools.Prompts;
+using Snail.Sdk.Mcp.Hosting;
 
 namespace Snail.MCP.AfterEffects.Application.Diagnostics;
 
@@ -23,8 +24,8 @@ internal sealed class ServerHealth(ServerConfig config, IAfterEffectsBridge brid
         {
             ["server"] = new JsonObject
             {
-                ["name"] = ThisAssembly.Name,
-                ["version"] = ThisAssembly.InformationalVersion,
+                ["name"] = ServerIdentity.NameOf(typeof(ServerHealth).Assembly),
+                ["version"] = ServerIdentity.VersionOf(typeof(ServerHealth).Assembly),
             },
             ["afterEffects"] = Describe(ping),
             ["bridge"] = new JsonObject
@@ -40,7 +41,7 @@ internal sealed class ServerHealth(ServerConfig config, IAfterEffectsBridge brid
                 ["announcements"] = announcement.Folder,
             },
             ["extension"] = freshness.Describe(bridge.Hello),
-            ["transport"] = new JsonObject { ["kind"] = config.Transport is Transport.Http ? "http" : "stdio" },
+            ["transport"] = new JsonObject { ["kind"] = config.Transport is McpTransport.Http ? "http" : "stdio" },
             ["project"] = config.ProjectDirectory,
             ["dataDirectory"] = config.DataDirectory,
             ["idleTimeoutMinutes"] = config.IdleTimeoutMinutes,

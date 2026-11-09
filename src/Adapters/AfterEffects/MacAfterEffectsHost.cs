@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using Snail.MCP.AfterEffects.Configuration;
+using Snail.Sdk.Mcp.Hosting;
 
 namespace Snail.MCP.AfterEffects.Adapters.AfterEffects;
 
@@ -21,7 +21,7 @@ internal sealed class MacAfterEffectsHost(ILogger<MacAfterEffectsHost> logger) :
     /// <summary>How long pgrep or ps may take to answer whether After Effects runs.</summary>
     private static readonly TimeSpan Lookup = TimeSpan.FromSeconds(5);
 
-    private static string PreferencesRoot => Path.Combine(ServerPaths.Home, "Library", "Preferences", "Adobe", "After Effects");
+    private static string PreferencesRoot => Path.Combine(ServerFolders.Home, "Library", "Preferences", "Adobe", "After Effects");
 
     public bool IsRunning => RunningBundle() is not null;
 

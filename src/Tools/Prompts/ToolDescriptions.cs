@@ -14,8 +14,6 @@ internal static partial class ToolDescriptions
 
         public const string Discard = "Throw away the open project's unsaved changes instead of refusing.";
 
-        public const string SkillName = "Skill name as ae_skills lists it.";
-
         public const string Label = "Label colour as a number 0 to 16 as After Effects numbers them; 0 is none.";
 
         /// <summary>States <c>ToolLimits.MaxTimeoutSeconds</c>; a guard test keeps the number equal.</summary>
@@ -29,11 +27,6 @@ internal static partial class ToolDescriptions
             "Path of the property, segments separated by /: match names as ae_property_tree lists them (ADBE Transform Group/ADBE Position), display " +
             "names in After Effects' language, the English names of the common ones (Transform/Position, Effects/<effect>/<parameter>, Masks/1/Mask Path, " +
             "Text/Source Text), or 1-based indices.";
-
-        /// <summary>States <c>JavaScriptPrograms.MostCalls</c>; a guard test keeps the number equal.</summary>
-        public const string ProgramCode =
-            "JavaScript. Call commands as ae.<command>({...}) — the tool name without ae_, parameters in snake_case — read input, return a value, " +
-            "log(...) to add a line. A failed command throws {type, message, details}. Up to 200 commands, no files, no network.";
 
         public const string Steps =
             "The steps as a JSON array of {\"command\": <bridge command>, \"params\": {...}}; commands and parameters are the tools' in snake_case " +

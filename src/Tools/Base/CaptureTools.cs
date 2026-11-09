@@ -30,20 +30,20 @@ internal sealed class CaptureTools(IAfterEffectsBridge bridge, Captures captures
 
             if (!reply.IsOk || reply.Result?["path"]?.ToString() is not { } written)
             {
-                return ToolResponse.From(reply);
+                return BridgeAnswers.Of(reply);
             }
 
             var picture = await Captures.ReadWhenCompleteAsync(target, timeout, cancellationToken).ConfigureAwait(false);
 
             if (picture is null)
             {
-                return ToolResponse.Failure(Messages.CaptureNotWritten(written), Messages.CaptureFailedHint);
+                return ToolAnswer.Failed(Messages.CaptureNotWritten(written), Messages.CaptureFailedHint, FailureTypes.CaptureFailed);
             }
 
             var data = reply.Result.AsObject();
             data.Remove("pending");
             data["bytes"] = picture.Length;
 
-            return ToolResponse.Pictured(data, picture, "image/png");
+            return ToolAnswer.Ok(data).WithImage(picture, "image/png");
         }).ConfigureAwait(false);
 }

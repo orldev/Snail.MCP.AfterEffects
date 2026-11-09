@@ -6,6 +6,7 @@ using Snail.MCP.AfterEffects.Application.Farm;
 using Snail.MCP.AfterEffects.Application.Sessions;
 using Snail.MCP.AfterEffects.Application.Storage;
 using Snail.MCP.AfterEffects.Configuration;
+using Snail.Sdk.Mcp.Hosting;
 
 namespace Snail.MCP.AfterEffects.Tests.Application;
 
@@ -16,10 +17,10 @@ public sealed class VolumeTests : IDisposable
 
     public VolumeTests()
     {
-        var config = new ServerConfig { DataDirectory = _root, Transport = Transport.Http };
+        var config = new ServerConfig { DataDirectory = _root, Transport = McpTransport.Http };
         ServerConfigExtensions.Normalize(config);
-        var clients = new ClientSessions([], [], null, new ServiceCollection().BuildServiceProvider(), TimeProvider.System);
-        var farm = new RenderFarm(new FakeAerender(_ => new FakeAerender.FakeRenderProcess([], 0), executable: null), config, clients, TimeProvider.System, NullLogger<RenderFarm>.Instance);
+        var clients = new ClientSessions(null);
+        var farm = new RenderFarm(new FakeAerender(_ => new FakeAerender.FakeRenderProcess([], 0), executable: null), config, TimeProvider.System, NullLogger<RenderFarm>.Instance);
         _volume = new Volume(config, farm);
     }
 

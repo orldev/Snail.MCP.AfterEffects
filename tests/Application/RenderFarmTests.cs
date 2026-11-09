@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using Snail.MCP.AfterEffects.Application.Farm;
-using Snail.MCP.AfterEffects.Application.Sessions;
 using Snail.MCP.AfterEffects.Configuration;
 
 namespace Snail.MCP.AfterEffects.Tests.Application;
@@ -8,7 +7,6 @@ namespace Snail.MCP.AfterEffects.Tests.Application;
 public sealed class RenderFarmTests : IAsyncDisposable
 {
     private readonly string _root = TestFolder.Create();
-    private readonly ClientSessions _clients = new([], [], null, new ServiceCollection().BuildServiceProvider(), TimeProvider.System);
     private RenderFarm? _farm;
 
     private static readonly string[] Frames =
@@ -99,7 +97,7 @@ public sealed class RenderFarmTests : IAsyncDisposable
     private async Task<RenderFarm> StartAsync(FakeAerender aerender)
     {
         var config = new ServerConfig { DataDirectory = _root, FarmParallel = 1 };
-        _farm = new RenderFarm(aerender, config, _clients, TimeProvider.System, NullLogger<RenderFarm>.Instance);
+        _farm = new RenderFarm(aerender, config, TimeProvider.System, NullLogger<RenderFarm>.Instance);
         await _farm.StartAsync(CancellationToken.None);
 
         return _farm;

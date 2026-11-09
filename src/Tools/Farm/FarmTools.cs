@@ -2,7 +2,8 @@ using System.ComponentModel;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 using Snail.MCP.AfterEffects.Application.Farm;
-using Snail.MCP.AfterEffects.Application.Skills;
+using Snail.Sdk.Mcp.Hosting.Discovery;
+using Snail.Sdk.Mcp.Hosting.Jobs;
 using Snail.MCP.AfterEffects.Tools.Prompts;
 
 namespace Snail.MCP.AfterEffects.Tools.Farm;
@@ -35,14 +36,14 @@ internal sealed class FarmTools(RenderFarm farm, ProjectForRender projects, Farm
     {
         if (!farm.IsAvailable)
         {
-            return ToolResponse.Failure(Messages.FarmUnavailable, Messages.FarmUnavailableHint);
+            return ToolAnswer.Failed(Messages.FarmUnavailable, Messages.FarmUnavailableHint, FailureTypes.FarmUnavailable);
         }
 
         var resolved = await projects.ResolveAsync(project, comp, save, cancellationToken).ConfigureAwait(false);
 
         if (!resolved.IsResolved)
         {
-            return ToolResponse.Failure(resolved.Refusal!);
+            return ToolAnswer.Failed(resolved.Refusal!, type: resolved.Type);
         }
 
         var request = new JobRequest(
@@ -64,7 +65,7 @@ internal sealed class FarmTools(RenderFarm farm, ProjectForRender projects, Farm
         var job = background.Submit(request);
         var note = new JsonObject { ["project_saved"] = resolved.WasSaved, ["aerender"] = farm.Executable };
 
-        return ToolResponse.Job(await job.ForAsync(TimeSpan.FromSeconds(wait), cancellationToken).ConfigureAwait(false), note);
+        return JobAnswer.Envelope(await job.ForAsync(TimeSpan.FromSeconds(wait), cancellationToken).ConfigureAwait(false), note);
     }
 
     [McpServerTool(Name = "ae_farm_jobs", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false)]
@@ -78,7 +79,7 @@ internal sealed class FarmTools(RenderFarm farm, ProjectForRender projects, Farm
             .OrderByDescending(job => job.Submitted)
             .Select(job => (JsonNode)job.Describe(logLines ?? 0));
 
-        return ToolResponse.Success(new JsonObject
+        return ToolAnswer.Ok(new JsonObject
         {
             ["jobs"] = new JsonArray([.. jobs]),
             ["available"] = farm.IsAvailable,
@@ -93,12 +94,12 @@ internal sealed class FarmTools(RenderFarm farm, ProjectForRender projects, Farm
     {
         if (farm.Find(id) is not { } job)
         {
-            return ToolResponse.Failure(Messages.UnknownJob(id), Messages.UnknownJobHint);
+            return ToolAnswer.Failed(Messages.UnknownJob(id), Messages.UnknownJobHint, FailureTypes.NoSuchJob);
         }
 
         return farm.TryCancel(id)
-            ? ToolResponse.Success(job.Describe(0))
-            : ToolResponse.Failure(Messages.JobNotActive(id, job.State));
+            ? ToolAnswer.Ok(job.Describe(0))
+            : ToolAnswer.Failed(Messages.JobNotActive(id, job.State), type: FailureTypes.JobNotActive);
     }
 
     [McpServerTool(Name = "ae_farm_retry", ReadOnly = false, Destructive = false, Idempotent = false, OpenWorld = true)]
@@ -107,18 +108,18 @@ internal sealed class FarmTools(RenderFarm farm, ProjectForRender projects, Farm
     {
         if (!farm.IsAvailable)
         {
-            return ToolResponse.Failure(Messages.FarmUnavailable, Messages.FarmUnavailableHint);
+            return ToolAnswer.Failed(Messages.FarmUnavailable, Messages.FarmUnavailableHint, FailureTypes.FarmUnavailable);
         }
 
         return farm.Retry(id) is { } job
-            ? ToolResponse.Success(job.Describe(0))
-            : ToolResponse.Failure(Messages.UnknownJob(id), Messages.UnknownJobHint);
+            ? ToolAnswer.Ok(job.Describe(0))
+            : ToolAnswer.Failed(Messages.UnknownJob(id), Messages.UnknownJobHint, FailureTypes.NoSuchJob);
     }
 
     [McpServerTool(Name = "ae_farm_cleanup", ReadOnly = false, Destructive = true, Idempotent = true, OpenWorld = false)]
     [Description(ToolDescriptions.Farm.Cleanup)]
     public CallToolResult Cleanup([Description("Forget finished jobs older than this many minutes; 0 forgets all of them.")] int olderThanMinutes = 0) =>
-        ToolResponse.Success(new JsonObject { ["forgotten"] = farm.Cleanup(TimeSpan.FromMinutes(Math.Max(0, olderThanMinutes))), ["remaining"] = farm.Jobs.Count });
+        ToolAnswer.Ok(new JsonObject { ["forgotten"] = farm.Cleanup(TimeSpan.FromMinutes(Math.Max(0, olderThanMinutes))), ["remaining"] = farm.Jobs.Count });
 
     /// <summary>Settings as aerender's command line takes them: name and value pairs joined by semicolons.</summary>
     private static string? Joined(JsonObject? settings) =>

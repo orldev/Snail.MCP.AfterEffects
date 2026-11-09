@@ -24,34 +24,4 @@ internal static partial class BridgeCommands
     /// <summary>The commands one bridge module implements.</summary>
     public static IReadOnlyList<BridgeCommand> Of(string module) =>
         [.. All.Where(command => string.Equals(command.Module, module, StringComparison.Ordinal))];
-
-    /// <summary>The commands whose names are closest to the one asked for, the closest first; empty when none of them shares a word with it.</summary>
-    /// <remarks>Shared words rather than edit distance, because that is the shape of the misses in the logs: the tools read ae_create_comp and
-    /// ae_remove_layers while the commands they send read comp_create and layer_remove, the same words the other way round, and a guess is
-    /// usually a plural where the catalogue is singular. Both are compared with the trailing s dropped for that reason.</remarks>
-    public static IReadOnlyList<string> Nearest(string name, int most)
-    {
-        var wanted = Words(name);
-        var scored = new List<(string Name, int Shared)>();
-
-        foreach (var command in All)
-        {
-            var shared = Words(command.Name).Count(word => wanted.Contains(word, StringComparer.Ordinal));
-
-            if (shared > 0)
-            {
-                scored.Add((command.Name, shared));
-            }
-        }
-
-        var closest = scored
-            .OrderByDescending(pair => pair.Shared)
-            .ThenBy(pair => pair.Name, StringComparer.Ordinal)
-            .Take(most);
-
-        return [.. closest.Select(pair => pair.Name)];
-    }
-
-    private static IReadOnlyList<string> Words(string name) =>
-        [.. name.Split('_').Select(word => word.TrimEnd('s'))];
 }

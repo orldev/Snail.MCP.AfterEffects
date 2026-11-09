@@ -41,18 +41,40 @@ internal static class ServerConfigExtensions
     /// server's transport into http while the process still spoke over stdio, because the transport is chosen from these sources alone.</remarks>
     public static IConfiguration Settings() => ServerSettings.Read(ServerPaths.ShortName);
 
+    /// <summary>Where the HTTP server listens when the settings name no address: the loopback, for a server started by hand; a container
+    /// listens on every interface by itself.</summary>
+    public static Uri DefaultUrl { get; } = new(HttpOptions.DefaultUrl);
+
+    /// <summary>How the endpoint is read: keys under the server's section as well as at the root, and no reach narrower than the settings
+    /// ask for — the HTTP server is meant to be reached from other machines of a studio, and every request to it presents a key
+    /// (<c>Web.Access.BearerAuthentication</c>), so a LAN address or every interface is the operator's to name. A refusal names the variable
+    /// by the server's name, in a test's process too.</summary>
+    public static McpEndpointOptions EndpointOptions { get; } = new()
+    {
+        FallbackSection = ServerConfig.SectionName,
+        Reach = McpReach.Unrestricted,
+        Server = ServerPaths.ShortName,
+    };
+
     /// <summary>The same from a settings file named outright and the variables a caller hands over; a named file that does not exist reads none.</summary>
     public static IConfiguration Settings(string? file, IDictionary variables) =>
         new ConfigurationBuilder().AddServerSettings(ServerPaths.ShortName, file, variables).Build();
 
     /// <summary>The settings as a host would bind them, read before one is built: stdio and HTTP need different hosts.</summary>
+    /// <remarks>No host is there yet to refuse a value of the wrong type, so <see cref="ServerSettings.Bind(string, IConfiguration, Action{IConfiguration})"/>
+    /// says it as a <see cref="StartRefusedException"/> naming the variable, where the binder crashed the process with a trace.</remarks>
+    /// <exception cref="StartRefusedException">A setting holds a value its property's type cannot hold.</exception>
     public static ServerConfig Peek(IConfiguration? configuration = null)
     {
         configuration ??= Settings();
 
         var config = new ServerConfig();
-        configuration.GetSection(ServerConfig.SectionName).Bind(config);
-        configuration.Bind(config);
+
+        ServerSettings.Bind(ServerPaths.ShortName, configuration, settings =>
+        {
+            settings.GetSection(ServerConfig.SectionName).Bind(config);
+            settings.Bind(config);
+        });
 
         return config;
     }
@@ -60,7 +82,7 @@ internal static class ServerConfigExtensions
     /// <summary>Expands <c>~</c>, and fills the link's agent and token file from the top-level settings.</summary>
     internal static void Normalize(ServerConfig config)
     {
-        config.DataDirectory = ExpandHome(config.DataDirectory);
+        config.DataDirectory = ServerFolders.FullPath(config.DataDirectory, ServerPaths.DefaultDataDirectory);
 
         if (string.IsNullOrWhiteSpace(config.Bridge.Agent))
         {
@@ -72,36 +94,7 @@ internal static class ServerConfigExtensions
             config.Bridge.TokenFile = config.TokenFile;
         }
 
-        config.ProjectDirectory = config.Transport is Transport.Http ? null : Path.GetFullPath(ExpandUser(config.ProjectDirectory) ?? Environment.CurrentDirectory);
-        config.Bridge.TokenFile = ExpandUser(config.Bridge.TokenFile);
-    }
-
-    /// <summary>Expands a leading <c>~</c> in a path that may be absent; unlike the data directory, an absent one stays absent.</summary>
-    private static string? ExpandUser(string? path) =>
-        string.IsNullOrWhiteSpace(path) ? null
-        : path == "~" ? ServerPaths.Home
-        : path.StartsWith("~/", StringComparison.Ordinal) || path.StartsWith(@"~\", StringComparison.Ordinal) ? Path.Combine(ServerPaths.Home, path[2..])
-        : path;
-
-    private static string ExpandHome(string path)
-    {
-        if (string.IsNullOrWhiteSpace(path))
-        {
-            return ServerPaths.DefaultDataDirectory;
-        }
-
-        path = path.Trim();
-
-        if (path == "~")
-        {
-            return ServerPaths.Home;
-        }
-
-        if (path.StartsWith("~/", StringComparison.Ordinal) || path.StartsWith(@"~\", StringComparison.Ordinal))
-        {
-            return Path.Combine(ServerPaths.Home, path[2..]);
-        }
-
-        return Path.GetFullPath(path);
+        config.ProjectDirectory = config.Transport is McpTransport.Http ? null : ServerFolders.FullPath(config.ProjectDirectory, Environment.CurrentDirectory);
+        config.Bridge.TokenFile = string.IsNullOrWhiteSpace(config.Bridge.TokenFile) ? null : ServerFolders.ExpandHome(config.Bridge.TokenFile);
     }
 }

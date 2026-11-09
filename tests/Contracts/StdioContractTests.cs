@@ -1,11 +1,7 @@
 using System.Diagnostics;
-using System.Reflection;
 using System.Text.Json;
-using ModelContextProtocol.Server;
-using Snail.MCP.AfterEffects.Application.Skills;
-using Snail.MCP.AfterEffects.Configuration;
-using Snail.MCP.AfterEffects.Extensions;
 using Snail.MCP.AfterEffects.Tools.Prompts;
+using Snail.Sdk.Mcp.Hosting;
 
 namespace Snail.MCP.AfterEffects.Tests.Contracts;
 
@@ -36,7 +32,7 @@ public class StdioContractTests
         var serverInfo = result.GetProperty("serverInfo");
 
         Assert.Equal("s3l-mcp-aftereffects", serverInfo.GetProperty("name").GetString());
-        Assert.Equal(ThisAssembly.InformationalVersion, serverInfo.GetProperty("version").GetString());
+        Assert.Equal(ServerIdentity.VersionOf(typeof(ToolDescriptions).Assembly), serverInfo.GetProperty("version").GetString());
         Assert.Equal(ServerGuidance.Instructions, result.GetProperty("instructions").GetString());
 
         await session.NotifyAsync("notifications/initialized");
@@ -47,7 +43,7 @@ public class StdioContractTests
             .Select(tool => tool.GetProperty("name").GetString()!)
             .ToHashSet(StringComparer.Ordinal);
 
-        Assert.Equal(BaseToolNamesOfAssembly(), names);
+        Assert.Equal(ServerTools.AlwaysOn(), names);
         Assert.True(Kilobytes(listed) <= MostKilobytesOfTools, $"the always-on tool list is {Kilobytes(listed):0.0} KB, above the {MostKilobytesOfTools} KB budget");
 
         var called = await session.CallAsync(3, "tools/call", new
@@ -61,7 +57,7 @@ public class StdioContractTests
 
         Assert.True(report.GetProperty("ok").GetBoolean());
         Assert.False(report.GetProperty("data").GetProperty("afterEffects").GetProperty("reachable").GetBoolean());
-        Assert.Equal(ThisAssembly.InformationalVersion, report.GetProperty("data").GetProperty("server").GetProperty("version").GetString());
+        Assert.Equal(ServerIdentity.VersionOf(typeof(ToolDescriptions).Assembly), report.GetProperty("data").GetProperty("server").GetProperty("version").GetString());
         Assert.True(report.GetProperty("data").GetProperty("bridge").GetProperty("port").GetInt32() > 0, "the server did not announce a port for the bridge");
         Assert.Equal("file", report.GetProperty("data").GetProperty("bridge").GetProperty("token").GetString());
         Assert.Single(Directory.EnumerateFiles(Path.Combine(session.DataDirectory, "state", "servers"), "*.json"));
@@ -90,16 +86,16 @@ public class StdioContractTests
         {
             await using var client = await ServerProgram.StartAsync("Snail.MCP.AfterEffects", "SNAIL_AFTEREFFECTS_SERVER", variables);
 
-            foreach (var skill in SkillCatalog.Discover(typeof(ToolDescriptions).Assembly))
+            foreach (var skill in ServerTools.Skills())
             {
-                var enabled = await client.CallToolAsync("ae_enable_skill", new Dictionary<string, object?> { ["name"] = skill.Name });
+                var enabled = await client.CallToolAsync("ae_enable_skill", new Dictionary<string, object?> { ["name"] = skill });
 
                 Assert.NotEqual(true, enabled.IsError);
             }
 
             var listed = await client.ListToolsAsync();
 
-            Assert.True(listed.Count > BaseToolNamesOfAssembly().Count, $"only {listed.Count} tools listed with every skill loaded");
+            Assert.True(listed.Count > ServerTools.AlwaysOn().Count, $"only {listed.Count} tools listed with every skill loaded");
             Assert.Empty(ToolGuards.Problems(listed.Select(tool => tool.ProtocolTool)));
         }
         finally
@@ -111,15 +107,30 @@ public class StdioContractTests
         }
     }
 
-    private static double Kilobytes(JsonElement listed) => listed.GetProperty("result").GetProperty("tools").GetRawText().Length / 1024.0;
+    /// <summary>A word where the bridge's port belongs crashed the server with a trace and exit code 134, from the binding the program does before
+    /// any host exists; it is refused in one line that names the variable, with exit code 1.</summary>
+    [Fact]
+    public async Task Server_WithAWordForTheBridgePort_IsRefusedInOneLine_NamingTheVariable()
+    {
+        var dataDirectory = TestFolder.Create();
+        var variables = new Dictionary<string, string?>
+        {
+            ["SNAIL_MCP_AFTEREFFECTS_DATA_DIRECTORY"] = dataDirectory,
+            ["SNAIL_MCP_AFTEREFFECTS_BRIDGE__PORT"] = "abc",
+        };
 
-    /// <summary>Tools are discovered by the SDK through attributes, so a misconfigured attribute is invisible to reflection-only guards; skill tools stay out until a skill is enabled.</summary>
-    private static HashSet<string> BaseToolNamesOfAssembly() =>
-        SkillRegistrationExtensions.BaseToolTypes(typeof(ToolDescriptions).Assembly)
-            .SelectMany(type => type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
-            .Select(method => method.GetCustomAttribute<McpServerToolAttribute>()?.Name)
-            .OfType<string>()
-            .ToHashSet(StringComparer.Ordinal);
+        var refused = await Assert.ThrowsAsync<ServerExitedException>(() => ServerProgram.StartAsync("Snail.MCP.AfterEffects", "SNAIL_AFTEREFFECTS_SERVER", variables));
+
+        var line = Assert.Single(refused.Stderr.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
+
+        Assert.Equal(1, refused.ExitCode);
+        Assert.Contains("SNAIL_MCP_AFTEREFFECTS_BRIDGE__PORT", line, StringComparison.Ordinal);
+        Assert.Contains("'abc'", line, StringComparison.Ordinal);
+        Assert.DoesNotContain("   at ", refused.Stderr, StringComparison.Ordinal);
+        Directory.Delete(dataDirectory, recursive: true);
+    }
+
+    private static double Kilobytes(JsonElement listed) => listed.GetProperty("result").GetProperty("tools").GetRawText().Length / 1024.0;
 
     /// <summary>The server started as a separate process and spoken to over stdin/stdout, exactly as an MCP client does.</summary>
     private sealed class ServerSession : IDisposable

@@ -1,12 +1,11 @@
 using System.Formats.Tar;
-using Microsoft.Extensions.DependencyInjection;
-using ModelContextProtocol.Server;
 using Snail.MCP.AfterEffects.Application.Farm;
 using Snail.MCP.AfterEffects.Application.Sessions;
 using Snail.MCP.AfterEffects.Application.Storage;
 using Snail.MCP.AfterEffects.Application.Workers;
 using Snail.MCP.AfterEffects.Configuration;
 using Snail.MCP.AfterEffects.Domain.Commands;
+using Snail.Sdk.Mcp.Hosting;
 
 namespace Snail.MCP.AfterEffects.Tests.Chaos;
 
@@ -25,8 +24,8 @@ public sealed class ChaosTests : IDisposable
         await using var stack = await ListeningServer.StartAsync();
         var launcher = new FakeLauncher();
         var (pool, clients) = Pool(stack, launcher, max: 1);
-        var first = clients.Open(new McpServerOptions(), "titles");
-        var second = clients.Open(new McpServerOptions(), "credits");
+        var first = clients.Of("titles");
+        var second = clients.Of("credits");
 
         var leasing = Task.WhenAll(
             pool.LeaseAsync(first, null, launch: true, CancellationToken.None),
@@ -113,10 +112,10 @@ public sealed class ChaosTests : IDisposable
 
     private Volume Storage()
     {
-        var config = new ServerConfig { DataDirectory = _root, Transport = Transport.Http };
+        var config = new ServerConfig { DataDirectory = _root, Transport = McpTransport.Http };
         ServerConfigExtensions.Normalize(config);
-        var clients = new ClientSessions([], [], null, new ServiceCollection().BuildServiceProvider(), TimeProvider.System);
-        var farm = new RenderFarm(new FakeAerender(_ => new FakeAerender.FakeRenderProcess([], 0), executable: null), config, clients, TimeProvider.System, NullLogger<RenderFarm>.Instance);
+        var clients = new ClientSessions(null);
+        var farm = new RenderFarm(new FakeAerender(_ => new FakeAerender.FakeRenderProcess([], 0), executable: null), config, TimeProvider.System, NullLogger<RenderFarm>.Instance);
 
         return new Volume(config, farm);
     }
@@ -124,7 +123,7 @@ public sealed class ChaosTests : IDisposable
     private static (WorkerPool Pool, ClientSessions Clients) Pool(ListeningServer stack, FakeLauncher launcher, int max)
     {
         stack.Config.Workers = new WorkersOptions { Max = max, Min = 0, IdleMinutes = 0, StartupSeconds = 30 };
-        var clients = new ClientSessions([], [], null, new ServiceCollection().BuildServiceProvider(), TimeProvider.System);
+        var clients = new ClientSessions(null);
         var pool = new WorkerPool(launcher, stack.Links, stack.Config, clients, TimeProvider.System, NullLogger<WorkerPool>.Instance);
 
         return (pool, clients);

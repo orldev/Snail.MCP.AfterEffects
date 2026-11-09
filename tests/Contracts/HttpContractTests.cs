@@ -1,9 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
-using System.Reflection;
 using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
-using ModelContextProtocol.Server;
 using Snail.MCP.AfterEffects.Application.Access;
 using Snail.MCP.AfterEffects.Configuration;
 using Snail.MCP.AfterEffects.Domain;
@@ -47,7 +45,7 @@ public class HttpContractTests
         var withSkill = (await client.ListToolsAsync()).Select(tool => tool.Name).ToHashSet(StringComparer.Ordinal);
 
         Assert.Equal(ServerGuidance.Instructions, client.ServerInstructions);
-        Assert.Equal(BaseToolNamesOfAssembly(), tools);
+        Assert.Equal(ServerTools.AlwaysOn(), tools);
         Assert.NotEqual(true, diagnosed.IsError);
         Assert.Contains("No bridge", numbered.Content.OfType<TextContentBlock>().First().Text, StringComparison.Ordinal);
         Assert.Contains("ae_set_keyframes", withSkill);
@@ -82,13 +80,13 @@ public class HttpContractTests
         Assert.Contains("ae_text_style", (await client.ListToolsAsync()).Select(tool => tool.Name));
     }
 
-    /// <summary>One server over HTTP serves several clients, and a tool list belongs to one of them: the skill one client loads is in its list and in no other.</summary>
+    /// <summary>One server over HTTP serves several clients, and a tool list belongs to one session: the skill one client loads is in its list and in no other.</summary>
     [Fact]
     public async Task Server_OverHttp_KeepsTheToolsOfOneClient_OutOfAnothersList()
     {
         await using var server = await HttpServerProcess.StartAsync(Token);
-        await using var titles = await ClientAsync(server, "titles");
-        await using var edit = await ClientAsync(server, "edit");
+        await using var titles = await ClientAsync(server, "titles", protocolVersion: "2025-11-25");
+        await using var edit = await ClientAsync(server, "edit", protocolVersion: "2025-11-25");
 
         await titles.CallToolAsync("ae_enable_skill", new Dictionary<string, object?> { ["name"] = "shapes" });
         var titled = (await titles.ListToolsAsync()).Select(tool => tool.Name).ToHashSet(StringComparer.Ordinal);
@@ -96,7 +94,7 @@ public class HttpContractTests
 
         Assert.Contains("ae_add_shape", titled);
         Assert.DoesNotContain("ae_add_shape", edited);
-        Assert.Equal(BaseToolNamesOfAssembly(), edited);
+        Assert.Equal(ServerTools.AlwaysOn(), edited);
     }
 
     /// <summary>A client is who its key says it is, and may do what the key opens: a key minted for reading names its holder on every command
@@ -157,16 +155,24 @@ public class HttpContractTests
         Assert.Equal(HttpStatusCode.Unauthorized, refused.StatusCode);
     }
 
+    /// <summary>The guard rules of every Snail server's HTTP endpoint, checked by requests to the running server: a page in a browser is refused.</summary>
+    [Fact]
+    public async Task Endpoint_OverHttp_KeepsTheGuardRules()
+    {
+        await using var server = await HttpServerProcess.StartAsync(Token);
+
+        Assert.Empty(await HttpGuards.ProblemsAsync(new Uri(server.Address, HttpServerRegistrationExtensions.McpPath)));
+    }
+
     /// <summary>A server started without its secret would turn every client away while looking healthy, so it refuses to start and names the setting.</summary>
     [Fact]
     public async Task Server_OverHttpWithoutAToken_ExitsBeforeListening_NamingTheSetting()
     {
-        await using var server = await HttpServerProcess.StartAsync(token: null, waitForHealth: false);
+        var refused = await Assert.ThrowsAsync<ServerExitedException>(() => HttpServerProcess.StartAsync(token: null));
 
-        var exit = await server.WaitForExitAsync();
-
-        Assert.NotEqual(0, exit);
-        Assert.Contains("SNAIL_MCP_AFTEREFFECTS_HTTP__TOKEN", server.Output, StringComparison.Ordinal);
+        Assert.Equal(1, refused.ExitCode);
+        Assert.Contains("SNAIL_MCP_AFTEREFFECTS_HTTP__TOKEN", Assert.Single(Lines(refused.Stderr)), StringComparison.Ordinal);
+        Assert.DoesNotContain("   at ", refused.Stderr, StringComparison.Ordinal);
     }
 
     /// <summary>The scopes are not only about tool calls: a key minted to read cannot write or delete over the file endpoints either, and a link
@@ -198,6 +204,27 @@ public class HttpContractTests
         Assert.Equal(HttpStatusCode.Unauthorized, anonymous.StatusCode);
     }
 
+    /// <summary>An address the server cannot listen on stops the start in one line that names the variable, with exit code 1 and no trace.</summary>
+    [Fact]
+    public async Task Server_AtAHostName_IsRefusedInOneLine_NamingTheVariable()
+    {
+        var dataDirectory = TestFolder.Create();
+        var environment = new Dictionary<string, string?>
+        {
+            ["SNAIL_MCP_AFTEREFFECTS_DATA_DIRECTORY"] = dataDirectory,
+            ["SNAIL_MCP_AFTEREFFECTS_HTTP__TOKEN"] = Token,
+            ["SNAIL_MCP_AFTEREFFECTS_URL"] = "http://aftereffects.example.com:8080",
+        };
+
+        var refused = await Assert.ThrowsAsync<ServerExitedException>(() =>
+            HttpServerProgram.StartAsync("Snail.MCP.AfterEffects", "SNAIL_AFTEREFFECTS_SERVER", environment, HttpServerProcess.AddressVariable));
+
+        Assert.Equal(1, refused.ExitCode);
+        Assert.Contains("SNAIL_MCP_AFTEREFFECTS_URL", Assert.Single(Lines(refused.Stderr)), StringComparison.Ordinal);
+        Assert.DoesNotContain("   at ", refused.Stderr, StringComparison.Ordinal);
+        Directory.Delete(dataDirectory, recursive: true);
+    }
+
     /// <summary>The pages are for a signed-in browser: the login page is open, everything else sends a browser to it, and a bearer does not sign a page in.</summary>
     [Fact]
     public async Task Pages_OverHttp_AskABrowserToSignIn_AndServeTheirAssets()
@@ -218,27 +245,24 @@ public class HttpContractTests
         Assert.Equal(HttpStatusCode.OK, css.StatusCode);
     }
 
+    private static string[] Lines(string stderr) => stderr.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
     private static HttpRequestMessage Signed(HttpMethod method, string path, string key) =>
         new(method, path) { Headers = { Authorization = new AuthenticationHeaderValue("Bearer", key) }, Content = new ByteArrayContent([1, 2, 3]) };
 
     private static StringContent JsonBody() => new("""{"jsonrpc":"2.0","id":1,"method":"tools/list"}""", MediaTypeHeaderValue.Parse("application/json"));
 
     /// <summary>A client that says who it is, the way a studio tells two of them apart; with a key of its own, the key is what names it.</summary>
-    private static Task<McpClient> ClientAsync(HttpServerProcess server, string agent, string? key = null) =>
-        McpClient.CreateAsync(new HttpClientTransport(new HttpClientTransportOptions
-        {
-            Endpoint = new Uri(server.Address, HttpServerRegistrationExtensions.McpPath),
-            AdditionalHeaders = new Dictionary<string, string>
+    private static Task<McpClient> ClientAsync(HttpServerProcess server, string agent, string? key = null, string? protocolVersion = null) =>
+        McpClient.CreateAsync(
+            new HttpClientTransport(new HttpClientTransportOptions
             {
-                ["Authorization"] = $"Bearer {key ?? Token}",
-                [TransportRegistrationExtensions.AgentHeader] = agent,
-            },
-        }));
-
-    private static HashSet<string> BaseToolNamesOfAssembly() =>
-        SkillRegistrationExtensions.BaseToolTypes(typeof(ToolDescriptions).Assembly)
-            .SelectMany(type => type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
-            .Select(method => method.GetCustomAttribute<McpServerToolAttribute>()?.Name)
-            .OfType<string>()
-            .ToHashSet(StringComparer.Ordinal);
+                Endpoint = new Uri(server.Address, HttpServerRegistrationExtensions.McpPath),
+                AdditionalHeaders = new Dictionary<string, string>
+                {
+                    ["Authorization"] = $"Bearer {key ?? Token}",
+                    [TransportRegistrationExtensions.AgentHeader] = agent,
+                },
+            }),
+            new McpClientOptions { ProtocolVersion = protocolVersion });
 }

@@ -3,7 +3,9 @@ using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 using Snail.MCP.AfterEffects.Application.Access;
 using Snail.MCP.AfterEffects.Application.Sessions;
-using Snail.MCP.AfterEffects.Application.Skills;
+using Snail.Sdk.Mcp.Hosting;
+using Snail.Sdk.Mcp.Hosting.Discovery;
+using Snail.Sdk.Mcp.Hosting.Sessions;
 using Snail.MCP.AfterEffects.Application.Storage;
 using Snail.MCP.AfterEffects.Application.Transfer;
 using Snail.MCP.AfterEffects.Configuration;
@@ -25,21 +27,21 @@ internal sealed class TransferTools(Volume volume, FileLinks links, ClientComman
     {
         if (!VolumeAreas.All.Contains(area))
         {
-            return ToolResponse.Failure(Messages.NoSuchArea(area));
+            return ToolAnswer.Failed(Messages.NoSuchArea(area), type: ToolFailures.Arguments);
         }
 
         var relative = AreaPaths.Normal(path);
 
         if (!AreaPaths.IsConfined(relative))
         {
-            return ToolResponse.Failure(Messages.PathOutsideArea(relative, area));
+            return ToolAnswer.Failed(Messages.PathOutsideArea(relative, area), type: Reached.Outside);
         }
 
         var listing = volume.List(area, relative);
 
         if (listing.Error is { } error)
         {
-            return ToolResponse.Failure(error.Message);
+            return ToolAnswer.Failed(error.Message, type: error.Type);
         }
 
         var entries = listing.Entries.Select(entry =>
@@ -64,7 +66,7 @@ internal sealed class TransferTools(Volume volume, FileLinks links, ClientComman
             return (JsonNode)described;
         });
 
-        return ToolResponse.Success(new JsonObject
+        return ToolAnswer.Ok(new JsonObject
         {
             ["area"] = area,
             ["path"] = relative,
@@ -85,17 +87,17 @@ internal sealed class TransferTools(Volume volume, FileLinks links, ClientComman
 
         if (target.Length == 0 || !AreaPaths.IsConfined(target))
         {
-            return ToolResponse.Failure(Messages.PathOutsideArea(target, VolumeAreas.Files));
+            return ToolAnswer.Failed(Messages.PathOutsideArea(target, VolumeAreas.Files), type: Reached.Outside);
         }
 
         if (overwrite && !clients.Current.May(Scopes.Delete))
         {
-            return ToolResponse.Failure(ToolScopes.Refusal("ae_upload with overwrite", Scopes.Delete, clients.Current.Name), Messages.ScopeHint);
+            return ToolAnswer.Failed(ToolScopes.Refusal("ae_upload with overwrite", Scopes.Delete, clients.Current.Name), Messages.ScopeHint, GrantOptions.NotGranted);
         }
 
         if (!IsHttp)
         {
-            return ToolResponse.Success(new JsonObject
+            return ToolAnswer.Ok(new JsonObject
             {
                 ["sameMachine"] = true,
                 ["path"] = Path.Combine(volume.RootOf(VolumeAreas.Files), target.Replace('/', Path.DirectorySeparatorChar)),
@@ -105,7 +107,7 @@ internal sealed class TransferTools(Volume volume, FileLinks links, ClientComman
 
         var command = commands.Upload(localPath, target, overwrite);
 
-        return ToolResponse.Success(new JsonObject
+        return ToolAnswer.Ok(new JsonObject
         {
             ["run"] = command.Command,
             ["expires"] = command.Expires.ToString("O"),
@@ -124,28 +126,28 @@ internal sealed class TransferTools(Volume volume, FileLinks links, ClientComman
     {
         if (!VolumeAreas.All.Contains(area))
         {
-            return ToolResponse.Failure(Messages.NoSuchArea(area));
+            return ToolAnswer.Failed(Messages.NoSuchArea(area), type: ToolFailures.Arguments);
         }
 
         var relative = AreaPaths.Normal(remotePath);
 
         if (!AreaPaths.IsConfined(relative))
         {
-            return ToolResponse.Failure(Messages.PathOutsideArea(relative, area));
+            return ToolAnswer.Failed(Messages.PathOutsideArea(relative, area), type: Reached.Outside);
         }
 
         var lookup = volume.Find(area, relative);
 
         if (lookup.Item is not { } item)
         {
-            return ToolResponse.Failure(lookup.Error!.Message);
+            return ToolAnswer.Failed(lookup.Error!.Message, type: lookup.Error.Type);
         }
 
         var name = relative.Length == 0 ? area : relative.Split('/')[^1];
 
         if (!IsHttp)
         {
-            return ToolResponse.Success(new JsonObject
+            return ToolAnswer.Ok(new JsonObject
             {
                 ["sameMachine"] = true,
                 ["path"] = Path.Combine(volume.RootOf(area), relative.Replace('/', Path.DirectorySeparatorChar)),
@@ -157,7 +159,7 @@ internal sealed class TransferTools(Volume volume, FileLinks links, ClientComman
 
         var command = commands.Download(area, relative, localPath ?? name, item.IsFolder, overwrite);
 
-        return ToolResponse.Success(new JsonObject
+        return ToolAnswer.Ok(new JsonObject
         {
             ["run"] = command.Command,
             ["expires"] = command.Expires.ToString("O"),
@@ -168,5 +170,5 @@ internal sealed class TransferTools(Volume volume, FileLinks links, ClientComman
         });
     }
 
-    private bool IsHttp => config.Transport is Transport.Http;
+    private bool IsHttp => config.Transport is McpTransport.Http;
 }

@@ -2,7 +2,7 @@ using System.ComponentModel;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 using Snail.MCP.AfterEffects.Application.Discovery;
-using Snail.MCP.AfterEffects.Application.Skills;
+using Snail.Sdk.Mcp.Hosting.Discovery;
 using Snail.MCP.AfterEffects.Tools.Prompts;
 
 namespace Snail.MCP.AfterEffects.Tools.Animation;

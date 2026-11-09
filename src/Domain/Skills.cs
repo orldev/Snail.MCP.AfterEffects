@@ -1,11 +1,5 @@
 namespace Snail.MCP.AfterEffects.Domain;
 
-/// <summary>A group of tools loaded on demand, so the always-on catalog stays small enough for a model to choose from.</summary>
-internal sealed record Skill(string Name, string Description, IReadOnlyList<Type> ToolTypes);
-
-/// <summary>What the model sees of a skill: whether it is loaded and which tools it brings.</summary>
-internal sealed record SkillState(string Name, string Description, bool IsEnabled, IReadOnlyList<string> Tools);
-
 /// <summary>Names of the skills this server ships; each is a folder under Tools with classes marked by the skill attribute.</summary>
 internal static class Skills
 {

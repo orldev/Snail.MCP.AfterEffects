@@ -64,14 +64,14 @@ public class ServerConfigTests
         ServerConfigExtensions.Normalize(named);
 
         Assert.Equal(Path.GetFullPath(Environment.CurrentDirectory), unnamed.ProjectDirectory);
-        Assert.Equal(Path.Combine(ServerPaths.Home, "Projects", "lobby"), named.ProjectDirectory);
+        Assert.Equal(Path.Combine(ServerFolders.Home, "Projects", "lobby"), named.ProjectDirectory);
     }
 
     /// <summary>A server reached over HTTP sees none of the client's folders, so it has no project however the working directory looks.</summary>
     [Fact]
     public void Normalize_OverHttp_TheServerHasNoProject()
     {
-        var config = new ServerConfig { Transport = Transport.Http };
+        var config = new ServerConfig { Transport = McpTransport.Http };
 
         ServerConfigExtensions.Normalize(config);
 
@@ -86,7 +86,7 @@ public class ServerConfigTests
 
         var peeked = ServerConfigExtensions.Peek(configuration);
 
-        Assert.Equal(Transport.Http, peeked.Transport);
+        Assert.Equal(McpTransport.Http, peeked.Transport);
     }
 
     [Fact]
@@ -96,7 +96,7 @@ public class ServerConfigTests
 
         var link = provider.GetRequiredService<BridgeOptions>();
 
-        Assert.Equal(Path.Combine(ServerPaths.Home, "aftereffects-from-the-environment", "state", "token"), link.TokenFile);
+        Assert.Equal(Path.Combine(ServerFolders.Home, "aftereffects-from-the-environment", "state", "token"), link.TokenFile);
         Assert.Same(provider.GetRequiredService<ServerConfig>().Bridge, link);
     }
 
@@ -147,7 +147,7 @@ public class ServerConfigTests
                 new Dictionary<string, string?> { [ServerSettings.FileVariableOf(ServerPaths.ShortName)] = file },
                 () => ServerConfigExtensions.Peek(ServerConfigExtensions.Settings()));
 
-            Assert.Equal(Transport.Http, peeked.Transport);
+            Assert.Equal(McpTransport.Http, peeked.Transport);
             Assert.Equal("compositing", peeked.Agent);
         }
         finally
@@ -171,7 +171,7 @@ public class ServerConfigTests
 
         ServerConfigExtensions.Normalize(config);
 
-        Assert.Equal(Path.Combine(ServerPaths.Home, "custom-aftereffects-data"), config.DataDirectory);
+        Assert.Equal(Path.Combine(ServerFolders.Home, "custom-aftereffects-data"), config.DataDirectory);
     }
 
     [Theory]
@@ -220,7 +220,7 @@ public class ServerConfigTests
                 return builder.Services.BuildServiceProvider().GetRequiredService<ServerConfig>();
             });
 
-        Assert.Equal(Transport.Stdio, read.Transport);
+        Assert.Equal(McpTransport.Stdio, read.Transport);
     }
 
     private static T RunWithEnvironment<T>(Dictionary<string, string?> values, Func<T> action)

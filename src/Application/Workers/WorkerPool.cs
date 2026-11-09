@@ -93,14 +93,16 @@ internal sealed class WorkerPool(IWorkerLauncher launcher, IAfterEffectsBridge b
 
         if (name is not null && Find(name) is { LeasedBy: { } holder } taken && !string.Equals(holder, client.Name, StringComparison.Ordinal))
         {
-            return new Lease(taken, Messages.WorkerHeld(taken.Name, holder));
+            return new Lease(taken, Messages.WorkerHeld(taken.Name, holder)) { Type = FailureTypes.WorkerHeld };
         }
 
         var worker = Pick(client, name, launch);
 
         if (worker is null)
         {
-            return new Lease(null, name is null || launch ? Messages.PoolFull : Messages.UnknownWorker(name));
+            return name is null || launch
+                ? new Lease(null, Messages.PoolFull) { Type = FailureTypes.PoolFull }
+                : new Lease(null, Messages.UnknownWorker(name)) { Type = FailureTypes.NoSuchWorker };
         }
 
         var patience = clock.GetUtcNow() + TimeSpan.FromSeconds(config.Workers.StartupSeconds);
@@ -117,7 +119,7 @@ internal sealed class WorkerPool(IWorkerLauncher launcher, IAfterEffectsBridge b
             {
                 Unbind(client);
 
-                return new Lease(worker, Messages.WorkerNotReady(worker.Name, worker.State));
+                return new Lease(worker, Messages.WorkerNotReady(worker.Name, worker.State)) { Type = FailureTypes.WorkerNotReady };
             }
 
             worker.State = WorkerStates.Leased;

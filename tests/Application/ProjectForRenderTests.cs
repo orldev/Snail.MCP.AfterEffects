@@ -2,6 +2,7 @@ using Snail.MCP.AfterEffects.Application.Farm;
 using Snail.MCP.AfterEffects.Configuration;
 using Snail.MCP.AfterEffects.Domain;
 using Snail.MCP.AfterEffects.Domain.Commands;
+using Snail.Sdk.Mcp.Hosting;
 
 namespace Snail.MCP.AfterEffects.Tests.Application;
 
@@ -34,6 +35,7 @@ public sealed class ProjectForRenderTests
 
         Assert.False(resolved.IsResolved);
         Assert.Contains("gone.aep", resolved.Refusal!, StringComparison.Ordinal);
+        Assert.Equal(FailureTypes.NoFile, resolved.Type);
     }
 
     /// <summary>A composition given by its id has to be looked up, and without After Effects there is nothing to look it up in.</summary>
@@ -44,6 +46,7 @@ public sealed class ProjectForRenderTests
             .ResolveAsync(Path.Combine(_root, "scene.aep"), "17", save: true, CancellationToken.None);
 
         Assert.Contains("pass its name", resolved.Refusal!, StringComparison.Ordinal);
+        Assert.Equal(BridgeError.UnavailableType, resolved.Type);
     }
 
     [Fact]
@@ -76,6 +79,7 @@ public sealed class ProjectForRenderTests
             .ResolveAsync(null, "Main", save: true, CancellationToken.None);
 
         Assert.Contains("pass the path of a saved project", resolved.Refusal!, StringComparison.Ordinal);
+        Assert.Equal(BridgeError.UnavailableType, resolved.Type);
     }
 
     [Fact]
@@ -86,6 +90,7 @@ public sealed class ProjectForRenderTests
         var resolved = await Resolver(bridge).ResolveAsync(null, "Main", save: true, CancellationToken.None);
 
         Assert.Equal("a render is running", resolved.Refusal);
+        Assert.Equal("Busy", resolved.Type);
     }
 
     /// <summary>A project that was never saved has no file for aerender to read, and no amount of saving by this server would give it a name.</summary>
@@ -97,6 +102,7 @@ public sealed class ProjectForRenderTests
         var resolved = await Resolver(bridge).ResolveAsync(null, "Main", save: true, CancellationToken.None);
 
         Assert.Contains("ae_project_save", resolved.Refusal!, StringComparison.Ordinal);
+        Assert.Equal(FailureTypes.ProjectDirty, resolved.Type);
     }
 
     [Fact]
@@ -128,6 +134,7 @@ public sealed class ProjectForRenderTests
         Assert.True(saved.WasSaved);
         Assert.Contains(BridgeCommands.ProjectSave.Name, saving.Sent.Select(sent => sent.Command.Name));
         Assert.Contains("save true", refused.Refusal!, StringComparison.Ordinal);
+        Assert.Equal(FailureTypes.ProjectDirty, refused.Type);
     }
 
     [Fact]
@@ -142,6 +149,7 @@ public sealed class ProjectForRenderTests
         var resolved = await Resolver(bridge).ResolveAsync(null, "Main", save: true, CancellationToken.None);
 
         Assert.Equal("the file is read only", resolved.Refusal);
+        Assert.Equal("Forbidden", resolved.Type);
     }
 
     /// <summary>Where the render lands: nothing given puts it under the project's renders folder, a folder given is completed with the
@@ -169,7 +177,7 @@ public sealed class ProjectForRenderTests
     /// <summary>A path the owner wrote with a tilde is theirs to mean their home folder, which aerender does not expand.</summary>
     [Fact]
     public void AnOutputUnderTheHomeFolder_IsExpanded() =>
-        Assert.StartsWith(ServerPaths.Home, Resolver(Connected()).OutputFor("~/renders/scene.mov", "Main"), StringComparison.Ordinal);
+        Assert.StartsWith(ServerFolders.Home, Resolver(Connected()).OutputFor("~/renders/scene.mov", "Main"), StringComparison.Ordinal);
 
     private static StubBridge Connected() => new((_, _) => BridgeReply.Ok(new JsonObject()));
 

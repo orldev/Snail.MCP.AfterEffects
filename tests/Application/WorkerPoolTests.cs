@@ -1,9 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Time.Testing;
-using ModelContextProtocol.Server;
 using Snail.MCP.AfterEffects.Application.Sessions;
 using Snail.MCP.AfterEffects.Application.Workers;
 using Snail.MCP.AfterEffects.Configuration;
+using Snail.MCP.AfterEffects.Domain;
 using Snail.MCP.AfterEffects.Domain.Commands;
 
 namespace Snail.MCP.AfterEffects.Tests.Application;
@@ -19,7 +19,7 @@ public sealed class WorkerPoolTests
         await using var stack = await ListeningServer.StartAsync();
         var launcher = new FakeLauncher();
         var (pool, clients) = Pool(stack, launcher, max: 2);
-        var client = clients.Open(new McpServerOptions(), "titles");
+        var client = clients.Of("titles");
         var leasing = pool.LeaseAsync(client, null, launch: true, CancellationToken.None);
         await ListeningServer.Until(() => launcher.Launched.Count == 1, TimeSpan.FromSeconds(5));
 
@@ -58,7 +58,7 @@ public sealed class WorkerPoolTests
 
         var bridge = await FakeBridge.ConnectAsync(stack.Port, stack.Token.Value, FakeBridge.Always(request => FakeBridge.Ok(request, new JsonObject())), worker: "w1");
         await ListeningServer.Until(() => stack.Links.IsConnectedTo("w1"), TimeSpan.FromSeconds(5));
-        var client = clients.Open(new McpServerOptions(), "titles");
+        var client = clients.Of("titles");
         var leased = (await pool.LeaseAsync(client, "w1", launch: false, CancellationToken.None)).Worker;
 
         Assert.Equal(WorkerStates.Leased, leased!.State);
@@ -129,7 +129,7 @@ public sealed class WorkerPoolTests
         Assert.Equal(WorkerStates.Ready, adopted.State);
         Assert.Null(adopted.Pid);
 
-        var client = clients.Open(new McpServerOptions(), "titles");
+        var client = clients.Of("titles");
         var leased = (await pool.LeaseAsync(client, "w7", launch: false, CancellationToken.None)).Worker;
 
         Assert.Same(adopted, leased);
@@ -153,8 +153,8 @@ public sealed class WorkerPoolTests
         await using var stack = await ListeningServer.StartAsync();
         var launcher = new FakeLauncher();
         var (pool, clients) = Pool(stack, launcher, max: 1);
-        var holder = clients.Open(new McpServerOptions(), "titles");
-        var other = clients.Open(new McpServerOptions(), "credits");
+        var holder = clients.Of("titles");
+        var other = clients.Of("credits");
         pool.Launch("w1");
         await using var bridge = await FakeBridge.ConnectAsync(stack.Port, stack.Token.Value, FakeBridge.Always(request => FakeBridge.Ok(request, new JsonObject())), worker: "w1");
         await ListeningServer.Until(() => stack.Links.IsConnectedTo("w1"), TimeSpan.FromSeconds(5));
@@ -167,6 +167,7 @@ public sealed class WorkerPoolTests
 
         Assert.False(refused.IsOk);
         Assert.Contains("titles", refused.Refusal!, StringComparison.Ordinal);
+        Assert.Equal(FailureTypes.WorkerHeld, refused.Type);
         Assert.Null(other.Worker);
         Assert.Equal("titles", pool.Find("w1")!.LeasedBy);
 
@@ -182,12 +183,13 @@ public sealed class WorkerPoolTests
     {
         await using var stack = await ListeningServer.StartAsync();
         var (pool, clients) = Pool(stack, new FakeLauncher(), max: 1);
-        var client = clients.Open(new McpServerOptions(), "titles");
+        var client = clients.Of("titles");
 
         var refused = await pool.LeaseAsync(client, "w9", launch: false, CancellationToken.None);
 
         Assert.False(refused.IsOk);
         Assert.Contains("w9", refused.Refusal!, StringComparison.Ordinal);
+        Assert.Equal(FailureTypes.NoSuchWorker, refused.Type);
         Assert.Null(refused.Worker);
     }
 
@@ -195,7 +197,7 @@ public sealed class WorkerPoolTests
     {
         stack.Config.Workers = new WorkersOptions { Max = max, Min = min, IdleMinutes = idleMinutes, StartupSeconds = startupSeconds };
         var services = new ServiceCollection().BuildServiceProvider();
-        var clients = new ClientSessions([], [], null, services, _clock);
+        var clients = new ClientSessions(null);
         var pool = new WorkerPool(launcher, stack.Links, stack.Config, clients, _clock, NullLogger<WorkerPool>.Instance);
 
         return (pool, clients);

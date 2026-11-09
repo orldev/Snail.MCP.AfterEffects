@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Snail.MCP.AfterEffects.Application.Ports;
@@ -6,6 +5,7 @@ using Snail.MCP.AfterEffects.Configuration;
 using Snail.MCP.AfterEffects.Domain;
 using Snail.MCP.AfterEffects.Domain.Commands;
 using Snail.MCP.AfterEffects.Extensions;
+using Snail.Sdk.Mcp.Hosting;
 
 namespace Snail.MCP.AfterEffects.Tests.Support;
 
@@ -17,15 +17,16 @@ namespace Snail.MCP.AfterEffects.Tests.Support;
 ///
 /// Both ports are asked of the operating system rather than chosen: picking a free port and binding it a moment later is a
 /// race, and with several servers starting at once it is lost often enough to fail a run — it failed one on 24.10.2026 with
-/// "address already in use". Kestrel is given port 0 and the address it bound is read back, and the settings are told that
-/// address afterwards, because the links the server signs carry it.</remarks>
+/// "address already in use". The settings name port 0, the host is the one the program builds (<c>CreateHttpBuilder</c>), and
+/// Snail.Sdk's <see cref="InProcessServer"/> reads back the address Kestrel bound; the settings are told that address afterwards,
+/// because the links the server signs carry it.</remarks>
 internal sealed class HttpServerInProcess : IAsyncDisposable
 {
-    private readonly WebApplication _app;
+    private readonly InProcessServer _server;
 
-    private HttpServerInProcess(WebApplication app, string dataDirectory, Uri address, StubBridge bridge)
+    private HttpServerInProcess(InProcessServer server, string dataDirectory, Uri address, StubBridge bridge)
     {
-        _app = app;
+        _server = server;
         DataDirectory = dataDirectory;
         Address = address;
         Bridge = bridge;
@@ -38,7 +39,7 @@ internal sealed class HttpServerInProcess : IAsyncDisposable
     /// <summary>The bridge the server talks to; every command a tool sends is in its list.</summary>
     public StubBridge Bridge { get; }
 
-    public IServiceProvider Services => _app.Services;
+    public IServiceProvider Services => _server.Services;
 
     public HttpClient Client(bool followRedirects = true) =>
         new(new HttpClientHandler { AllowAutoRedirect = followRedirects, UseCookies = true }) { BaseAddress = Address };
@@ -49,30 +50,27 @@ internal sealed class HttpServerInProcess : IAsyncDisposable
         var bridge = new StubBridge(answer ?? ((_, _) => BridgeReply.Ok(new JsonObject { ["stub"] = true })));
         var settings = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
         {
-            [$"{ServerConfig.SectionName}:Transport"] = nameof(Transport.Http),
+            [$"{ServerConfig.SectionName}:Transport"] = nameof(McpTransport.Http),
             [$"{ServerConfig.SectionName}:DataDirectory"] = dataDirectory,
             [$"{ServerConfig.SectionName}:Http:Url"] = "http://127.0.0.1:0",
             [$"{ServerConfig.SectionName}:Http:Token"] = token,
             [$"{ServerConfig.SectionName}:Bridge:Port"] = "0",
         }).Build();
 
-        var builder = WebApplication.CreateSlimBuilder();
-        builder.ConfigureHttpServer(settings);
+        var endpoint = McpEndpoint.Read(settings, ServerConfigExtensions.DefaultUrl, ServerConfigExtensions.EndpointOptions);
+        var builder = HttpServerRegistrationExtensions.CreateHttpBuilder([], endpoint, settings);
         builder.Services.AddSingleton<IAfterEffectsBridge>(bridge);
 
-        var app = builder.Build().UseHttpServer();
-        await app.StartAsync();
+        var server = await InProcessServer.ServeAsync(builder.Build().UseHttpServer(), HttpServerRegistrationExtensions.McpPath);
 
-        var address = new Uri(app.Urls.First());
-        app.Services.GetRequiredService<ServerConfig>().Http.Url = address.ToString();
+        server.Services.GetRequiredService<ServerConfig>().Http.Url = server.Address.ToString();
 
-        return new HttpServerInProcess(app, dataDirectory, address, bridge);
+        return new HttpServerInProcess(server, dataDirectory, server.Address, bridge);
     }
 
     public async ValueTask DisposeAsync()
     {
-        await _app.StopAsync();
-        await _app.DisposeAsync();
+        await _server.DisposeAsync();
 
         try
         {

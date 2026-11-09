@@ -2,7 +2,7 @@ using System.ComponentModel;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 using Snail.MCP.AfterEffects.Application.Sessions;
-using Snail.MCP.AfterEffects.Application.Skills;
+using Snail.Sdk.Mcp.Hosting.Discovery;
 using Snail.MCP.AfterEffects.Application.Workers;
 using Snail.MCP.AfterEffects.Configuration;
 using Snail.MCP.AfterEffects.Tools.Prompts;
@@ -21,7 +21,7 @@ internal sealed class WorkersTools(WorkerPool pool, ClientSessions clients, Serv
         pool.Reconcile();
         var now = clock.GetUtcNow();
 
-        return ToolResponse.Success(new JsonObject
+        return ToolAnswer.Ok(new JsonObject
         {
             ["workers"] = new JsonArray([.. pool.Workers.Select(worker => (JsonNode)worker.Describe(now))]),
             ["bound_to"] = clients.Current.Worker,
@@ -48,12 +48,12 @@ internal sealed class WorkersTools(WorkerPool pool, ClientSessions clients, Serv
         {
             var released = pool.Release(client);
 
-            return ToolResponse.Success(new JsonObject { ["released"] = released?.Name, ["bound_to"] = client.Worker });
+            return ToolAnswer.Ok(new JsonObject { ["released"] = released?.Name, ["bound_to"] = client.Worker });
         }
 
         if (worker is null && launch && !pool.IsAvailable && pool.Workers.All(known => !known.IsFree))
         {
-            return ToolResponse.Failure(Messages.WorkersUnavailable, Messages.WorkersUnavailableHint);
+            return ToolAnswer.Failed(Messages.WorkersUnavailable, Messages.WorkersUnavailableHint, FailureTypes.WorkersUnavailable);
         }
 
         var leased = await pool.LeaseAsync(client, worker, launch, cancellationToken).ConfigureAwait(false);
@@ -62,7 +62,7 @@ internal sealed class WorkersTools(WorkerPool pool, ClientSessions clients, Serv
         {
             var refused = leased.Worker?.Describe(clock.GetUtcNow());
 
-            return ToolResponse.Failure(leased.Refusal!, Hint(leased), refused);
+            return ToolAnswer.Failed(leased.Refusal!, Hint(leased), leased.Type, refused);
         }
 
         var answer = new JsonObject { ["worker"] = leased.Worker!.Describe(clock.GetUtcNow()), ["bound_to"] = client.Worker };
@@ -78,7 +78,7 @@ internal sealed class WorkersTools(WorkerPool pool, ClientSessions clients, Serv
             }
         }
 
-        return ToolResponse.Success(answer);
+        return ToolAnswer.Ok(answer);
     }
 
     private static string? Hint(Lease lease) =>
@@ -93,8 +93,8 @@ internal sealed class WorkersTools(WorkerPool pool, ClientSessions clients, Serv
         var stopped = await pool.TryStopAsync(worker, cancellationToken).ConfigureAwait(false);
 
         return stopped
-            ? ToolResponse.Success(new JsonObject { ["stopping"] = worker, ["bound_to"] = clients.Current.Worker })
-            : ToolResponse.Failure(Messages.UnknownWorker(worker), Messages.UnknownWorkerHint);
+            ? ToolAnswer.Ok(new JsonObject { ["stopping"] = worker, ["bound_to"] = clients.Current.Worker })
+            : ToolAnswer.Failed(Messages.UnknownWorker(worker), Messages.UnknownWorkerHint, FailureTypes.NoSuchWorker);
     }
 
 }

@@ -1,3 +1,6 @@
+using Snail.MCP.AfterEffects.Configuration;
+using Snail.Sdk.Mcp.Hosting;
+
 namespace Snail.MCP.AfterEffects.Tools.Prompts;
 
 /// <summary>Human-facing texts: errors and hints in tool responses, seen by the model after the call; tool descriptions live in <see cref="ToolDescriptions"/>.</summary>
@@ -68,23 +71,6 @@ internal static class Messages
 
     public const string NoSuchMenuCommandHint = "Menu names are in the language After Effects runs in; pass the command's numeric id, which is the same everywhere.";
 
-    public static string UnknownSkill(string name) => $"There is no skill named '{name}'.";
-
-    public static string KnownSkills(IEnumerable<string> names) => names.Any() ? $"ae_skills lists them: {string.Join(", ", names)}." : "This build ships no skills yet; every tool is always on.";
-
-    public static string NoToolFor(string intent) => $"No tool of this server matches '{intent}'.";
-
-    /// <summary>What a program asked the catalogue for and the commands that come closest to it.</summary>
-    public static string NoSuchCommand(string name, IReadOnlyList<string> nearest) =>
-        nearest.Count == 0
-            ? $"No command of the catalogue is named '{name}'."
-            : $"No command of the catalogue is named '{name}'; the nearest are {string.Join(", ", nearest)}.";
-
-    public const string NoSuchCommandHint =
-        "A program calls commands, not tools, and the words of the two are in opposite order: comp_create for ae_create_comp, layer_remove " +
-        "for ae_remove_layers, layers_list for ae_list_layers. find_tool answers with each tool's command and its parameters, so look the " +
-        "name up there rather than guessing it again.";
-
     public const string NoFileHint =
         "The open project has no file on disk yet, so there is nowhere to read or write beside it. Save it with ae_project_save, passing path " +
         "the first time, and call again.";
@@ -92,10 +78,6 @@ internal static class Messages
     public const string CannotImportHint =
         "After Effects will not read that file as that kind of footage: ae_import_file with as left out lets it decide, and a sequence needs the " +
         "folder of frames rather than one frame. A codec After Effects does not have is the other reason, and no parameter mends it.";
-
-    public const string NoToolForHint =
-        "Ask in English words for what the tool would do, not for an identifier: \"ease the keyframes\" rather than \"setTemporalEaseAtKey\". " +
-        "ae_skills lists the areas the catalogue covers; ae_set_property reaches any property and ae_script any API.";
 
     public const string ExpressionErrorHint =
         "After Effects rejected the expression; it was not put on the property. Fix it from the message and call ae_set_expression again, " +
@@ -139,8 +121,9 @@ internal static class Messages
 
     public const string ExportFailedHint = "Look at After Effects: a dialog about fonts or unsupported properties may be waiting; the Essential Graphics panel shows what the template allows.";
 
-    public const string HttpTokenMissing =
-        "The HTTP server needs a token clients present: set SNAIL_MCP_AFTEREFFECTS_HTTP__TOKEN, or SNAIL_MCP_AFTEREFFECTS_HTTP__TOKEN_FILE to a file holding one, " +
+    public static readonly string HttpTokenMissing =
+        $"The HTTP server needs a token clients present: set {ServerSettings.NameOfSetting(ServerPaths.ShortName, "Http:Token")}, " +
+        $"or {ServerSettings.NameOfSetting(ServerPaths.ShortName, "Http:TokenFile")} to a file holding one, " +
         "or mint client keys with the 'clients add' command and give the server any token so it starts.";
 
     public const string ScopeHint = "Keys are minted with 'clients add <name> --scope read,write,delete,script,farm' on the server's machine; ae_diagnose shows which client this key names.";
@@ -171,10 +154,9 @@ internal static class Messages
 
     public const string NoKeyframesHint = "ae_set_keyframes puts keys on the property first; ae_list_keyframes shows what is there.";
 
-    public const string ProgramStoppedHint =
-        "What the program sent before it stopped stands: read the commands list in the reply, then send a shorter program that carries on from there.";
-
     public const string ScriptingDisabled = "ae_script is switched off by configuration on this server.";
+
+    public const string ProgramScriptDisabled = "The program asked for the script command while ae_script is switched off on this server.";
 
     public const string SequenceScriptDisabled = "A run_tools list may not contain the script command while ae_script is switched off.";
 
@@ -191,10 +173,9 @@ internal static class Messages
         Domain.BridgeError.MalformedType => MalformedHint,
         Domain.BridgeError.ExpiredType => ExpiredHint,
         "UnknownCommand" => StaleBridgeHint,
-        "NoSuchCommand" => NoSuchCommandHint,
         "BadRequest" => error.Details is JsonObject details && details.ContainsKey("accepted") ? BadRequestHint : BadValueHint,
-        "ScriptingDisabled" => ScriptingDisabledHint,
-        "NotFound" or "NoComposition" or "NotAComposition" or "NotAFolder" or "NotAText" or "NotAShape" or "NotACamera" or "NotALight" or "NotFootage" => NotFoundHint,
+        Domain.FailureTypes.ScriptingDisabled => ScriptingDisabledHint,
+        Domain.FailureTypes.NotFound or "NoComposition" or "NotAComposition" or "NotAFolder" or "NotAText" or "NotAShape" or "NotACamera" or "NotALight" or "NotFootage" => NotFoundHint,
         "CollectFailed" => CollectFailedHint,
         "Busy" => BusyHint,
         "NoViewer" => NoViewerHint,
@@ -204,13 +185,13 @@ internal static class Messages
         "NoSuchSetting" => NoSuchSettingHint,
         "NotSupported" => NotSupportedHint,
         "Ambiguous" => AmbiguousHint,
-        "ProjectDirty" => ProjectDirtyHint,
+        Domain.FailureTypes.ProjectDirty => ProjectDirtyHint,
         "NoSuchProperty" => NoSuchPropertyHint,
         "NoSuchMenuCommand" => NoSuchMenuCommandHint,
-        "CaptureFailed" => CaptureFailedHint,
+        Domain.FailureTypes.CaptureFailed => CaptureFailedHint,
         "ExpressionError" => ExpressionErrorHint,
         "NoKeyframes" => NoKeyframesHint,
-        "NoFile" => NoFileHint,
+        Domain.FailureTypes.NoFile => NoFileHint,
         "CannotImport" => CannotImportHint,
         _ => null,
     };

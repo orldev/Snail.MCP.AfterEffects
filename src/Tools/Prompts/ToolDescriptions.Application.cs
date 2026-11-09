@@ -18,12 +18,12 @@ internal static partial class ToolDescriptions
         public const string RunTools =
             "Run a list of bridge commands in one call and one undo step: each step names a command — the tool name without ae_, parameters in " +
             "snake_case as the bridge reads them, e.g. {\"command\": \"layer_add\", \"params\": {\"kind\": \"text\", \"text\": \"Hi\"}} — and gets its " +
-            "own result or error. A build of twenty layers costs one round trip instead of twenty.";
+            "own result or error.";
 
+        /// <summary>What run_program is for here; Snail.Sdk writes the rules and limits every program keeps after it.</summary>
         public const string Program =
-            "Run a small JavaScript program here on the server that calls the bridge commands itself — ae.layer_add({...}), ae.property_set({...}) " +
-            "— with loops and the results in hand, so a build that decides as it goes costs one call and one reply. Only what the program " +
-            "returns and logs comes back. The program reaches the commands only: no files, no network, no After Effects API beyond them.";
+            "Run a JavaScript program here whose functions are the bridge commands — ae.layer_add({...}): the command find_tool names beside a " +
+            "tool, parameters in snake_case — so a build that decides as it goes costs one call. A failed command throws with the bridge's type.";
 
         public const string Script =
             "Run ExtendScript inside After Effects for what no tool reaches. A script skips the tools' validation and comes back as text only; " +

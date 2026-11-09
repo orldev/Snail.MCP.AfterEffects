@@ -23,6 +23,6 @@ internal static class ServerGuidance
         ae_run_menu_command for any command of the menus; ae_script last, for the API none of those reaches.
         ae_undo takes back the last tool call; After Effects' own language is Russian or English or another, so prefer match names and ids to display names.
         Every answer is JSON with an ok flag, and a failed call is also flagged isError. When ok is false, read error
-        and hint and fix the call instead of retrying it verbatim; data.type names the failure.
+        and hint and fix the call instead of retrying it verbatim; type names the failure.
         """;
 }

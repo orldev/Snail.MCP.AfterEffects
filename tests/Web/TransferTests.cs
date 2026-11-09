@@ -67,9 +67,14 @@ public sealed class TransferTests
         Assert.True(Failed(tools.Download("notes.txt", area: "nowhere")));
     }
 
-    private static JsonObject Data(CallToolResult result) => result.Data();
+    private static JsonObject Data(CallToolResult result)
+    {
+        Assert.True(result.IsOk(), result.Text());
 
-    private static bool Failed(CallToolResult result) => result.Failed();
+        return (JsonObject)result.Data()!;
+    }
+
+    private static bool Failed(CallToolResult result) => result.IsError == true;
 
     private static TransferTools Tools(HttpServerInProcess server) =>
         ActivatorUtilities.CreateInstance<TransferTools>(server.Services);

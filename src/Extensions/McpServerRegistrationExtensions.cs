@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Snail.MCP.AfterEffects.Configuration;
+using Snail.Sdk.Mcp.Hosting;
 
 namespace Snail.MCP.AfterEffects.Extensions;
 
@@ -10,20 +11,25 @@ internal static class McpServerRegistrationExtensions
     extension(HostApplicationBuilder builder)
     {
         /// <summary>Binds the server to <paramref name="settings"/>, the ones the transport was chosen from, or to this machine's when none are given.</summary>
+        /// <remarks>The idle watchdog is Snail.Sdk's and off unless IdleTimeoutMinutes sets it: a client that ends closes the pipe, and the
+        /// stdio server exits within a second without it.</remarks>
         public HostApplicationBuilder ConfigureMcpServer(IConfiguration? settings = null)
         {
-            builder.AddServerConfiguration(settings ?? ServerConfigExtensions.Settings());
+            settings ??= ServerConfigExtensions.Settings();
+            var config = ServerConfigExtensions.Peek(settings);
+
+            builder.AddServerConfiguration(settings);
 
             builder.Services
                 .AddAfterEffectsBridge()
                 .AddAfterEffectsHost()
                 .AddDiagnostics()
-                .AddSkills()
+                .AddClients()
                 .AddFarm()
                 .AddWorkers()
                 .AddStorage()
-                .AddIdleShutdownWatcher()
-                .AddMcpTransport();
+                .AddIdleShutdown(TimeSpan.FromMinutes(config.IdleTimeoutMinutes))
+                .AddMcpTransport(config);
 
             return builder;
         }

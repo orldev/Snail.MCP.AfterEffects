@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization.Metadata;
-using ModelContextProtocol;
 using Snail.Sdk.Mcp.Hosting.Jobs;
 
 namespace Snail.MCP.AfterEffects.Application.Farm;
@@ -13,9 +11,6 @@ namespace Snail.MCP.AfterEffects.Application.Farm;
 /// </remarks>
 internal sealed class FarmJobs(RenderFarm farm, Jobs jobs, TimeProvider clock)
 {
-    /// <summary>The farm's description as the job's result: a JSON object, which the SDK's options know how to write.</summary>
-    private static readonly JsonTypeInfo<JsonObject> AnswerType = (JsonTypeInfo<JsonObject>)McpJsonUtilities.DefaultOptions.GetTypeInfo(typeof(JsonObject));
-
     /// <summary>How many lines of the log the result carries.</summary>
     private const int LogLines = 10;
 
@@ -27,10 +22,11 @@ internal sealed class FarmJobs(RenderFarm farm, Jobs jobs, TimeProvider clock)
     {
         var render = farm.Submit(request);
 
-        return jobs.Start("render", (progress, token) => FollowAsync(render, progress, token), AnswerType);
+        return jobs.Start("render", (progress, token) => FollowAsync(render, progress, token), ToolAnswer.ObjectInfo);
     }
 
-    private async Task<JsonObject> FollowAsync(RenderJob render, IProgress<JobProgress> progress, CancellationToken cancellationToken)
+    /// <summary>The farm's description once the render ended: the job's result when it was rendered, its failure when the farm gave up on it.</summary>
+    private async Task<Answer<JsonObject>> FollowAsync(RenderJob render, IProgress<JobProgress> progress, CancellationToken cancellationToken)
     {
         progress.Report(ProgressOf(render));
 
@@ -40,11 +36,13 @@ internal sealed class FarmJobs(RenderFarm farm, Jobs jobs, TimeProvider clock)
             progress.Report(ProgressOf(render));
         }
 
+        var described = render.Describe(LogLines);
+
         return render.State switch
         {
             JobStates.Cancelled => throw new OperationCanceledException("cancelled on the farm"),
-            JobStates.Failed => throw new InvalidOperationException(render.Describe(LogLines)["error"]?.GetValue<string>() ?? "the render failed"),
-            _ => render.Describe(LogLines),
+            JobStates.Failed => Answer.Failed(described["error"]?.GetValue<string>() ?? "the render failed", type: FailureTypes.RenderFailed, details: described),
+            _ => Answer.Ok(described),
         };
     }
 

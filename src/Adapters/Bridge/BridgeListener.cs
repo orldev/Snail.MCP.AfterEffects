@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Snail.MCP.AfterEffects.Application.Access;
 using Snail.MCP.AfterEffects.Application.Announcements;
 using Snail.MCP.AfterEffects.Configuration;
+using Snail.Sdk.Mcp.Hosting;
 
 namespace Snail.MCP.AfterEffects.Adapters.Bridge;
 
@@ -143,8 +144,8 @@ internal sealed class BridgeListener(
     {
         ["welcome"] = new JsonObject
         {
-            ["name"] = ThisAssembly.Name,
-            ["version"] = ThisAssembly.InformationalVersion,
+            ["name"] = ServerIdentity.NameOf(typeof(BridgeListener).Assembly),
+            ["version"] = ServerIdentity.VersionOf(typeof(BridgeListener).Assembly),
             ["protocol"] = BridgeProtocol.Version,
             ["pid"] = Environment.ProcessId,
         },

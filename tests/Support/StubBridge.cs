@@ -9,6 +9,9 @@ internal sealed class StubBridge(Func<BridgeCommand, JsonObject, BridgeReply> an
 {
     public List<(BridgeCommand Command, JsonObject Parameters)> Sent { get; } = [];
 
+    /// <summary>How long each command of <see cref="Sent"/> was given to wait for After Effects, in the same order.</summary>
+    public List<TimeSpan?> Waited { get; } = [];
+
     /// <summary>Whether the code above the link should believe After Effects is there; a test of a refusal sets it false.</summary>
     public bool IsConnected { get; set; } = true;
 
@@ -22,6 +25,7 @@ internal sealed class StubBridge(Func<BridgeCommand, JsonObject, BridgeReply> an
     {
         var sent = parameters ?? [];
         Sent.Add((command, sent));
+        Waited.Add(timeout);
 
         return Task.FromResult(answer(command, sent));
     }

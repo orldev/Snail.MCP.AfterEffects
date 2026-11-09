@@ -1,6 +1,5 @@
-using Microsoft.Extensions.DependencyInjection;
+using Snail.MCP.AfterEffects.Domain;
 using Snail.MCP.AfterEffects.Application.Farm;
-using Snail.MCP.AfterEffects.Application.Sessions;
 using Snail.MCP.AfterEffects.Configuration;
 using Snail.Sdk.Mcp.Hosting.Jobs;
 
@@ -10,7 +9,6 @@ namespace Snail.MCP.AfterEffects.Tests.Application;
 public sealed class FarmJobsTests : IAsyncDisposable
 {
     private readonly string _root = TestFolder.Create();
-    private readonly ClientSessions _clients = new([], [], null, new ServiceCollection().BuildServiceProvider(), TimeProvider.System);
     private RenderFarm? _farm;
 
     private static readonly string[] Frames =
@@ -49,12 +47,13 @@ public sealed class FarmJobsTests : IAsyncDisposable
 
         Assert.Equal(JobState.Failed, report.State);
         Assert.Contains("file not found", report.Message, StringComparison.Ordinal);
+        Assert.Equal(FailureTypes.RenderFailed, report.Type);
     }
 
     private async Task<FarmJobs> JobsAsync(FakeAerender aerender)
     {
         var config = new ServerConfig { DataDirectory = _root, FarmParallel = 1 };
-        _farm = new RenderFarm(aerender, config, _clients, TimeProvider.System, NullLogger<RenderFarm>.Instance);
+        _farm = new RenderFarm(aerender, config, TimeProvider.System, NullLogger<RenderFarm>.Instance);
         await _farm.StartAsync(CancellationToken.None);
 
         return new FarmJobs(_farm, new Jobs("aftereffects"), TimeProvider.System) { Interval = TimeSpan.FromMilliseconds(50) };

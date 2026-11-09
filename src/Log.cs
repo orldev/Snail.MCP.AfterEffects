@@ -45,9 +45,6 @@ internal static partial class Log
     [LoggerMessage(EventId = 12, Level = LogLevel.Information, Message = "Render job {Id} is {State}")]
     internal static partial void RenderJobEnded(ILogger logger, string id, string state);
 
-    [LoggerMessage(EventId = 13, Level = LogLevel.Warning, Message = "No MCP tool has been called for {IdleFor}; the process looks orphaned, shutting down")]
-    internal static partial void ShuttingDownOrphaned(ILogger logger, TimeSpan idleFor);
-
     [LoggerMessage(EventId = 14, Level = LogLevel.Information, Message = "Wrote a new bridge token to {File}")]
     internal static partial void BridgeTokenWritten(ILogger logger, string file);
 
@@ -77,7 +74,4 @@ internal static partial class Log
 
     [LoggerMessage(EventId = 23, Level = LogLevel.Information, Message = "Worker {Worker} is gone: {Why}")]
     internal static partial void WorkerGone(ILogger logger, string worker, string why);
-
-    [LoggerMessage(EventId = 24, Level = LogLevel.Information, Message = "Unloaded idle skills: {Skills}")]
-    internal static partial void SkillsUnloaded(ILogger logger, string skills);
 }

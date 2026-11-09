@@ -1,5 +1,4 @@
 using System.Text.RegularExpressions;
-using Snail.MCP.AfterEffects.Application.Skills;
 
 namespace Snail.MCP.AfterEffects.Application.Farm;
 
@@ -83,7 +82,7 @@ internal static class JobStates
 /// <summary>One render on the farm: its request, where it stands, what aerender has said so far.</summary>
 /// <remarks>aerender's output is localised, so progress is read from the shape of the line (a timecode and a frame number in parentheses)
 /// and never from its words; an error is any line that is not progress and names one.</remarks>
-internal sealed partial class RenderJob(string id, JobRequest request, DateTimeOffset submitted, string logPath, SkillCatalog? owner = null)
+internal sealed partial class RenderJob(string id, JobRequest request, DateTimeOffset submitted, string logPath)
 {
 
     private readonly Lock _gate = new();
@@ -105,9 +104,6 @@ internal sealed partial class RenderJob(string id, JobRequest request, DateTimeO
     public JobRequest Request => request;
 
     public string LogPath => logPath;
-
-    /// <summary>The skill catalog of the client that queued the job, which stays pinned while the job is active.</summary>
-    public SkillCatalog? Owner => owner;
 
     public DateTimeOffset Submitted => submitted;
 

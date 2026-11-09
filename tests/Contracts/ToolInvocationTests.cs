@@ -26,6 +26,7 @@ public sealed class ToolInvocationTests : IDisposable
         ["ae_install_bridge"] = "writes into the owner's After Effects scripts folder",
         ["ae_capture_frame"] = "waits for a PNG After Effects never writes here",
         ["ae_viewer_snapshot"] = "waits for a PNG After Effects never writes here",
+        ["run_tools"] = "holds its steps to the gate through the request of the protocol, which a direct call has none of; ServedToolsTests call it",
     };
 
     private readonly string _dataDirectory = TestFolder.Create();

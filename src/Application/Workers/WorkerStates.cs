@@ -30,4 +30,7 @@ internal static class WorkerOrigins
 internal sealed record Lease(Worker? Worker, string? Refusal)
 {
     public bool IsOk => Refusal is null && Worker is not null;
+
+    /// <summary>The kind of refusal, one of <see cref="Domain.FailureTypes"/>; null when the lease was granted.</summary>
+    public string? Type { get; init; }
 }

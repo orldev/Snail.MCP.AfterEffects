@@ -2,24 +2,6 @@ namespace Snail.MCP.AfterEffects.Tools.Prompts;
 
 internal static partial class ToolDescriptions
 {
-    public static class Skills
-    {
-        public const string List = "The skills this server can load — groups of tools for animation, text, shapes, effects, 3D, compositing, rendering — with which are loaded and the tools each brings.";
-
-        public const string Enable = "Load a skill: its tools join the tool list at once, and the client is told the list changed. Skills stay loaded until ae_disable_skill, unless the server unloads idle ones.";
-
-        public const string Disable = "Unload a skill, taking its tools out of the list.";
-    }
-
-    public static class Discovery
-    {
-        public const string FindTool =
-            "Find the tool for a task across every skill, loaded or not, by saying what you want in English words. Each match carries the tool's " +
-            "command and parameters as a program sends them (snake_case; the tool takes the same names in camelCase), which is enough to call it " +
-            "through run_program without loading anything; pass enable to load the skills " +
-            "the matches live in so the tools can be called by name. Ask here before concluding that something has no tool.";
-    }
-
     public static class Diagnostics
     {
         public const string Diagnose =

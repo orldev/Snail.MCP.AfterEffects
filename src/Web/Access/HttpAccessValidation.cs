@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using Snail.MCP.AfterEffects.Application.Access;
 using Snail.MCP.AfterEffects.Configuration;
 using Snail.MCP.AfterEffects.Tools.Prompts;
+using Snail.Sdk.Mcp.Hosting;
 
 namespace Snail.MCP.AfterEffects.Web.Access;
 
@@ -9,7 +10,7 @@ namespace Snail.MCP.AfterEffects.Web.Access;
 internal sealed class HttpAccessValidation : IValidateOptions<ServerConfig>
 {
     public ValidateOptionsResult Validate(string? name, ServerConfig options) =>
-        options.Transport is Transport.Http && ClientToken.Read(options.Http) is null
+        options.Transport is McpTransport.Http && ClientToken.Read(options.Http) is null
             ? ValidateOptionsResult.Fail(Messages.HttpTokenMissing)
             : ValidateOptionsResult.Success;
 }

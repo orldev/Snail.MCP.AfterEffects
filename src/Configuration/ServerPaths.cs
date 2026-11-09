@@ -18,10 +18,6 @@ internal static class ServerPaths
     /// <summary>The folder inside the data directory where the server and the bridge keep what they leave between runs.</summary>
     public const string StateFolderName = "state";
 
-    public static string Home => Environment.GetFolderPath(
-        Environment.SpecialFolder.UserProfile,
-        Environment.SpecialFolderOption.DoNotVerify);
-
     /// <summary><c>~/.s3l-mcp-aftereffects</c>, moved there from <c>~/.snail-mcp-aftereffects</c> when only that one exists.</summary>
     public static string DefaultDataDirectory => ServerFolders.DataDirectory(ShortName);
 

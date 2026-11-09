@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Snail.MCP.AfterEffects.Configuration;
+using Snail.Sdk.Mcp.Hosting;
 
 namespace Snail.MCP.AfterEffects.Application.Announcements;
 
@@ -30,7 +31,7 @@ internal sealed class ServerAnnouncement(ServerConfig config, ILogger<ServerAnno
             ["machine"] = Environment.MachineName,
             ["port"] = port,
             ["host"] = config.Bridge.Host,
-            ["version"] = ThisAssembly.InformationalVersion,
+            ["version"] = ServerIdentity.VersionOf(typeof(ServerAnnouncement).Assembly),
             ["agent"] = config.Bridge.Agent,
             ["started"] = DateTimeOffset.UtcNow.ToString("O"),
         };

@@ -28,9 +28,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Jint" />
         <PackageReference Include="ModelContextProtocol" />
         <PackageReference Include="ModelContextProtocol.AspNetCore" />
+        <PackageReference Include="Snail.Sdk.Mcp.Programs" />
     </ItemGroup>
 
     <ItemGroup>

@@ -5,6 +5,7 @@ using Snail.MCP.AfterEffects.Application.Storage;
 using Snail.MCP.AfterEffects.Configuration;
 using Snail.MCP.AfterEffects.Domain;
 using Snail.MCP.AfterEffects.Web.Pages;
+using Snail.Sdk.Mcp.Hosting;
 
 namespace Snail.MCP.AfterEffects.Tests.Web;
 
@@ -205,7 +206,7 @@ public sealed class PageViewsTests
 
     private static ServerConfig Config()
     {
-        var config = new ServerConfig { DataDirectory = TestFolder.Create(), Transport = Transport.Http };
+        var config = new ServerConfig { DataDirectory = TestFolder.Create(), Transport = McpTransport.Http };
         ServerConfigExtensions.Normalize(config);
 
         return config;
@@ -214,8 +215,8 @@ public sealed class PageViewsTests
     private static RenderFarm Farm(string? executable)
     {
         var config = Config();
-        var clients = new ClientSessions([], [], null, new ServiceCollection().BuildServiceProvider(), TimeProvider.System);
+        var clients = new ClientSessions(null);
 
-        return new RenderFarm(new FakeAerender(_ => new FakeAerender.FakeRenderProcess([], 0), executable), config, clients, TimeProvider.System, NullLogger<RenderFarm>.Instance);
+        return new RenderFarm(new FakeAerender(_ => new FakeAerender.FakeRenderProcess([], 0), executable), config, TimeProvider.System, NullLogger<RenderFarm>.Instance);
     }
 }

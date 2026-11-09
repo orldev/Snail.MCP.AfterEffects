@@ -1,4 +1,5 @@
 using Snail.MCP.AfterEffects.Configuration;
+using Snail.Sdk.Mcp.Hosting;
 
 namespace Snail.MCP.AfterEffects.Application.Farm;
 
@@ -15,14 +16,14 @@ internal sealed class ProjectForRender(IAfterEffectsBridge bridge, ServerConfig 
         {
             if (!bridge.IsConnected)
             {
-                return Resolution.Refused("The composition is given by id, but After Effects is not connected to look it up; pass its name.");
+                return Resolution.Refused("The composition is given by id, but After Effects is not connected to look it up; pass its name.", BridgeError.UnavailableType);
             }
 
             var info = await bridge.SendAsync(BridgeCommands.ItemInfo, new JsonObject { ["item"] = id }, null, cancellationToken).ConfigureAwait(false);
 
             if (!info.IsOk || info.Result?["name"]?.GetValue<string>() is not { } name)
             {
-                return Resolution.Refused(info.Error?.Message ?? $"No item has the id {id}.");
+                return Resolution.Refused(info.Error?.Message ?? $"No item has the id {id}.", info.Error?.Type ?? FailureTypes.NotFound);
             }
 
             compName = name;
@@ -32,19 +33,19 @@ internal sealed class ProjectForRender(IAfterEffectsBridge bridge, ServerConfig 
         {
             var given = Expand(project);
 
-            return File.Exists(given) ? Resolution.Of(given, compName, saved: false) : Resolution.Refused($"No project file at {given}.");
+            return File.Exists(given) ? Resolution.Of(given, compName, saved: false) : Resolution.Refused($"No project file at {given}.", FailureTypes.NoFile);
         }
 
         if (!bridge.IsConnected)
         {
-            return Resolution.Refused("After Effects is not connected; pass the path of a saved project.");
+            return Resolution.Refused("After Effects is not connected; pass the path of a saved project.", BridgeError.UnavailableType);
         }
 
         var state = await bridge.SendAsync(BridgeCommands.ProjectInfo, [], null, cancellationToken).ConfigureAwait(false);
 
         if (!state.IsOk)
         {
-            return Resolution.Refused(state.Error?.Message ?? "After Effects did not answer.");
+            return Resolution.Refused(state.Error?.Message ?? "After Effects did not answer.", state.Error?.Type ?? BridgeError.UnavailableType);
         }
 
         var file = state.Result?["file"]?.GetValue<string>();
@@ -52,7 +53,7 @@ internal sealed class ProjectForRender(IAfterEffectsBridge bridge, ServerConfig 
 
         if (file is null)
         {
-            return Resolution.Refused("The open project has never been saved; save it with ae_project_save first, since aerender reads the file on disk.");
+            return Resolution.Refused("The open project has never been saved; save it with ae_project_save first, since aerender reads the file on disk.", FailureTypes.ProjectDirty);
         }
 
         if (!dirty)
@@ -62,12 +63,12 @@ internal sealed class ProjectForRender(IAfterEffectsBridge bridge, ServerConfig 
 
         if (!save)
         {
-            return Resolution.Refused("The open project has unsaved changes aerender would not see; pass save true, or save it yourself.");
+            return Resolution.Refused("The open project has unsaved changes aerender would not see; pass save true, or save it yourself.", FailureTypes.ProjectDirty);
         }
 
         var saved = await bridge.SendAsync(BridgeCommands.ProjectSave, [], null, cancellationToken).ConfigureAwait(false);
 
-        return saved.IsOk ? Resolution.Of(file, compName, saved: true) : Resolution.Refused(saved.Error?.Message ?? "Saving the project failed.");
+        return saved.IsOk ? Resolution.Of(file, compName, saved: true) : Resolution.Refused(saved.Error?.Message ?? "Saving the project failed.", saved.Error?.Type ?? FailureTypes.ProjectDirty);
     }
 
     /// <summary>The output path as aerender takes it: a tilde expanded, a folder completed with the composition's name, the parent created.</summary>
@@ -88,15 +89,18 @@ internal sealed class ProjectForRender(IAfterEffectsBridge bridge, ServerConfig 
     private string RenderRoot => Path.Combine(config.ProjectDirectory ?? config.DataDirectory, "renders");
 
     private static string Expand(string path) =>
-        path.StartsWith('~') ? Path.Combine(ServerPaths.Home, path.TrimStart('~').TrimStart('/', '\\')) : path;
+        path.StartsWith('~') ? Path.Combine(ServerFolders.Home, path.TrimStart('~').TrimStart('/', '\\')) : path;
 
     /// <summary>The project path and composition name a job can be made of, or why not.</summary>
     public sealed record Resolution(string? Project, string? Comp, bool WasSaved, string? Refusal)
     {
         public bool IsResolved => Refusal is null;
 
+        /// <summary>The kind of refusal: the bridge's own when it refused, one of <see cref="Domain.FailureTypes"/> otherwise; null when resolved.</summary>
+        public string? Type { get; init; }
+
         public static Resolution Of(string project, string comp, bool saved) => new(project, comp, saved, null);
 
-        public static Resolution Refused(string reason) => new(null, null, false, reason);
+        public static Resolution Refused(string reason, string type) => new(null, null, false, reason) { Type = type };
     }
 }

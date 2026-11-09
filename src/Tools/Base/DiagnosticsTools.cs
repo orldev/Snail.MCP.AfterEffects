@@ -14,7 +14,7 @@ internal sealed class DiagnosticsTools(ServerHealth health, BridgeInstallation i
     [McpServerTool(Name = "ae_diagnose", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false)]
     [Description(ToolDescriptions.Diagnostics.Diagnose)]
     public async Task<CallToolResult> DiagnoseAsync(CancellationToken cancellationToken = default) =>
-        ToolResponse.Success(await health.ReportAsync(cancellationToken).ConfigureAwait(false));
+        ToolAnswer.Ok(await health.ReportAsync(cancellationToken).ConfigureAwait(false));
 
     [McpServerTool(Name = "ae_install_bridge", ReadOnly = false, Destructive = false, Idempotent = true, OpenWorld = false)]
     [Description(ToolDescriptions.Diagnostics.InstallBridge)]
@@ -23,7 +23,7 @@ internal sealed class DiagnosticsTools(ServerHealth health, BridgeInstallation i
         var report = await installation.InstallAsync(cancellationToken).ConfigureAwait(false);
 
         return report["installed"]?.GetValue<bool>() == true
-            ? ToolResponse.Success(report)
-            : ToolResponse.Failure(report["error"]!.ToString(), report["hint"]?.ToString());
+            ? ToolAnswer.Ok(report)
+            : ToolAnswer.Failed(report["error"]!.ToString(), report["hint"]?.ToString(), FailureTypes.NoScriptsFolder);
     }
 }

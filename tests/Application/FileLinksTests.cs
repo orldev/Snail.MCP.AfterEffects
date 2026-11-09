@@ -1,6 +1,8 @@
+using Microsoft.Extensions.Time.Testing;
 using Snail.MCP.AfterEffects.Application.Access;
 using Snail.MCP.AfterEffects.Application.Storage;
 using Snail.MCP.AfterEffects.Configuration;
+using Snail.Sdk.Mcp.Hosting;
 
 namespace Snail.MCP.AfterEffects.Tests.Application;
 
@@ -85,7 +87,7 @@ public sealed class FileLinksTests
     [Fact]
     public void ALinkWhoseMinutesAreUp_OpensNothing()
     {
-        var time = new FakeTime(Noon);
+        var time = new FakeTimeProvider(Noon);
         var config = Config();
         var links = new FileLinks(new ClientToken(config), config, time);
         var route = FileLinks.Route(VolumeAreas.Files, "plate.mov");
@@ -94,7 +96,7 @@ public sealed class FileLinksTests
 
         Assert.True(links.Verifies("GET", route, null, overwrite: false, expires, signature));
 
-        time.Now = Noon.AddMinutes(31);
+        time.Advance(TimeSpan.FromMinutes(31));
 
         Assert.False(links.Verifies("GET", route, null, overwrite: false, expires, signature));
     }
@@ -112,7 +114,7 @@ public sealed class FileLinksTests
 
     private static ServerConfig Config()
     {
-        var config = new ServerConfig { DataDirectory = TestFolder.Create(), Transport = Transport.Http };
+        var config = new ServerConfig { DataDirectory = TestFolder.Create(), Transport = McpTransport.Http };
         config.Http.Url = "http://127.0.0.1:8080";
         config.Http.Token = "a-token-of-this-test";
         config.Http.LinkMinutes = 30;
@@ -124,13 +126,6 @@ public sealed class FileLinksTests
     {
         config = Config();
 
-        return new FileLinks(new ClientToken(config), config, new FakeTime(Noon));
-    }
-
-    private sealed class FakeTime(DateTimeOffset now) : TimeProvider
-    {
-        public DateTimeOffset Now { get; set; } = now;
-
-        public override DateTimeOffset GetUtcNow() => Now;
+        return new FileLinks(new ClientToken(config), config, new FakeTimeProvider(Noon));
     }
 }

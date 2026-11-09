@@ -1,14 +1,12 @@
 using Microsoft.Extensions.Hosting;
-using Snail.MCP.AfterEffects.Application.Sessions;
-using Snail.MCP.AfterEffects.Application.Skills;
 using Snail.MCP.AfterEffects.Configuration;
 
 namespace Snail.MCP.AfterEffects.Application.Farm;
 
 /// <summary>Background renders through aerender: a queue by priority, a bounded number running at once, retries, cancellation, and logs.</summary>
 /// <remarks>aerender renders a saved project in its own After Effects engine, so the open application stays free and a job outlives any tool
-/// call. While a job is active the farm skill is pinned, so the tools to poll and cancel it do not unload under the model.</remarks>
-internal sealed class RenderFarm(IAerender aerender, ServerConfig config, ClientSessions clients, TimeProvider clock, ILogger<RenderFarm> logger) : BackgroundService
+/// call.</remarks>
+internal sealed class RenderFarm(IAerender aerender, ServerConfig config, TimeProvider clock, ILogger<RenderFarm> logger) : BackgroundService
 {
     private readonly List<RenderJob> _jobs = [];
     private readonly Dictionary<string, CancellationTokenSource> _running = new(StringComparer.Ordinal);
@@ -45,14 +43,13 @@ internal sealed class RenderFarm(IAerender aerender, ServerConfig config, Client
     {
         Directory.CreateDirectory(LogDirectory);
         var id = Guid.NewGuid().ToString("N")[..8];
-        var job = new RenderJob(id, request, clock.GetUtcNow(), Path.Combine(LogDirectory, $"{id}.log"), clients.Current.Skills);
+        var job = new RenderJob(id, request, clock.GetUtcNow(), Path.Combine(LogDirectory, $"{id}.log"));
 
         lock (_gate)
         {
             _jobs.Add(job);
         }
 
-        PinWhileBusy();
         Wake();
 
         return job;
@@ -77,7 +74,6 @@ internal sealed class RenderFarm(IAerender aerender, ServerConfig config, Client
         }
 
         job.Cancel(clock.GetUtcNow());
-        PinWhileBusy();
 
         return true;
     }
@@ -205,35 +201,7 @@ internal sealed class RenderFarm(IAerender aerender, ServerConfig config, Client
                 Log.RenderJobEnded(logger, job.Id, job.State);
             }
 
-            PinWhileBusy();
             Wake();
-        }
-    }
-
-    /// <summary>Keeps the farm skill loaded for every client with an active job, and lets it go for the rest.</summary>
-    private void PinWhileBusy()
-    {
-        List<(SkillCatalog Owner, bool Busy)> owners;
-
-        lock (_gate)
-        {
-            owners = [.. _jobs
-                .Select(job => job.Owner)
-                .OfType<SkillCatalog>()
-                .Distinct()
-                .Select(owner => (owner, _jobs.Any(job => job.Owner == owner && job.IsActive)))];
-        }
-
-        foreach (var (owner, busy) in owners)
-        {
-            if (busy)
-            {
-                owner.Pin(Domain.Skills.Farm);
-            }
-            else
-            {
-                owner.Unpin(Domain.Skills.Farm);
-            }
         }
     }
 

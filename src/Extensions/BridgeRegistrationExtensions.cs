@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using Snail.MCP.AfterEffects.Adapters.Bridge;
-using Snail.MCP.AfterEffects.Adapters.Programs;
 using Snail.MCP.AfterEffects.Application.Access;
 using Snail.MCP.AfterEffects.Application.Announcements;
 
@@ -19,7 +18,6 @@ internal static class BridgeRegistrationExtensions
             services.AddSingleton<IAfterEffectsBridge>(provider => provider.GetRequiredService<BridgeLinks>());
             services.AddSingleton<BridgeListener>();
             services.AddHostedService(provider => provider.GetRequiredService<BridgeListener>());
-            services.AddSingleton<IProgramRunner, JavaScriptPrograms>();
 
             return services;
         }

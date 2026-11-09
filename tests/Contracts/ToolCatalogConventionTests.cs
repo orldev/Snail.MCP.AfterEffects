@@ -2,14 +2,14 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using ModelContextProtocol;
+using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
-using Snail.MCP.AfterEffects.Adapters.Programs;
 using Snail.MCP.AfterEffects.Application.Discovery;
-using Snail.MCP.AfterEffects.Application.Skills;
 using Snail.MCP.AfterEffects.Domain;
 using Snail.MCP.AfterEffects.Domain.Commands;
 using Snail.MCP.AfterEffects.Tools;
 using Snail.MCP.AfterEffects.Tools.Prompts;
+using Snail.Sdk.Mcp.Hosting.Discovery;
 
 namespace Snail.MCP.AfterEffects.Tests.Contracts;
 
@@ -23,6 +23,12 @@ public partial class ToolCatalogConventionTests
             .Where(method => method.GetCustomAttribute<McpServerToolAttribute>() is not null)];
 
     private static string ToolName(MethodInfo method) => method.GetCustomAttribute<McpServerToolAttribute>()!.Name!;
+
+    /// <summary>The tools Snail.Sdk registers for this server, which a description, the guidance or a message may name as well.</summary>
+    private static readonly string[] ToolsOfTheSdk = ["find_tool", "run_program", "ae_skills", "ae_enable_skill", "ae_disable_skill"];
+
+    /// <summary>Every tool a client can be told about: the assembly's and Snail.Sdk's.</summary>
+    private static HashSet<string> KnownTools() => [.. ToolMethods().Select(ToolName), .. ToolsOfTheSdk];
 
     private static string? DescriptionOf(ICustomAttributeProvider member) =>
         member.GetCustomAttributes(typeof(DescriptionAttribute), false)
@@ -54,7 +60,7 @@ public partial class ToolCatalogConventionTests
     [Fact]
     public void Catalog_HasNoEntry_WithoutATool()
     {
-        var used = ToolMethods().Select(DescriptionOf).ToHashSet(StringComparer.Ordinal);
+        var used = ToolMethods().Select(DescriptionOf).Append(ToolDescriptions.Application.Program).ToHashSet(StringComparer.Ordinal);
 
         var orphans = CatalogEntries()
             .Where(entry => !used.Contains(entry.Value))
@@ -69,7 +75,7 @@ public partial class ToolCatalogConventionTests
     {
         var offenders = ToolMethods()
             .SelectMany(method => method.GetParameters()
-                .Where(parameter => parameter.ParameterType != typeof(CancellationToken) && parameter.ParameterType != typeof(IProgress<ProgressNotificationValue>) && parameter.ParameterType != typeof(McpServer))
+                .Where(parameter => parameter.ParameterType != typeof(CancellationToken) && parameter.ParameterType != typeof(IProgress<ProgressNotificationValue>) && parameter.ParameterType != typeof(McpServer) && parameter.ParameterType != typeof(RequestContext<CallToolRequestParams>))
                 .Where(parameter => string.IsNullOrWhiteSpace(DescriptionOf(parameter)))
                 .Select(parameter => $"{ToolName(method)}({parameter.Name})"))
             .ToList();
@@ -94,7 +100,7 @@ public partial class ToolCatalogConventionTests
     [Fact]
     public void Descriptions_ReferenceOnlyExistingTools()
     {
-        var known = ToolMethods().Select(ToolName).ToHashSet(StringComparer.Ordinal);
+        var known = KnownTools();
 
         var dangling = ToolMethods()
             .SelectMany(method => ToolReference.Matches(DescriptionOf(method) ?? string.Empty)
@@ -111,7 +117,7 @@ public partial class ToolCatalogConventionTests
     [Fact]
     public void Prompts_ReferenceOnlyExistingTools()
     {
-        var known = ToolMethods().Select(ToolName).ToHashSet(StringComparer.Ordinal);
+        var known = KnownTools();
         var texts = typeof(PromptTexts).GetFields(BindingFlags.Public | BindingFlags.Static).Where(field => field.IsLiteral).Select(field => (string)field.GetRawConstantValue()!);
 
         var unknown = texts
@@ -126,7 +132,7 @@ public partial class ToolCatalogConventionTests
     [Fact]
     public void ServerGuidance_ReferencesOnlyExistingTools()
     {
-        var known = ToolMethods().Select(ToolName).ToHashSet(StringComparer.Ordinal);
+        var known = KnownTools();
 
         var dangling = ToolReference.Matches(ServerGuidance.Instructions)
             .Select(match => match.Value)
@@ -142,7 +148,7 @@ public partial class ToolCatalogConventionTests
     [Fact]
     public void Messages_ReferenceOnlyExistingTools()
     {
-        var known = ToolMethods().Select(ToolName).ToHashSet(StringComparer.Ordinal);
+        var known = KnownTools();
         var texts = typeof(Messages).GetFields(BindingFlags.Public | BindingFlags.Static)
             .Where(field => field.IsLiteral && field.FieldType == typeof(string))
             .Select(field => (string)field.GetRawConstantValue()!);
@@ -274,19 +280,11 @@ public partial class ToolCatalogConventionTests
             .Where(method => ToolCommands.Of(method) is { Count: 1 })
             .SelectMany(method => method.GetParameters()
                 .Where(parameter => parameter.ParameterType != typeof(CancellationToken) && parameter.Name != "timeoutSeconds")
-                .Where(parameter => !schema[ToolCommands.Of(method)[0]].Contains(ToolIndex.WireName(parameter.Name!)))
+                .Where(parameter => !schema[ToolCommands.Of(method)[0]].Contains(ToolCommands.WireName(parameter.Name!)))
                 .Select(parameter => $"{ToolName(method)}.{parameter.Name}"))
             .ToList();
 
         Assert.True(strays.Count == 0, $"not a parameter of the command sent: {string.Join(", ", strays)}");
-    }
-
-    [Fact]
-    public void ProgramCodeParameter_StatesTheCallLimit()
-    {
-        var code = Assert.Single(ParametersNamed("code"), parameter => ToolName((MethodInfo)parameter.Member) == "run_program");
-
-        Assert.Contains(JavaScriptPrograms.MostCalls.ToString(), DescriptionOf(code)!, StringComparison.Ordinal);
     }
 
     [Fact]

@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Snail.Sdk.Mcp.Hosting;
 
 namespace Snail.MCP.AfterEffects.Configuration;
 
@@ -17,7 +18,7 @@ internal sealed class ServerConfig
     public BridgeOptions Bridge { get; set; } = new();
 
     /// <summary>stdio when the client starts this server; http when it runs on its own beside After Effects and clients connect to it.</summary>
-    public Transport Transport { get; set; } = Transport.Stdio;
+    public McpTransport Transport { get; set; } = McpTransport.Stdio;
 
     [ValidateObjectMembers]
     public HttpOptions Http { get; set; } = new();
@@ -90,7 +91,9 @@ internal sealed class BridgeOptions
 internal sealed class HttpOptions
 {
     /// <summary>The address to listen on; a container listens on every interface, a server started by hand on the loopback only.</summary>
-    public string Url { get; set; } = "http://127.0.0.1:8080";
+    public string Url { get; set; } = DefaultUrl;
+
+    public const string DefaultUrl = "http://127.0.0.1:8080";
 
     /// <summary>The token a client presents as a bearer and on the page login; empty reads <see cref="TokenFile"/>.</summary>
     public string? Token { get; set; }
