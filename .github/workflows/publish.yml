@@ -153,7 +153,7 @@ jobs:
       test-filter: FullyQualifiedName!~.Tests.Live.
       project: src
       contract-variable: SNAIL_AFTEREFFECTS_SERVER
-      contract-filter: FullyQualifiedName~StdioContract
+      contract-filter: FullyQualifiedName~StdioContract|FullyQualifiedName~HttpContract
       version: ${{ needs.versions.outputs.version }}
       push: true
 

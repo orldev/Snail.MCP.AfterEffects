@@ -1,0 +1,24 @@
+{
+  "stryker-config": {
+    "project": "Snail.MCP.AfterEffects.csproj",
+    "test-projects": ["tests/Snail.MCP.AfterEffects.Tests.csproj"],
+    "test-case-filter": "FullyQualifiedName!~.Tests.Live.&FullyQualifiedName!~Contract",
+    "mutation-level": "Standard",
+    "coverage-analysis": "perTest",
+    "ignore-mutations": ["string"],
+    "ignore-methods": ["*Log.*", "ToString", "*Exception.ctor"],
+    "additional-timeout": 10000,
+    "concurrency": 4,
+    "mutate": [
+      "**/*.cs",
+      "!**/Tools/Prompts/**",
+      "!**/Domain/Commands/**",
+      "!**/Web/Pages/**",
+      "!**/Extensions/**",
+      "!**/Adapters/AfterEffects/**",
+      "!**/Log.cs",
+      "!**/Program.cs",
+      "!**/GlobalUsings.cs"
+    ]
+  }
+}

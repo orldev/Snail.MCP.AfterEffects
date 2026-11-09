@@ -155,13 +155,16 @@ public class HttpContractTests
         Assert.Equal(HttpStatusCode.Unauthorized, refused.StatusCode);
     }
 
-    /// <summary>The guard rules of every Snail server's HTTP endpoint, checked by requests to the running server: a page in a browser is refused.</summary>
+    /// <summary>The guard rules of an HTTP endpoint behind a key, checked by requests to the running server: a page in a browser and a caller
+    /// without the key are refused, and the agent's client with the key is let in.</summary>
+    /// <remarks>Asked without the key, the rules of a keyless endpoint held for an endpoint that refuses everyone: the client without
+    /// <c>Origin</c> was answered 401, which proved nothing about browsers.</remarks>
     [Fact]
     public async Task Endpoint_OverHttp_KeepsTheGuardRules()
     {
         await using var server = await HttpServerProcess.StartAsync(Token);
 
-        Assert.Empty(await HttpGuards.ProblemsAsync(new Uri(server.Address, HttpServerRegistrationExtensions.McpPath)));
+        Assert.Empty(await HttpGuards.AuthorizedProblemsAsync(new Uri(server.Address, HttpServerRegistrationExtensions.McpPath), new AuthenticationHeaderValue("Bearer", Token)));
     }
 
     /// <summary>A server started without its secret would turn every client away while looking healthy, so it refuses to start and names the setting.</summary>
